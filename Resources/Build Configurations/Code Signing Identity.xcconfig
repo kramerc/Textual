@@ -5,4 +5,3 @@
 // identity is inherited by both the frameworks and
 // extensions built by Textual.
 
-CODE_SIGN_IDENTITY = 3rd Party Mac Developer Application
