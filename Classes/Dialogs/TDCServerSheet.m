@@ -37,118 +37,118 @@
 
 #import "TextualApplication.h"
 
-#define _tableRowType		@"row"
-#define _tableRowTypes		[NSArray arrayWithObject:_tableRowType]
+#define _tableRowType       @"row"
+#define _tableRowTypes      [NSArray arrayWithObject:_tableRowType]
 
 @implementation TDCServerSheet
 
 - (id)init
 {
-	if ((self = [super init])) {
-		/* Populate the navigation tree. */
-		NSMutableArray *tabViewList = [NSMutableArray new];
-		
-		[tabViewList addObject:@[@"General",						@"1", NSNumberWithBOOL(NO)]];
-		[tabViewList addObject:@[@"Identity",						@"2", NSNumberWithBOOL(NO)]];
-		[tabViewList addObject:@[@"Message",						@"3", NSNumberWithBOOL(NO)]];
-		[tabViewList addObject:@[@"Encoding",						@"4", NSNumberWithBOOL(NO)]];
-		[tabViewList addObject:@[@"Autojoin",						@"5", NSNumberWithBOOL(NO)]];
-		[tabViewList addObject:@[@"Ignores",						@"6", NSNumberWithBOOL(NO)]];
-		[tabViewList addObject:@[@"Commands",						@"7", NSNumberWithBOOL(NO)]];
-		[tabViewList addObject:@[TXDefaultListSeperatorCellIndex,	@"-", NSNumberWithBOOL(NO)]];
-		[tabViewList addObject:@[@"Proxy",							@"8", NSNumberWithBOOL(NO)]];
-		[tabViewList addObject:@[@"FloodControl",					@"9", NSNumberWithBOOL(NO)]];
+    if ((self = [super init])) {
+        /* Populate the navigation tree. */
+        NSMutableArray *tabViewList = [NSMutableArray new];
+        
+        [tabViewList addObject:@[@"General",                        @"1", NSNumberWithBOOL(NO)]];
+        [tabViewList addObject:@[@"Identity",                       @"2", NSNumberWithBOOL(NO)]];
+        [tabViewList addObject:@[@"Message",                        @"3", NSNumberWithBOOL(NO)]];
+        [tabViewList addObject:@[@"Encoding",                       @"4", NSNumberWithBOOL(NO)]];
+        [tabViewList addObject:@[@"Autojoin",                       @"5", NSNumberWithBOOL(NO)]];
+        [tabViewList addObject:@[@"Ignores",                        @"6", NSNumberWithBOOL(NO)]];
+        [tabViewList addObject:@[@"Commands",                       @"7", NSNumberWithBOOL(NO)]];
+        [tabViewList addObject:@[TXDefaultListSeperatorCellIndex,   @"-", NSNumberWithBOOL(NO)]];
+        [tabViewList addObject:@[@"Proxy",                          @"8", NSNumberWithBOOL(NO)]];
+        [tabViewList addObject:@[@"FloodControl",                   @"9", NSNumberWithBOOL(NO)]];
 
-		self.tabViewList = tabViewList;
+        self.tabViewList = tabViewList;
 
-		/* Load our views. */
-		[NSBundle loadNibNamed:@"TDCServerSheet" owner:self];
+        /* Load our views. */
+        [NSBundle loadNibNamed:@"TDCServerSheet" owner:self];
 
-		/* Load the list of available IRC networks. */
-		NSString *slp = [[TPCPreferences applicationResourcesFolderPath] stringByAppendingPathComponent:@"IRCNetworks.plist"];
-		
-		self.serverList = [NSDictionary dictionaryWithContentsOfFile:slp];
+        /* Load the list of available IRC networks. */
+        NSString *slp = [[TPCPreferences applicationResourcesFolderPath] stringByAppendingPathComponent:@"IRCNetworks.plist"];
+        
+        self.serverList = [NSDictionary dictionaryWithContentsOfFile:slp];
 
-		/* Populate the server address field with the IRC network list. */
-		NSArray *sortedKeys = [self.serverList allKeys];
+        /* Populate the server address field with the IRC network list. */
+        NSArray *sortedKeys = [self.serverList allKeys];
 
-		sortedKeys = [sortedKeys sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-			/* We are sorting keys. They are NSString values. */
-			/* Sort without case so that "freenode" is under servers with a capital F. */
-			return [obj1 compare:obj2 options:NSCaseInsensitiveSearch];
-		}];
+        sortedKeys = [sortedKeys sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+            /* We are sorting keys. They are NSString values. */
+            /* Sort without case so that "freenode" is under servers with a capital F. */
+            return [obj1 compare:obj2 options:NSCaseInsensitiveSearch];
+        }];
 
-		for (NSString *key in sortedKeys) {
-			[self.serverAddressCombo addItemWithObjectValue:key];
-		}
-	}
+        for (NSString *key in sortedKeys) {
+            [self.serverAddressCombo addItemWithObjectValue:key];
+        }
+    }
     
-	return self;
+    return self;
 }
 
 - (void)populateEncodings
 {
-	[self.primaryEncodingButton removeAllItems];
-	[self.fallbackEncodingButton removeAllItems];
-	
-	/* Build list of encodings. */
-	self.encodingList = [NSString supportedStringEncodingsWithTitle:NO];
+    [self.primaryEncodingButton removeAllItems];
+    [self.fallbackEncodingButton removeAllItems];
+    
+    /* Build list of encodings. */
+    self.encodingList = [NSString supportedStringEncodingsWithTitle:NO];
 
-	/* What we are basically doing now is sorting all the encodings, then removing
-	 UTF-8 from the sorted list and inserting it at the top of the list. */
-	NSString *utf8title = [NSString localizedNameOfStringEncoding:NSUTF8StringEncoding];
+    /* What we are basically doing now is sorting all the encodings, then removing
+     UTF-8 from the sorted list and inserting it at the top of the list. */
+    NSString *utf8title = [NSString localizedNameOfStringEncoding:NSUTF8StringEncoding];
 
-	NSMutableArray *encodingAdditions = [self.encodingList.sortedDictionaryKeys mutableCopy];
+    NSMutableArray *encodingAdditions = [self.encodingList.sortedDictionaryKeys mutableCopy];
 
-	[encodingAdditions removeObject:utf8title];
+    [encodingAdditions removeObject:utf8title];
 
-	[self.primaryEncodingButton addItemWithTitle:utf8title];
-	[self.fallbackEncodingButton addItemWithTitle:utf8title];
+    [self.primaryEncodingButton addItemWithTitle:utf8title];
+    [self.fallbackEncodingButton addItemWithTitle:utf8title];
 
-	/* Add the encodings to the popup list. This for loop will find the first
-	 parentheses opening and compare everything before it to the one found for
-	 the previous encoding. If the prefix has changed, then a separator is
-	 inserted. This groups the encodings.
+    /* Add the encodings to the popup list. This for loop will find the first
+     parentheses opening and compare everything before it to the one found for
+     the previous encoding. If the prefix has changed, then a separator is
+     inserted. This groups the encodings.
 
-	 We do this two times. The first time setups up preferred encodings at
-	 the top of the list. The next handles everything else. */
+     We do this two times. The first time setups up preferred encodings at
+     the top of the list. The next handles everything else. */
 
-	NSArray *favoredEncodings = @[@"Unicode", @"Western", @"Central European"];
+    NSArray *favoredEncodings = @[@"Unicode", @"Western", @"Central European"];
 
-	[self populateEncodingPopup:encodingAdditions preferredEncodings:favoredEncodings ignoreFavored:NO];
+    [self populateEncodingPopup:encodingAdditions preferredEncodings:favoredEncodings ignoreFavored:NO];
 
-	BOOL includeAdvancedEncodings = [RZUserDefaults() boolForKey:@"Server Properties Window Sheet —> Include Advanced Encodings"];
+    BOOL includeAdvancedEncodings = [RZUserDefaults() boolForKey:@"Server Properties Window Sheet —> Include Advanced Encodings"];
 
-	if (includeAdvancedEncodings) {
-		[self populateEncodingPopup:encodingAdditions preferredEncodings:favoredEncodings ignoreFavored:YES];
-	}
+    if (includeAdvancedEncodings) {
+        [self populateEncodingPopup:encodingAdditions preferredEncodings:favoredEncodings ignoreFavored:YES];
+    }
 }
 
 - (void)populateEncodingPopup:(NSArray *)encodingAdditions preferredEncodings:(NSArray *)favoredEncodings ignoreFavored:(BOOL)favoredIgnored
 {
-	NSString *previosEncodingPrefix = nil;
+    NSString *previosEncodingPrefix = nil;
 
-	for (NSString *encodingTitle in encodingAdditions) {
-		NSInteger parePos = [encodingTitle stringPosition:@" ("];
+    for (NSString *encodingTitle in encodingAdditions) {
+        NSInteger parePos = [encodingTitle stringPosition:@" ("];
 
-		NSString *encodingPrefix = [encodingTitle safeSubstringToIndex:parePos];
+        NSString *encodingPrefix = [encodingTitle safeSubstringToIndex:parePos];
 
-		if (favoredIgnored && [favoredEncodings containsObject:encodingPrefix]) {
-			continue;
-		} else if (favoredIgnored == NO && [favoredEncodings containsObject:encodingPrefix] == NO) {
-			continue;
-		}
+        if (favoredIgnored && [favoredEncodings containsObject:encodingPrefix]) {
+            continue;
+        } else if (favoredIgnored == NO && [favoredEncodings containsObject:encodingPrefix] == NO) {
+            continue;
+        }
 
-		if ([encodingPrefix isEqualToString:previosEncodingPrefix] == NO) {
-			[self.primaryEncodingButton.menu addItem:[NSMenuItem separatorItem]];
-			[self.fallbackEncodingButton.menu addItem:[NSMenuItem separatorItem]];
+        if ([encodingPrefix isEqualToString:previosEncodingPrefix] == NO) {
+            [self.primaryEncodingButton.menu addItem:[NSMenuItem separatorItem]];
+            [self.fallbackEncodingButton.menu addItem:[NSMenuItem separatorItem]];
 
-			previosEncodingPrefix = encodingPrefix;
-		}
+            previosEncodingPrefix = encodingPrefix;
+        }
 
-		[self.primaryEncodingButton addItemWithTitle:encodingTitle];
-		[self.fallbackEncodingButton addItemWithTitle:encodingTitle];
-	}
+        [self.primaryEncodingButton addItemWithTitle:encodingTitle];
+        [self.fallbackEncodingButton addItemWithTitle:encodingTitle];
+    }
 }
 
 #pragma mark -
@@ -156,26 +156,26 @@
 
 - (NSString *)nameMatchesServerInList:(NSString *)name
 {
-	for (NSString *key in self.serverList) {
-		if ([name isEqualIgnoringCase:key]) {
-			return key;
-		}
-	}
-	
-	return nil;
+    for (NSString *key in self.serverList) {
+        if ([name isEqualIgnoringCase:key]) {
+            return key;
+        }
+    }
+    
+    return nil;
 }
 
 - (NSString *)hostFoundInServerList:(NSString *)hosto
 {
-	for (NSString *key in self.serverList) {
-		NSString *host = (self.serverList)[key];
-		
-		if ([hosto isEqualIgnoringCase:host]) {
-			return key;
-		}
-	}
-	
-	return nil;
+    for (NSString *key in self.serverList) {
+        NSString *host = (self.serverList)[key];
+        
+        if ([hosto isEqualIgnoringCase:host]) {
+            return key;
+        }
+    }
+    
+    return nil;
 }
 
 #pragma mark -
@@ -183,272 +183,272 @@
 
 - (void)start:(NSString *)viewToken withContext:(NSString *)context
 {
-	[self.channelTable setTarget:self];
-	[self.channelTable setDoubleAction:@selector(tableViewDoubleClicked:)];
-	[self.channelTable registerForDraggedTypes:_tableRowTypes];
+    [self.channelTable setTarget:self];
+    [self.channelTable setDoubleAction:@selector(tableViewDoubleClicked:)];
+    [self.channelTable registerForDraggedTypes:_tableRowTypes];
 
     [self.ignoreTable setTarget:self];
     [self.ignoreTable setDoubleAction:@selector(tableViewDoubleClicked:)];
 
-	[self populateEncodings];
+    [self populateEncodings];
 
-	[self load];
-	
-	[self updateConnectionPage];
-	[self updateChannelsPage];
-	[self updateIgnoresPage];
-	[self toggleAdvancedEncodings:nil];
+    [self load];
+    
+    [self updateConnectionPage];
+    [self updateChannelsPage];
+    [self updateIgnoresPage];
+    [self toggleAdvancedEncodings:nil];
 
-	[self proxyTypeChanged:nil];
+    [self proxyTypeChanged:nil];
     [self floodControlChanged:nil];
-	
-	[self reloadChannelTable];
-	[self reloadIgnoreTable];
-	
-	if ([viewToken isEqualToString:@"floodControl"]) {
+    
+    [self reloadChannelTable];
+    [self reloadIgnoreTable];
+    
+    if ([viewToken isEqualToString:@"floodControl"]) {
         [self showWithDefaultView:self.floodControlView andSegment:9];
     } else if ([viewToken isEqualToString:@"addressBook"]) {
-		[self showWithDefaultView:self.ignoresView andSegment:5];
-		
-		if ([context isEqualToString:@"-"] == NO) {
-			self.ignoreSheet = nil;
-			
-			self.ignoreSheet = [TDCAddressBookSheet new];
-			self.ignoreSheet.delegate = self;
-			self.ignoreSheet.window = self.sheet;
-			self.ignoreSheet.newItem = YES;
-			self.ignoreSheet.ignore = [IRCAddressBook new];
+        [self showWithDefaultView:self.ignoresView andSegment:5];
+        
+        if ([context isEqualToString:@"-"] == NO) {
+            self.ignoreSheet = nil;
+            
+            self.ignoreSheet = [TDCAddressBookSheet new];
+            self.ignoreSheet.delegate = self;
+            self.ignoreSheet.window = self.sheet;
+            self.ignoreSheet.newItem = YES;
+            self.ignoreSheet.ignore = [IRCAddressBook new];
             
             if ([context isEqualToString:@"--"]) {
-				self.ignoreSheet.ignore.hostmask = @"<nickname>";
+                self.ignoreSheet.ignore.hostmask = @"<nickname>";
             } else {
-				self.ignoreSheet.ignore.hostmask = context;
-			}
+                self.ignoreSheet.ignore.hostmask = context;
+            }
 
-			[self.ignoreSheet start];
-		}
-	} else {
-		[self showWithDefaultView:self.generalView andSegment:0];
+            [self.ignoreSheet start];
+        }
+    } else {
+        [self showWithDefaultView:self.generalView andSegment:0];
     }
 }
 
 - (void)showWithDefaultView:(NSView *)view andSegment:(NSInteger)segment
 {
-	[self startSheet];
-	
-	[self focusView:view atRow:segment];
+    [self startSheet];
+    
+    [self focusView:view atRow:segment];
 }
 
 - (void)focusView:(NSView *)view atRow:(NSInteger)row
 {
-	if (NSObjectIsNotEmpty(self.contentView.subviews)) {
-		[self.contentView.subviews[0] removeFromSuperview];
-	}
-	
-	[self.contentView addSubview:view];
-	
-	[self.tabView selectItemAtIndex:row];
-	
-	[self.window recalculateKeyViewLoop]; // This makes tab work for switching input fields.
+    if (NSObjectIsNotEmpty(self.contentView.subviews)) {
+        [self.contentView.subviews[0] removeFromSuperview];
+    }
+    
+    [self.contentView addSubview:view];
+    
+    [self.tabView selectItemAtIndex:row];
+    
+    [self.window recalculateKeyViewLoop]; // This makes tab work for switching input fields.
 }
 
 - (void)close
 {
-	self.delegate = nil;
+    self.delegate = nil;
 
-	[super cancel:nil];
+    [super cancel:nil];
 }
 
 - (void)load
 {
-	/* General */
+    /* General */
 
-	/* Define server address. */
-	NSString *networkName = [self hostFoundInServerList:self.config.serverAddress];
+    /* Define server address. */
+    NSString *networkName = [self hostFoundInServerList:self.config.serverAddress];
 
-	if (NSObjectIsEmpty(networkName)) {
-		self.serverAddressCombo.stringValue = self.config.serverAddress;
-	} else {
-		self.serverAddressCombo.stringValue = networkName;
-	}
+    if (NSObjectIsEmpty(networkName)) {
+        self.serverAddressCombo.stringValue = self.config.serverAddress;
+    } else {
+        self.serverAddressCombo.stringValue = networkName;
+    }
 
-	/* Other paramaters. */
-	self.autoConnectCheck.state				= self.config.autoConnect;
-	self.autoDisconnectOnSleepCheck.state	= self.config.autoSleepModeDisconnect;
-	self.autoReconnectCheck.state			= self.config.autoReconnect;
-	self.connectionUsesSSLCheck.state		= self.config.connectionUsesSSL;
-	self.serverNameField.stringValue		= self.config.clientName;
-	self.serverPasswordField.stringValue	= self.config.serverPassword;
-	self.serverPortField.stringValue		= [NSString stringWithInteger:self.config.serverPort];
+    /* Other paramaters. */
+    self.autoConnectCheck.state             = self.config.autoConnect;
+    self.autoDisconnectOnSleepCheck.state   = self.config.autoSleepModeDisconnect;
+    self.autoReconnectCheck.state           = self.config.autoReconnect;
+    self.connectionUsesSSLCheck.state       = self.config.connectionUsesSSL;
+    self.serverNameField.stringValue        = self.config.clientName;
+    self.serverPasswordField.stringValue    = self.config.serverPassword;
+    self.serverPortField.stringValue        = [NSString stringWithInteger:self.config.serverPort];
 
-    self.prefersIPv6Check.state				= self.config.connectionPrefersIPv6;
-	
-	/* Identity */
-	if (NSObjectIsEmpty(self.config.nickname)) {
-		self.nicknameField.stringValue = [TPCPreferences defaultNickname];
-	} else {
-		self.nicknameField.stringValue = self.config.nickname;
-	}
+    self.prefersIPv6Check.state             = self.config.connectionPrefersIPv6;
+    
+    /* Identity */
+    if (NSObjectIsEmpty(self.config.nickname)) {
+        self.nicknameField.stringValue = [TPCPreferences defaultNickname];
+    } else {
+        self.nicknameField.stringValue = self.config.nickname;
+    }
 
-	if (NSObjectIsEmpty(self.config.awayNickname)) {
-		self.awayNicknameField.stringValue = [TPCPreferences defaultAwayNickname];
-	} else {
-		self.awayNicknameField.stringValue = self.config.awayNickname;
-	}
-	
-	if (NSObjectIsEmpty(self.config.username)) {
-		self.usernameField.stringValue = [TPCPreferences defaultUsername];
-	} else {
-		self.usernameField.stringValue = self.config.username;
-	}
-	
-	if (NSObjectIsEmpty(self.config.realname)) {
-		self.realnameField.stringValue = [TPCPreferences defaultRealname];
-	} else {
-		self.realnameField.stringValue = self.config.realname;
-	}
-	
-	if (self.config.alternateNicknames.count > 0) {
-		self.alternateNicknamesField.stringValue = [self.config.alternateNicknames componentsJoinedByString:NSStringWhitespacePlaceholder];
-	} else {
-		self.alternateNicknamesField.stringValue = NSStringEmptyPlaceholder;
-	}
-	
-	self.nicknamePasswordField.stringValue = self.config.nicknamePassword;
-	
-	/* Messages */
-	self.sleepModeQuitMessageField.stringValue = self.config.sleepModeLeavingComment;
-	self.normalLeavingCommentField.stringValue = self.config.normalLeavingComment;
+    if (NSObjectIsEmpty(self.config.awayNickname)) {
+        self.awayNicknameField.stringValue = [TPCPreferences defaultAwayNickname];
+    } else {
+        self.awayNicknameField.stringValue = self.config.awayNickname;
+    }
+    
+    if (NSObjectIsEmpty(self.config.username)) {
+        self.usernameField.stringValue = [TPCPreferences defaultUsername];
+    } else {
+        self.usernameField.stringValue = self.config.username;
+    }
+    
+    if (NSObjectIsEmpty(self.config.realname)) {
+        self.realnameField.stringValue = [TPCPreferences defaultRealname];
+    } else {
+        self.realnameField.stringValue = self.config.realname;
+    }
+    
+    if (self.config.alternateNicknames.count > 0) {
+        self.alternateNicknamesField.stringValue = [self.config.alternateNicknames componentsJoinedByString:NSStringWhitespacePlaceholder];
+    } else {
+        self.alternateNicknamesField.stringValue = NSStringEmptyPlaceholder;
+    }
+    
+    self.nicknamePasswordField.stringValue = self.config.nicknamePassword;
+    
+    /* Messages */
+    self.sleepModeQuitMessageField.stringValue = self.config.sleepModeLeavingComment;
+    self.normalLeavingCommentField.stringValue = self.config.normalLeavingComment;
 
-	/* Encoding */
+    /* Encoding */
     NSString *primaryEncodingTitle = [self.encodingList firstKeyForObject:@(self.config.primaryEncoding)];
     NSString *fallbackEncodingTitle = [self.encodingList firstKeyForObject:@(self.config.fallbackEncoding)];
 
     [self.primaryEncodingButton selectItemWithTitle:primaryEncodingTitle];
     [self.fallbackEncodingButton selectItemWithTitle:fallbackEncodingTitle];
-	
-	/* Proxy Server */
-	[self.proxyTypeButton selectItemWithTag:self.config.proxyType];
-	
-	self.proxyAddressField.stringValue		= self.config.proxyAddress;
-	self.proxyUsernameField.stringValue		= self.config.proxyUsername;
-	self.proxyPasswordField.stringValue		= self.config.proxyPassword;
-	self.proxyPortField.stringValue			= [NSString stringWithInteger:self.config.proxyPort];
-	
-	/* Connect Commands */
-	self.invisibleModeCheck.state = self.config.invisibleMode;
-	
-	self.loginCommandsField.string = [self.config.loginCommands componentsJoinedByString:NSStringNewlinePlaceholder];
+    
+    /* Proxy Server */
+    [self.proxyTypeButton selectItemWithTag:self.config.proxyType];
+    
+    self.proxyAddressField.stringValue      = self.config.proxyAddress;
+    self.proxyUsernameField.stringValue     = self.config.proxyUsername;
+    self.proxyPasswordField.stringValue     = self.config.proxyPassword;
+    self.proxyPortField.stringValue         = [NSString stringWithInteger:self.config.proxyPort];
+    
+    /* Connect Commands */
+    self.invisibleModeCheck.state = self.config.invisibleMode;
+    
+    self.loginCommandsField.string = [self.config.loginCommands componentsJoinedByString:NSStringNewlinePlaceholder];
     
     /* Flood Control */
-	self.floodControlCheck.state = self.config.outgoingFloodControl;
-	
+    self.floodControlCheck.state = self.config.outgoingFloodControl;
+    
     self.floodControlDelayTimerSlider.integerValue     = self.config.floodControlDelayTimerInterval;
     self.floodControlMessageCountSlider.integerValue   = self.config.floodControlMaximumMessages;
 
-	/* @end */
+    /* @end */
 }
 
 - (void)save
 {
-	/* General */
-	self.config.autoConnect					= self.autoConnectCheck.state;
-	self.config.autoReconnect				= self.autoReconnectCheck.state;
-	self.config.autoSleepModeDisconnect		= self.autoDisconnectOnSleepCheck.state;
-	self.config.connectionPrefersIPv6		= self.prefersIPv6Check.state;
-	self.config.connectionUsesSSL			= self.connectionUsesSSLCheck.state;
-	self.config.serverPassword				= self.serverPasswordField.firstTokenStringValue;
-	
-	NSString *realhost = nil;
-	NSString *hostname = [self.serverAddressCombo.firstTokenStringValue cleanedServerHostmask];
-	
-	if (NSObjectIsEmpty(hostname)) {
-		self.config.serverAddress = @"localhost";
-	} else {
-		realhost = [self nameMatchesServerInList:hostname];
-		
-		if (NSObjectIsEmpty(realhost)) {
-			self.config.serverAddress = hostname;
-		} else {
-			self.config.serverAddress = (self.serverList)[realhost];
-		}
-	}
+    /* General */
+    self.config.autoConnect                 = self.autoConnectCheck.state;
+    self.config.autoReconnect               = self.autoReconnectCheck.state;
+    self.config.autoSleepModeDisconnect     = self.autoDisconnectOnSleepCheck.state;
+    self.config.connectionPrefersIPv6       = self.prefersIPv6Check.state;
+    self.config.connectionUsesSSL           = self.connectionUsesSSLCheck.state;
+    self.config.serverPassword              = self.serverPasswordField.firstTokenStringValue;
+    
+    NSString *realhost = nil;
+    NSString *hostname = [self.serverAddressCombo.firstTokenStringValue cleanedServerHostmask];
+    
+    if (NSObjectIsEmpty(hostname)) {
+        self.config.serverAddress = @"localhost";
+    } else {
+        realhost = [self nameMatchesServerInList:hostname];
+        
+        if (NSObjectIsEmpty(realhost)) {
+            self.config.serverAddress = hostname;
+        } else {
+            self.config.serverAddress = (self.serverList)[realhost];
+        }
+    }
 
     self.config.serverAddress = self.config.serverAddress.lowercaseString;
-	
-	if (NSObjectIsEmpty(self.serverNameField.stringValue)) {
-		if (NSObjectIsEmpty(realhost)) {
-			self.config.clientName = TXTLS(@"DefaultNewConnectionName");
-		} else {
-			self.config.clientName = realhost;
-		}
-	} else {
-		self.config.clientName = self.serverNameField.stringValue;
-	}
-	
-	if (self.serverPortField.integerValue < 1) {
-		self.config.serverPort = 6667;
-	} else {
-		self.config.serverPort = self.serverPortField.integerValue;
-	}
-	
-	/* Identity */
-	self.config.nickname			= self.nicknameField.firstTokenStringValue;
-	self.config.awayNickname		= self.awayNicknameField.firstTokenStringValue;
-	self.config.username			= self.usernameField.firstTokenStringValue;
-	self.config.realname			= self.realnameField.stringValue;
-	self.config.nicknamePassword	= self.nicknamePasswordField.firstTokenStringValue;
-	
-	NSArray *nicks = [self.alternateNicknamesField.stringValue split:NSStringWhitespacePlaceholder];
-	
-	[self.config.alternateNicknames removeAllObjects];
-	
-	for (NSString *s in nicks) {
-		NSObjectIsEmptyAssertLoopContinue(s);
+    
+    if (NSObjectIsEmpty(self.serverNameField.stringValue)) {
+        if (NSObjectIsEmpty(realhost)) {
+            self.config.clientName = TXTLS(@"DefaultNewConnectionName");
+        } else {
+            self.config.clientName = realhost;
+        }
+    } else {
+        self.config.clientName = self.serverNameField.stringValue;
+    }
+    
+    if (self.serverPortField.integerValue < 1) {
+        self.config.serverPort = 6667;
+    } else {
+        self.config.serverPort = self.serverPortField.integerValue;
+    }
+    
+    /* Identity */
+    self.config.nickname            = self.nicknameField.firstTokenStringValue;
+    self.config.awayNickname        = self.awayNicknameField.firstTokenStringValue;
+    self.config.username            = self.usernameField.firstTokenStringValue;
+    self.config.realname            = self.realnameField.stringValue;
+    self.config.nicknamePassword    = self.nicknamePasswordField.firstTokenStringValue;
+    
+    NSArray *nicks = [self.alternateNicknamesField.stringValue split:NSStringWhitespacePlaceholder];
+    
+    [self.config.alternateNicknames removeAllObjects];
+    
+    for (NSString *s in nicks) {
+        NSObjectIsEmptyAssertLoopContinue(s);
 
-		[self.config.alternateNicknames safeAddObject:s];
-	}
-	
-	/* Messages */
-	self.config.sleepModeLeavingComment		= self.sleepModeQuitMessageField.stringValue;
-	self.config.normalLeavingComment		= self.normalLeavingCommentField.stringValue;
-	
-	/* Encoding */
+        [self.config.alternateNicknames safeAddObject:s];
+    }
+    
+    /* Messages */
+    self.config.sleepModeLeavingComment     = self.sleepModeQuitMessageField.stringValue;
+    self.config.normalLeavingComment        = self.normalLeavingCommentField.stringValue;
+    
+    /* Encoding */
     NSInteger primaryEncoding = [self.encodingList integerForKey:self.primaryEncodingButton.title];
     NSInteger fallbackEncoding = [self.encodingList integerForKey:self.fallbackEncodingButton.title];
 
-	self.config.primaryEncoding		= primaryEncoding;
-	self.config.fallbackEncoding	= fallbackEncoding;
-	
-	/* Proxy Server */
-	self.config.proxyType		= self.proxyTypeButton.selectedTag;
-	self.config.proxyAddress	= self.proxyAddressField.firstTokenStringValue;
-	self.config.proxyPort		= self.proxyPortField.integerValue;
-	self.config.proxyUsername	= self.proxyUsernameField.firstTokenStringValue;
-	self.config.proxyPassword	= self.proxyPasswordField.firstTokenStringValue;
+    self.config.primaryEncoding     = primaryEncoding;
+    self.config.fallbackEncoding    = fallbackEncoding;
+    
+    /* Proxy Server */
+    self.config.proxyType       = self.proxyTypeButton.selectedTag;
+    self.config.proxyAddress    = self.proxyAddressField.firstTokenStringValue;
+    self.config.proxyPort       = self.proxyPortField.integerValue;
+    self.config.proxyUsername   = self.proxyUsernameField.firstTokenStringValue;
+    self.config.proxyPassword   = self.proxyPasswordField.firstTokenStringValue;
 
     self.config.proxyAddress = self.config.proxyAddress.lowercaseString;
 
-	if (NSObjectIsEmpty(self.config.proxyAddress) && NSDissimilarObjects(self.config.proxyType, TXConnectionSystemSocksProxyType)) {
-		self.config.proxyType = TXConnectionNoProxyType;
-	}
-	
-	/* Connect Commands */
-    NSArray *commands = [self.loginCommandsField.string split:NSStringNewlinePlaceholder];
-	
-	[self.config.loginCommands removeAllObjects];
+    if (NSObjectIsEmpty(self.config.proxyAddress) && NSDissimilarObjects(self.config.proxyType, TXConnectionSystemSocksProxyType)) {
+        self.config.proxyType = TXConnectionNoProxyType;
+    }
     
-	for (NSString *s in commands) {
-		NSObjectIsEmptyAssertLoopContinue(s);
+    /* Connect Commands */
+    NSArray *commands = [self.loginCommandsField.string split:NSStringNewlinePlaceholder];
+    
+    [self.config.loginCommands removeAllObjects];
+    
+    for (NSString *s in commands) {
+        NSObjectIsEmptyAssertLoopContinue(s);
 
-		[self.config.loginCommands safeAddObject:s];
-	}
-	
-	self.config.invisibleMode = self.invisibleModeCheck.state;
+        [self.config.loginCommands safeAddObject:s];
+    }
+    
+    self.config.invisibleMode = self.invisibleModeCheck.state;
     
     /* Flood Control */
-	self.config.outgoingFloodControl = self.floodControlCheck.state;
-	
+    self.config.outgoingFloodControl = self.floodControlCheck.state;
+    
     self.config.floodControlMaximumMessages = self.floodControlMessageCountSlider.integerValue;
     self.config.floodControlDelayTimerInterval = self.floodControlDelayTimerSlider.integerValue;
 
@@ -457,50 +457,50 @@
 
 - (void)updateConnectionPage
 {
-	NSString *name = self.serverNameField.stringValue;
-	NSString *host = self.serverAddressCombo.stringValue;
-	NSString *nick = self.nicknameField.stringValue;
-	
-	NSInteger port = self.serverPortField.integerValue;
-	
-	BOOL enabled = (NSObjectIsNotEmpty(name) &&
-					NSObjectIsNotEmpty(host) && port > 0 &&
-					NSObjectIsNotEmpty(nick) &&
-					[host isEqualToString:@"-"] == NO);
-	
-	[self.okButton setEnabled:enabled];
+    NSString *name = self.serverNameField.stringValue;
+    NSString *host = self.serverAddressCombo.stringValue;
+    NSString *nick = self.nicknameField.stringValue;
+    
+    NSInteger port = self.serverPortField.integerValue;
+    
+    BOOL enabled = (NSObjectIsNotEmpty(name) &&
+                    NSObjectIsNotEmpty(host) && port > 0 &&
+                    NSObjectIsNotEmpty(nick) &&
+                    [host isEqualToString:@"-"] == NO);
+    
+    [self.okButton setEnabled:enabled];
 }
 
 - (void)updateChannelsPage
 {
-	NSInteger i = self.channelTable.selectedRow;
-	
-	[self.editChannelButton	setEnabled:(i >= 0)];
-	[self.deleteChannelButton setEnabled:(i >= 0)];
+    NSInteger i = self.channelTable.selectedRow;
+    
+    [self.editChannelButton setEnabled:(i >= 0)];
+    [self.deleteChannelButton setEnabled:(i >= 0)];
 }
 
 - (void)reloadChannelTable
 {
-	[self.channelTable reloadData];
+    [self.channelTable reloadData];
 }
 
 - (void)updateIgnoresPage
 {
-	NSInteger i = self.ignoreTable.selectedRow;
-	
-	[self.editIgnoreButton	setEnabled:(i >= 0)];
-	[self.deleteIgnoreButton setEnabled:(i >= 0)];
+    NSInteger i = self.ignoreTable.selectedRow;
+    
+    [self.editIgnoreButton  setEnabled:(i >= 0)];
+    [self.deleteIgnoreButton setEnabled:(i >= 0)];
 }
 
 - (void)reloadIgnoreTable
 {
-	[self.ignoreTable reloadData];
+    [self.ignoreTable reloadData];
 }
 
 - (void)floodControlChanged:(id)sender
 {
     BOOL match = (self.floodControlCheck.state == NSOnState);
-	
+    
     [self.floodControlToolView setHidden:BOOLReverseValue(match)];
 }
 
@@ -509,67 +509,67 @@
 
 - (void)ok:(id)sender
 {
-	/* Save changes. */
-	[self save];
-	
-	/* Inform delegate. */
-	if ([self.delegate respondsToSelector:@selector(serverSheetOnOK:)]) {
-		[self.delegate serverSheetOnOK:self];
-	}
+    /* Save changes. */
+    [self save];
+    
+    /* Inform delegate. */
+    if ([self.delegate respondsToSelector:@selector(serverSheetOnOK:)]) {
+        [self.delegate serverSheetOnOK:self];
+    }
 
-	/* Tell super. */
-	[super ok:nil];
+    /* Tell super. */
+    [super ok:nil];
 }
 
 - (void)serverAddressChanged:(id)sender
 {
-	[self updateConnectionPage];
+    [self updateConnectionPage];
 }
 
 - (void)proxyTypeChanged:(id)sender
 {
-	NSInteger tag = self.proxyTypeButton.selectedTag;
-	
-	BOOL enabled = (tag == TXConnectionSocks4ProxyType || tag == TXConnectionSocks5ProxyType);
+    NSInteger tag = self.proxyTypeButton.selectedTag;
+    
+    BOOL enabled = (tag == TXConnectionSocks4ProxyType || tag == TXConnectionSocks5ProxyType);
 
-	[self.proxyPortField setEnabled:enabled];
-	[self.proxyAddressField	setEnabled:enabled];
-	[self.proxyUsernameField setEnabled:enabled];
-	[self.proxyPasswordField setEnabled:enabled];
+    [self.proxyPortField setEnabled:enabled];
+    [self.proxyAddressField setEnabled:enabled];
+    [self.proxyUsernameField setEnabled:enabled];
+    [self.proxyPasswordField setEnabled:enabled];
 }
 
 - (void)toggleAdvancedEncodings:(id)sender
 {
-	NSString *selectedPrimary = self.primaryEncodingButton.selectedItem.title;
-	NSString *selectedFallback = self.fallbackEncodingButton.selectedItem.title;
+    NSString *selectedPrimary = self.primaryEncodingButton.selectedItem.title;
+    NSString *selectedFallback = self.fallbackEncodingButton.selectedItem.title;
 
-	[self populateEncodings];
+    [self populateEncodings];
 
-	/* If advanced encodings were toggled off and we had one selected, reset the primary
-	 and fallback encoding popups to the default encodings. */
-	
-	NSMenuItem *primaryItem;
-	NSMenuItem *fallbackItem;
+    /* If advanced encodings were toggled off and we had one selected, reset the primary
+     and fallback encoding popups to the default encodings. */
+    
+    NSMenuItem *primaryItem;
+    NSMenuItem *fallbackItem;
 
-	if (NSObjectIsNotEmpty(selectedPrimary)) {
-		primaryItem = [self.primaryEncodingButton itemWithTitle:selectedPrimary];
-	}
+    if (NSObjectIsNotEmpty(selectedPrimary)) {
+        primaryItem = [self.primaryEncodingButton itemWithTitle:selectedPrimary];
+    }
 
-	if (NSObjectIsNotEmpty(selectedFallback)) {
-		fallbackItem = [self.fallbackEncodingButton itemWithTitle:selectedFallback];
-	}
+    if (NSObjectIsNotEmpty(selectedFallback)) {
+        fallbackItem = [self.fallbackEncodingButton itemWithTitle:selectedFallback];
+    }
 
-	if (PointerIsEmpty(primaryItem)) {
-		selectedPrimary = [NSString localizedNameOfStringEncoding:TXDefaultPrimaryTextEncoding];
-	}
+    if (PointerIsEmpty(primaryItem)) {
+        selectedPrimary = [NSString localizedNameOfStringEncoding:TXDefaultPrimaryTextEncoding];
+    }
 
-	if (PointerIsEmpty(fallbackItem)) {
-		selectedFallback = [NSString localizedNameOfStringEncoding:TXDefaultFallbackTextEncoding];
-	}
+    if (PointerIsEmpty(fallbackItem)) {
+        selectedFallback = [NSString localizedNameOfStringEncoding:TXDefaultFallbackTextEncoding];
+    }
 
-	/* Select items. */
-	[self.primaryEncodingButton selectItemWithTitle:selectedPrimary];
-	[self.fallbackEncodingButton selectItemWithTitle:selectedFallback];
+    /* Select items. */
+    [self.primaryEncodingButton selectItemWithTitle:selectedPrimary];
+    [self.fallbackEncodingButton selectItemWithTitle:selectedFallback];
 }
 
 #pragma mark -
@@ -577,117 +577,117 @@
 
 - (void)addChannel:(id)sender
 {
-	NSInteger sel = self.channelTable.selectedRow;
-	
-	IRCChannelConfig *config;
-	
-	if (sel < 0) {
-		config = [IRCChannelConfig new];
-	} else {
-		IRCChannelConfig *c = [self.config.channelList safeObjectAtIndex:sel];
-		
-		config = c.mutableCopy;
-		
-		config.itemUUID			= [NSString stringWithUUID];
-		
-		config.channelName		= NSStringEmptyPlaceholder;
-		config.secretKey		= NSStringEmptyPlaceholder;
-		config.encryptionKey	= NSStringEmptyPlaceholder;
-	}
-	
-	self.channelSheet = nil;
-	self.channelSheet = [TDChannelSheet new];
+    NSInteger sel = self.channelTable.selectedRow;
+    
+    IRCChannelConfig *config;
+    
+    if (sel < 0) {
+        config = [IRCChannelConfig new];
+    } else {
+        IRCChannelConfig *c = [self.config.channelList safeObjectAtIndex:sel];
+        
+        config = c.mutableCopy;
+        
+        config.itemUUID         = [NSString stringWithUUID];
+        
+        config.channelName      = NSStringEmptyPlaceholder;
+        config.secretKey        = NSStringEmptyPlaceholder;
+        config.encryptionKey    = NSStringEmptyPlaceholder;
+    }
+    
+    self.channelSheet = nil;
+    self.channelSheet = [TDChannelSheet new];
 
-	self.channelSheet.newItem = YES;
-	self.channelSheet.delegate = self;
-	self.channelSheet.window = self.sheet;
-	self.channelSheet.config = config;
-	self.channelSheet.clientID = nil;
-	self.channelSheet.channelID = nil;
-	
-	[self.channelSheet start];
+    self.channelSheet.newItem = YES;
+    self.channelSheet.delegate = self;
+    self.channelSheet.window = self.sheet;
+    self.channelSheet.config = config;
+    self.channelSheet.clientID = nil;
+    self.channelSheet.channelID = nil;
+    
+    [self.channelSheet start];
 }
 
 - (void)editChannel:(id)sender
 {
-	NSInteger sel = self.channelTable.selectedRow;
+    NSInteger sel = self.channelTable.selectedRow;
 
-	NSAssertReturn(sel >= 0);
-	
-	IRCChannelConfig *c = [self.config.channelList safeObjectAtIndex:sel];
+    NSAssertReturn(sel >= 0);
+    
+    IRCChannelConfig *c = [self.config.channelList safeObjectAtIndex:sel];
 
-	self.channelSheet = nil;
-	self.channelSheet = [TDChannelSheet new];
+    self.channelSheet = nil;
+    self.channelSheet = [TDChannelSheet new];
 
-	self.channelSheet.newItem = NO;
-	self.channelSheet.delegate = self;
-	self.channelSheet.window = self.sheet;
-	self.channelSheet.config = c.mutableCopy;
-	self.channelSheet.clientID = nil;
-	self.channelSheet.channelID = nil;
-	
-	[self.channelSheet start];
+    self.channelSheet.newItem = NO;
+    self.channelSheet.delegate = self;
+    self.channelSheet.window = self.sheet;
+    self.channelSheet.config = c.mutableCopy;
+    self.channelSheet.clientID = nil;
+    self.channelSheet.channelID = nil;
+    
+    [self.channelSheet start];
 }
 
 - (void)channelSheetOnOK:(TDChannelSheet *)sender
 {
-	IRCChannelConfig *config = sender.config;
+    IRCChannelConfig *config = sender.config;
 
-	BOOL emptyName = (config.channelName.length < 2); // For the # in front.
+    BOOL emptyName = (config.channelName.length < 2); // For the # in front.
 
-	if (sender.newItem) {
-		if (emptyName == NO) {
-			[self.config.channelList safeAddObject:config];
-		}
-	} else {
-		NSArray *channelList = self.config.channelList.copy;
-		
-		for (IRCChannelConfig *c in channelList) {
-			NSInteger index = [channelList indexOfObject:c];
+    if (sender.newItem) {
+        if (emptyName == NO) {
+            [self.config.channelList safeAddObject:config];
+        }
+    } else {
+        NSArray *channelList = self.config.channelList.copy;
+        
+        for (IRCChannelConfig *c in channelList) {
+            NSInteger index = [channelList indexOfObject:c];
 
-			if ([c.itemUUID isEqualToString:config.itemUUID]) {
-				if (emptyName) {
-					/* Remove empty channel names. */
+            if ([c.itemUUID isEqualToString:config.itemUUID]) {
+                if (emptyName) {
+                    /* Remove empty channel names. */
 
-					[self.config.channelList removeObjectAtIndex:index];
-				} else {
-					/* Update existing. */
+                    [self.config.channelList removeObjectAtIndex:index];
+                } else {
+                    /* Update existing. */
 
-					[self.config.channelList replaceObjectAtIndex:index withObject:c];
-				}
+                    [self.config.channelList replaceObjectAtIndex:index withObject:c];
+                }
 
-				break;
-			}
-		}
-	}
+                break;
+            }
+        }
+    }
 
-	[self reloadChannelTable];
+    [self reloadChannelTable];
 }
 
 - (void)channelSheetWillClose:(TDChannelSheet *)sender
 {
-	self.channelSheet = nil;
+    self.channelSheet = nil;
 }
 
 - (void)deleteChannel:(id)sender
 {
-	NSInteger sel = self.channelTable.selectedRow;
+    NSInteger sel = self.channelTable.selectedRow;
 
-	NSAssertReturn(sel >= 0);
-	
-	[self.config.channelList safeRemoveObjectAtIndex:sel];
-	
-	NSInteger count = self.config.channelList.count;
-	
-	if (count) {
-		if (count <= sel) {
-			[self.channelTable selectItemAtIndex:(count - 1)];
-		} else {
-			[self.channelTable selectItemAtIndex:sel];
-		}
-	}
-	
-	[self reloadChannelTable];
+    NSAssertReturn(sel >= 0);
+    
+    [self.config.channelList safeRemoveObjectAtIndex:sel];
+    
+    NSInteger count = self.config.channelList.count;
+    
+    if (count) {
+        if (count <= sel) {
+            [self.channelTable selectItemAtIndex:(count - 1)];
+        } else {
+            [self.channelTable selectItemAtIndex:sel];
+        }
+    }
+    
+    [self reloadChannelTable];
 }
 
 #pragma mark -
@@ -695,111 +695,111 @@
 
 - (void)showAddIgnoreMenu:(id)sender
 {
-	NSRect tableRect = self.ignoreTable.frame;
-	
-	tableRect.origin.y += (tableRect.size.height);
-	tableRect.origin.y += 34;
+    NSRect tableRect = self.ignoreTable.frame;
     
-	[self.addIgnoreMenu popUpMenuPositioningItem:nil atLocation:tableRect.origin inView:self.ignoreTable];
+    tableRect.origin.y += (tableRect.size.height);
+    tableRect.origin.y += 34;
+    
+    [self.addIgnoreMenu popUpMenuPositioningItem:nil atLocation:tableRect.origin inView:self.ignoreTable];
 }
 
 - (void)addIgnore:(id)sender
 {
-	self.ignoreSheet = nil;
-	self.ignoreSheet = [TDCAddressBookSheet new];
+    self.ignoreSheet = nil;
+    self.ignoreSheet = [TDCAddressBookSheet new];
 
-	self.ignoreSheet.newItem = YES;
-	self.ignoreSheet.delegate = self;
-	self.ignoreSheet.window = self.sheet;
-	self.ignoreSheet.ignore = [IRCAddressBook new];
-	
-	if ([sender tag] == 4) {
-		self.ignoreSheet.ignore.entryType = IRCAddressBookUserTrackingEntryType;
-	} else {
-		self.ignoreSheet.ignore.entryType = IRCAddressBookIgnoreEntryType;
-	}
-	
-	[self.ignoreSheet start];
+    self.ignoreSheet.newItem = YES;
+    self.ignoreSheet.delegate = self;
+    self.ignoreSheet.window = self.sheet;
+    self.ignoreSheet.ignore = [IRCAddressBook new];
+    
+    if ([sender tag] == 4) {
+        self.ignoreSheet.ignore.entryType = IRCAddressBookUserTrackingEntryType;
+    } else {
+        self.ignoreSheet.ignore.entryType = IRCAddressBookIgnoreEntryType;
+    }
+    
+    [self.ignoreSheet start];
 }
 
 - (void)editIgnore:(id)sender
 {
-	NSInteger sel = self.ignoreTable.selectedRow;
+    NSInteger sel = self.ignoreTable.selectedRow;
 
-	NSAssertReturn(sel >= 0);
+    NSAssertReturn(sel >= 0);
 
-	IRCAddressBook *c = [self.config.ignoreList safeObjectAtIndex:sel];
-	
-	self.ignoreSheet = nil;
-	self.ignoreSheet = [TDCAddressBookSheet new];
+    IRCAddressBook *c = [self.config.ignoreList safeObjectAtIndex:sel];
+    
+    self.ignoreSheet = nil;
+    self.ignoreSheet = [TDCAddressBookSheet new];
 
-	self.ignoreSheet.newItem = NO;
-	self.ignoreSheet.delegate = self;
-	self.ignoreSheet.window = self.sheet;
-	self.ignoreSheet.ignore = c.mutableCopy;
-	
-	[self.ignoreSheet start];
+    self.ignoreSheet.newItem = NO;
+    self.ignoreSheet.delegate = self;
+    self.ignoreSheet.window = self.sheet;
+    self.ignoreSheet.ignore = c.mutableCopy;
+    
+    [self.ignoreSheet start];
 }
 
 - (void)deleteIgnore:(id)sender
 {
-	NSInteger sel = self.ignoreTable.selectedRow;
+    NSInteger sel = self.ignoreTable.selectedRow;
 
-	NSAssertReturn(sel >= 0);
-	
-	[self.config.ignoreList safeRemoveObjectAtIndex:sel];
-	
-	NSInteger count = self.config.ignoreList.count;
-	
-	if (count) {
-		if (count <= sel) {
-			[self.ignoreTable selectItemAtIndex:(count - 1)];
-		} else {
-			[self.ignoreTable selectItemAtIndex:sel];
-		}
-	}
-	
-	[self reloadIgnoreTable];
+    NSAssertReturn(sel >= 0);
+    
+    [self.config.ignoreList safeRemoveObjectAtIndex:sel];
+    
+    NSInteger count = self.config.ignoreList.count;
+    
+    if (count) {
+        if (count <= sel) {
+            [self.ignoreTable selectItemAtIndex:(count - 1)];
+        } else {
+            [self.ignoreTable selectItemAtIndex:sel];
+        }
+    }
+    
+    [self reloadIgnoreTable];
 }
 
 - (void)ignoreItemSheetOnOK:(TDCAddressBookSheet *)sender
 {
-	IRCAddressBook *ignore = sender.ignore;
-	
-	BOOL emptyHost = NSObjectIsEmpty(ignore.hostmask);
+    IRCAddressBook *ignore = sender.ignore;
+    
+    BOOL emptyHost = NSObjectIsEmpty(ignore.hostmask);
 
-	if (sender.newItem) {
-		if (emptyHost == NO) {
-			[self.config.ignoreList safeAddObject:ignore];
-		}
-	} else {
-		NSArray *ignoreList = self.config.ignoreList.copy;
+    if (sender.newItem) {
+        if (emptyHost == NO) {
+            [self.config.ignoreList safeAddObject:ignore];
+        }
+    } else {
+        NSArray *ignoreList = self.config.ignoreList.copy;
 
-		for (IRCAddressBook *g in ignoreList) {
-			NSInteger index = [ignoreList indexOfObject:g];
+        for (IRCAddressBook *g in ignoreList) {
+            NSInteger index = [ignoreList indexOfObject:g];
 
-			if ([g.itemUUID isEqualToString:ignore.itemUUID]) {
-				if (emptyHost) {
-					/* Remove empty entry. */
+            if ([g.itemUUID isEqualToString:ignore.itemUUID]) {
+                if (emptyHost) {
+                    /* Remove empty entry. */
 
-					[self.config.ignoreList removeObjectAtIndex:index];
-				} else {
-					/* Replace old entry. */
+                    [self.config.ignoreList removeObjectAtIndex:index];
+                } else {
+                    /* Replace old entry. */
 
-					[self.config.ignoreList replaceObjectAtIndex:index withObject:ignore];
-				}
+                    [self.config.ignoreList replaceObjectAtIndex:index withObject:ignore];
+                }
 
-				break;
-			}
-		}
-	}
-	
-	[self reloadIgnoreTable];
+                break;
+            }
+        }
+    }
+    
+    [self reloadIgnoreTable];
 }
 
 - (void)ignoreItemSheetWillClose:(TDCAddressBookSheet *)sender
 {
-	self.ignoreSheet = nil;
+    self.ignoreSheet = nil;
 }
 
 #pragma mark -
@@ -807,41 +807,41 @@
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)sender
 {
-	if (sender == self.channelTable) {
-		/* Channel Table. */
-		
-		return self.config.channelList.count;
-	} else if (sender == self.tabView) {
-		/* Navigation Table. */
-		
-		return self.tabViewList.count;
-	} else {
-		/* Address Book Table. */
-		
-		return self.config.ignoreList.count;
-	}
+    if (sender == self.channelTable) {
+        /* Channel Table. */
+        
+        return self.config.channelList.count;
+    } else if (sender == self.tabView) {
+        /* Navigation Table. */
+        
+        return self.tabViewList.count;
+    } else {
+        /* Address Book Table. */
+        
+        return self.config.ignoreList.count;
+    }
 }
 
 - (id)tableView:(NSTableView *)sender objectValueForTableColumn:(NSTableColumn *)column row:(NSInteger)row
 {
-	NSString *columnId = column.identifier;
-	
-	if (sender == self.channelTable) {
-		/* Channel Table. */
+    NSString *columnId = column.identifier;
+    
+    if (sender == self.channelTable) {
+        /* Channel Table. */
 
-		IRCChannelConfig *c = [self.config.channelList safeObjectAtIndex:row];
-		
-		if ([columnId isEqualToString:@"name"]) {
-			return c.channelName;
-		} else if ([columnId isEqualToString:@"pass"]) {
-			return c.secretKey;
-		} else if ([columnId isEqualToString:@"join"]) {
-			return @(c.autoJoin);
-		}
-	} else if (sender == self.tabView) {
-		/* Navigation Table. */
+        IRCChannelConfig *c = [self.config.channelList safeObjectAtIndex:row];
+        
+        if ([columnId isEqualToString:@"name"]) {
+            return c.channelName;
+        } else if ([columnId isEqualToString:@"pass"]) {
+            return c.secretKey;
+        } else if ([columnId isEqualToString:@"join"]) {
+            return @(c.autoJoin);
+        }
+    } else if (sender == self.tabView) {
+        /* Navigation Table. */
 
-		NSArray *tabInfo = [self.tabViewList safeObjectAtIndex:row];
+        NSArray *tabInfo = [self.tabViewList safeObjectAtIndex:row];
         
         NSString *keyhead = [tabInfo safeObjectAtIndex:0];
         
@@ -852,83 +852,83 @@
         } else {
             return TXDefaultListSeperatorCellIndex;
         }
-	} else {
-		/* Address Book Table. */
+    } else {
+        /* Address Book Table. */
 
-		IRCAddressBook *g = [self.config.ignoreList safeObjectAtIndex:row];
-		
-		if ([columnId isEqualToString:@"type"]) {
-			if (g.entryType == IRCAddressBookIgnoreEntryType) {
-				return TXTLS(@"AddressBookIgnoreEntryType");
-			} else {
-				return TXTLS(@"AddressBookUserTrackingEntryType");
-			}
-		} else {
-			return g.hostmask;
-		}
-	}
-	
-	return nil;
+        IRCAddressBook *g = [self.config.ignoreList safeObjectAtIndex:row];
+        
+        if ([columnId isEqualToString:@"type"]) {
+            if (g.entryType == IRCAddressBookIgnoreEntryType) {
+                return TXTLS(@"AddressBookIgnoreEntryType");
+            } else {
+                return TXTLS(@"AddressBookUserTrackingEntryType");
+            }
+        } else {
+            return g.hostmask;
+        }
+    }
+    
+    return nil;
 }
 
 - (BOOL)tableView:(NSTableView *)tableView shouldSelectRow:(NSInteger)row
 {
-	if (tableView == self.tabView) {
-		/* Navigation Table. */
+    if (tableView == self.tabView) {
+        /* Navigation Table. */
 
-		NSArray *tabInfo = [self.tabViewList safeObjectAtIndex:row];
-		
-		NSString *keyhead = [tabInfo safeObjectAtIndex:0];
-		
-		if ([keyhead isEqualToString:TXDefaultListSeperatorCellIndex]) {
-			return NO;
-		}
-	}
-	
-	return YES;
+        NSArray *tabInfo = [self.tabViewList safeObjectAtIndex:row];
+        
+        NSString *keyhead = [tabInfo safeObjectAtIndex:0];
+        
+        if ([keyhead isEqualToString:TXDefaultListSeperatorCellIndex]) {
+            return NO;
+        }
+    }
+    
+    return YES;
 }
 
 - (void)tableView:(NSTableView *)sender setObjectValue:(id)obj forTableColumn:(NSTableColumn *)column row:(NSInteger)row
 {
-	if (sender == self.channelTable) {
-		/* Channel Table. */
+    if (sender == self.channelTable) {
+        /* Channel Table. */
 
-		IRCChannelConfig *c = [self.config.channelList safeObjectAtIndex:row];
-		
-		if ([column.identifier isEqualToString:@"join"]) {
-			c.autoJoin = BOOLReverseValue([obj integerValue] == 0);
-		}
-	}
+        IRCChannelConfig *c = [self.config.channelList safeObjectAtIndex:row];
+        
+        if ([column.identifier isEqualToString:@"join"]) {
+            c.autoJoin = BOOLReverseValue([obj integerValue] == 0);
+        }
+    }
 }
 
 - (void)tableViewSelectionDidChange:(NSNotification *)note
 {
-	id sender = [note object];
-	
-	if (sender == self.channelTable) {
-		/* Channel Table. */
+    id sender = [note object];
+    
+    if (sender == self.channelTable) {
+        /* Channel Table. */
 
-		[self updateChannelsPage];
-	} else if (sender == self.tabView) {
-		/* Navigation Table. */
+        [self updateChannelsPage];
+    } else if (sender == self.tabView) {
+        /* Navigation Table. */
 
-		NSInteger row = [self.tabView selectedRow];
-		
+        NSInteger row = [self.tabView selectedRow];
+        
         switch (row) {
-            case 0:  { [self focusView:self.generalView			atRow:0]; break; }
-            case 1:  { [self focusView:self.identityView		atRow:1]; break; }
-            case 2:  { [self focusView:self.messagesView		atRow:2]; break; }
-            case 3:  { [self focusView:self.encodingView		atRow:3]; break; }
-            case 4:  { [self focusView:self.autojoinView		atRow:4]; break; }
-            case 5:  { [self focusView:self.ignoresView			atRow:5]; break; }
-            case 6:  { [self focusView:self.commandsView		atRow:6]; break; }
-            case 8:  { [self focusView:self.proxyServerView		atRow:8]; break; }
-            case 9:  { [self focusView:self.floodControlView	atRow:9]; break; }
+            case 0:  { [self focusView:self.generalView         atRow:0]; break; }
+            case 1:  { [self focusView:self.identityView        atRow:1]; break; }
+            case 2:  { [self focusView:self.messagesView        atRow:2]; break; }
+            case 3:  { [self focusView:self.encodingView        atRow:3]; break; }
+            case 4:  { [self focusView:self.autojoinView        atRow:4]; break; }
+            case 5:  { [self focusView:self.ignoresView         atRow:5]; break; }
+            case 6:  { [self focusView:self.commandsView        atRow:6]; break; }
+            case 8:  { [self focusView:self.proxyServerView     atRow:8]; break; }
+            case 9:  { [self focusView:self.floodControlView    atRow:9]; break; }
 
             default: { break; }
         }
     } else {
-		/* Ignore Table. */
+        /* Ignore Table. */
 
         [self updateIgnoresPage];
     }
@@ -936,91 +936,91 @@
 
 - (void)tableViewDoubleClicked:(id)sender
 {
-	if (sender == self.channelTable) {
-		/* Channel Table. */
-		
-		[self editChannel:nil];
-	} else if (sender == self.tabView) {
-		/* Navigation Table. */
-		
-		// ...
-	} else {
-		/* Ignore Table. */
-		
-		[self editIgnore:nil];
-	}
+    if (sender == self.channelTable) {
+        /* Channel Table. */
+        
+        [self editChannel:nil];
+    } else if (sender == self.tabView) {
+        /* Navigation Table. */
+        
+        // ...
+    } else {
+        /* Ignore Table. */
+        
+        [self editIgnore:nil];
+    }
 }
 
 - (BOOL)tableView:(NSTableView *)sender writeRowsWithIndexes:(NSIndexSet *)rows toPasteboard:(NSPasteboard *)pboard
 {
-	if (sender == self.channelTable) {
-		/* Channel Table. */
-		
-		[pboard declareTypes:_tableRowTypes owner:self];
-		
-		[pboard setPropertyList:@[@(rows.firstIndex)] forType:_tableRowType];
-	}
-	
-	return YES;
+    if (sender == self.channelTable) {
+        /* Channel Table. */
+        
+        [pboard declareTypes:_tableRowTypes owner:self];
+        
+        [pboard setPropertyList:@[@(rows.firstIndex)] forType:_tableRowType];
+    }
+    
+    return YES;
 }
 
 - (NSDragOperation)tableView:(NSTableView *)sender validateDrop:(id <NSDraggingInfo>)info proposedRow:(NSInteger)row proposedDropOperation:(NSTableViewDropOperation)op
 {
-	if (sender == self.channelTable) {
-		/* Channel Table. */
+    if (sender == self.channelTable) {
+        /* Channel Table. */
 
-		NSPasteboard *pboard = [info draggingPasteboard];
+        NSPasteboard *pboard = [info draggingPasteboard];
         
-		if (op == NSTableViewDropAbove && [pboard availableTypeFromArray:_tableRowTypes]) {
-			return NSDragOperationGeneric;
-		} else {
-			return NSDragOperationNone;
-		}
-	} else {
-		return NSDragOperationNone;
-	}
+        if (op == NSTableViewDropAbove && [pboard availableTypeFromArray:_tableRowTypes]) {
+            return NSDragOperationGeneric;
+        } else {
+            return NSDragOperationNone;
+        }
+    } else {
+        return NSDragOperationNone;
+    }
 }
 
 - (BOOL)tableView:(NSTableView *)sender acceptDrop:(id <NSDraggingInfo>)info row:(NSInteger)row dropOperation:(NSTableViewDropOperation)op
 {
-	if (sender == self.channelTable) {
-		/* Channel Table. */
+    if (sender == self.channelTable) {
+        /* Channel Table. */
 
-		NSPasteboard *pboard = [info draggingPasteboard];
-		
-		if (op == NSTableViewDropAbove && [pboard availableTypeFromArray:_tableRowTypes]) {
-			NSMutableArray *ary = self.config.channelList;
-			
-			NSArray *selectedRows = [pboard propertyListForType:_tableRowType];
-			NSInteger selectedRow = [selectedRows integerAtIndex:0];
-			
-			IRCChannelConfig *target = [ary safeObjectAtIndex:selectedRow];
-			
-			NSMutableArray *low  = [[ary subarrayWithRange:NSMakeRange(0, row)] mutableCopy];
-			NSMutableArray *high = [[ary subarrayWithRange:NSMakeRange(row, (ary.count - row))] mutableCopy];
-			
-			[low removeObjectIdenticalTo:target];
-			[high removeObjectIdenticalTo:target];
-			
-			[ary removeAllObjects];
-			
-			[ary addObjectsFromArray:low];
-			[ary safeAddObject:target];
-			[ary addObjectsFromArray:high];
-			
-			[self reloadChannelTable];
-			
-			selectedRow = [ary indexOfObjectIdenticalTo:target];
-			
-			if (0 <= selectedRow) {
-				[self.channelTable selectItemAtIndex:selectedRow];
-			}
-			
-			return YES;
-		}
-	} 
-	
-	return NO;
+        NSPasteboard *pboard = [info draggingPasteboard];
+        
+        if (op == NSTableViewDropAbove && [pboard availableTypeFromArray:_tableRowTypes]) {
+            NSMutableArray *ary = self.config.channelList;
+            
+            NSArray *selectedRows = [pboard propertyListForType:_tableRowType];
+            NSInteger selectedRow = [selectedRows integerAtIndex:0];
+            
+            IRCChannelConfig *target = [ary safeObjectAtIndex:selectedRow];
+            
+            NSMutableArray *low  = [[ary subarrayWithRange:NSMakeRange(0, row)] mutableCopy];
+            NSMutableArray *high = [[ary subarrayWithRange:NSMakeRange(row, (ary.count - row))] mutableCopy];
+            
+            [low removeObjectIdenticalTo:target];
+            [high removeObjectIdenticalTo:target];
+            
+            [ary removeAllObjects];
+            
+            [ary addObjectsFromArray:low];
+            [ary safeAddObject:target];
+            [ary addObjectsFromArray:high];
+            
+            [self reloadChannelTable];
+            
+            selectedRow = [ary indexOfObjectIdenticalTo:target];
+            
+            if (0 <= selectedRow) {
+                [self.channelTable selectItemAtIndex:selectedRow];
+            }
+            
+            return YES;
+        }
+    } 
+    
+    return NO;
 }
 
 #pragma mark -
@@ -1028,11 +1028,11 @@
 
 - (void)windowWillClose:(NSNotification *)note
 {
-	[self.channelTable unregisterDraggedTypes];
-	
-	if ([self.delegate respondsToSelector:@selector(serverSheetWillClose:)]) {
-		[self.delegate serverSheetWillClose:self];
-	}
+    [self.channelTable unregisterDraggedTypes];
+    
+    if ([self.delegate respondsToSelector:@selector(serverSheetWillClose:)]) {
+        [self.delegate serverSheetWillClose:self];
+    }
 }
 
 @end

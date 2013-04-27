@@ -35,7 +35,7 @@
 {
     self.target = nil;
     self.invocation = nil;
-	self.parentThread = nil;
+    self.parentThread = nil;
     self.waitUntilDone = NO;
     self.threadType = DDInvocationBackgroundThread;
     
@@ -45,7 +45,7 @@
 - (id)prepareWithInvocationTarget:(id)inTarget
 {
     self.target = inTarget;
-	
+    
     return self;
 }
 
@@ -57,28 +57,28 @@
 - (void)forwardInvocation:(NSInvocation *)ioInvocation
 {
     [ioInvocation setTarget:self.target];
-	
-	self.invocation = ioInvocation;
-	
-	if (self.waitUntilDone == NO) {
-		[self.invocation retainArguments];
-	}
-	
-	if (self.parentThread && self.threadType == DDInvocationParentThread) {
-		[self.invocation performSelector:@selector(performInvocation:) 
-								onThread:self.parentThread
-							  withObject:self.invocation
-						   waitUntilDone:NO];
-	} else {
-		if (self.threadType == DDInvocationBackgroundThread) {
-			[self.invocation performSelectorInBackground:@selector(performInvocation:)
-											  withObject:self.invocation];
-		} else {
-			[self.invocation performSelectorOnMainThread:@selector(performInvocation:)
-											  withObject:self.invocation
-										   waitUntilDone:self.waitUntilDone];
-		}
-	}
+    
+    self.invocation = ioInvocation;
+    
+    if (self.waitUntilDone == NO) {
+        [self.invocation retainArguments];
+    }
+    
+    if (self.parentThread && self.threadType == DDInvocationParentThread) {
+        [self.invocation performSelector:@selector(performInvocation:) 
+                                onThread:self.parentThread
+                              withObject:self.invocation
+                           waitUntilDone:NO];
+    } else {
+        if (self.threadType == DDInvocationBackgroundThread) {
+            [self.invocation performSelectorInBackground:@selector(performInvocation:)
+                                              withObject:self.invocation];
+        } else {
+            [self.invocation performSelectorOnMainThread:@selector(performInvocation:)
+                                              withObject:self.invocation
+                                           waitUntilDone:self.waitUntilDone];
+        }
+    }
 }
 
 @end
@@ -87,13 +87,13 @@
 
 - (void)performInvocation:(NSInvocation *)anInvocation 
 {
-	/* Mac OS does not automatically place background threads in an
-	 autorelease pool like the default application run loop. For that
-	 reason, let us invoke the invocation within our autorelease pool. */
-	
-	@autoreleasepool {
-		[anInvocation invoke];
-	}
+    /* Mac OS does not automatically place background threads in an
+     autorelease pool like the default application run loop. For that
+     reason, let us invoke the invocation within our autorelease pool. */
+    
+    @autoreleasepool {
+        [anInvocation invoke];
+    }
 }
 
 @end

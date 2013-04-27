@@ -37,19 +37,19 @@
 
 #import "TextualApplication.h"
 
-#define IRCConnectionDefaultServerPort		6667
+#define IRCConnectionDefaultServerPort      6667
 
 #define TXFloodControlDefaultDelayTimer       2
 #define TXFloodControlDefaultMessageCount     6
 
-#define TXDefaultPrimaryTextEncoding		NSUTF8StringEncoding
-#define TXDefaultFallbackTextEncoding		NSISOLatin1StringEncoding
+#define TXDefaultPrimaryTextEncoding        NSUTF8StringEncoding
+#define TXDefaultFallbackTextEncoding       NSISOLatin1StringEncoding
 
 typedef enum TXConnectionProxyType : NSInteger {
-	TXConnectionNoProxyType = 0,
-	TXConnectionSystemSocksProxyType = 1,
-	TXConnectionSocks4ProxyType = 4,
-	TXConnectionSocks5ProxyType = 5,
+    TXConnectionNoProxyType = 0,
+    TXConnectionSystemSocksProxyType = 1,
+    TXConnectionSocks4ProxyType = 4,
+    TXConnectionSocks5ProxyType = 5,
 } TXConnectionProxyType;
 
 NSComparisonResult IRCChannelDataSort(IRCChannel *s1, IRCChannel *s2, void *context);

@@ -46,8 +46,8 @@
  These calls expect the localized strings to be inside the filename "BasicLanguage.strings"
  Any other name will not work unless the actual cocoa APIs for accessing localized strings
  is used in place of these. */
-#define TPILS(k)			 TSBLS(k, [NSBundle bundleForClass:[self class]])
-#define TPIFLS(k, ...)		TSBFLS(k, [NSBundle bundleForClass:[self class]], ##__VA_ARGS__)
+#define TPILS(k)             TSBLS(k, [NSBundle bundleForClass:[self class]])
+#define TPIFLS(k, ...)      TSBFLS(k, [NSBundle bundleForClass:[self class]], ##__VA_ARGS__)
 
 @protocol THOPluginProtocol <NSObject>
 
@@ -57,12 +57,12 @@
 - (NSArray *)pluginSupportsServerInputCommands;
 
 - (void)messageSentByUser:(IRCClient *)client
-				  message:(NSString *)messageString
-				  command:(NSString *)commandString;
+                  message:(NSString *)messageString
+                  command:(NSString *)commandString;
 
 - (void)messageReceivedByServer:(IRCClient *)client 
-						 sender:(NSDictionary *)senderDict 
-						message:(NSDictionary *)messageDict;
+                         sender:(NSDictionary *)senderDict 
+                        message:(NSDictionary *)messageDict;
 
 - (NSDictionary *)pluginOutputDisplayRules;
 

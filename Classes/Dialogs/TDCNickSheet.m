@@ -41,32 +41,32 @@
 
 - (id)init
 {
-	if ((self = [super init])) {
-		[NSBundle loadNibNamed:@"TDCNickSheet" owner:self];
-	}
+    if ((self = [super init])) {
+        [NSBundle loadNibNamed:@"TDCNickSheet" owner:self];
+    }
 
-	return self;
+    return self;
 }
 
 - (void)start:(NSString *)nickname
 {
-	[self.tnewNicknameField setStringValue:nickname];
-	[self.toldNicknameField setStringValue:nickname];
-	
-	[self.sheet makeFirstResponder:self.tnewNicknameField];
-	
-	[self startSheet];
+    [self.tnewNicknameField setStringValue:nickname];
+    [self.toldNicknameField setStringValue:nickname];
+    
+    [self.sheet makeFirstResponder:self.tnewNicknameField];
+    
+    [self startSheet];
 }
 
 - (void)ok:(id)sender
 {
-	if ([self.delegate respondsToSelector:@selector(nickSheet:didInputNickname:)]) {
-		NSString *newNickname = self.tnewNicknameField.firstTokenStringValue;
-		
-		[self.delegate nickSheet:self didInputNickname:newNickname];
-	}
-	
-	[super ok:sender];
+    if ([self.delegate respondsToSelector:@selector(nickSheet:didInputNickname:)]) {
+        NSString *newNickname = self.tnewNicknameField.firstTokenStringValue;
+        
+        [self.delegate nickSheet:self didInputNickname:newNickname];
+    }
+    
+    [super ok:sender];
 }
 
 #pragma mark -
@@ -74,9 +74,9 @@
 
 - (void)windowWillClose:(NSNotification *)note
 {
-	if ([self.delegate respondsToSelector:@selector(nickSheetWillClose:)]) {
-		[self.delegate nickSheetWillClose:self];
-	}
+    if ([self.delegate respondsToSelector:@selector(nickSheetWillClose:)]) {
+        [self.delegate nickSheetWillClose:self];
+    }
 }
 
 @end

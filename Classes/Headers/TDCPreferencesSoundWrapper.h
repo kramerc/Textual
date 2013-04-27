@@ -37,8 +37,8 @@
 
 #import "TextualApplication.h"
 
-#define TXEmptySoundAlertLabel			TXTLS(@"TXEmptySoundAlertLabel")
-#define TXEmptySoundAlertPreference		@"None"
+#define TXEmptySoundAlertLabel          TXTLS(@"TXEmptySoundAlertLabel")
+#define TXEmptySoundAlertPreference     @"None"
 
 @interface TDCPreferencesSoundWrapper : NSObject
 @property (nonatomic, assign) TXNotificationType eventType;

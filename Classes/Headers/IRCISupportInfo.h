@@ -37,7 +37,7 @@
 
 #import "TextualApplication.h"
 
-#define IRCISupportRawSuffix				@"are supported by this server"
+#define IRCISupportRawSuffix                @"are supported by this server"
 
 @interface IRCISupportInfo : NSObject
 /* Technically speaking, all these properties should be readonly, but

@@ -38,11 +38,11 @@
 #import "TVCTextField.h" // superclass
 
 typedef enum IRCTextFormatterEffectType : NSInteger {
-	IRCTextFormatterBoldEffect,
-	IRCTextFormatterItalicEffect,
-	IRCTextFormatterUnderlineEffect,
-	IRCTextFormatterForegroundColorEffect,
-	IRCTextFormatterBackgroundColorEffect,
+    IRCTextFormatterBoldEffect,
+    IRCTextFormatterItalicEffect,
+    IRCTextFormatterUnderlineEffect,
+    IRCTextFormatterForegroundColorEffect,
+    IRCTextFormatterBackgroundColorEffect,
 } IRCTextFormatterEffectType; 
 
 #define TXMaximumRainbowTextFormattingLength   300

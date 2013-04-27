@@ -44,10 +44,10 @@
 
 - (CGColorRef)aCGColor
 {
-	NSInteger numberOfComponents = [self numberOfComponents];
+    NSInteger numberOfComponents = [self numberOfComponents];
 
-	CGFloat components[numberOfComponents];
-	
+    CGFloat components[numberOfComponents];
+    
     CGColorSpaceRef colorSpace = [self.colorSpace CGColorSpace];
 
     [self getComponents:(CGFloat *)&components];
@@ -57,45 +57,45 @@
 
 + (NSColor *)internalCalibratedRed:(CGFloat)red green:(CGFloat)green blue:(CGFloat)blue alpha:(CGFloat)alpha
 {
-	if (red   > 1.0) {
-		red /= 255.99999f;
-	}
-	
-	if (green > 1.0) {
-		green /= 255.99999f;
-	}
-	
-	if (blue  > 1.0) {
-		blue  /= 255.99999f;
-	}
+    if (red   > 1.0) {
+        red /= 255.99999f;
+    }
+    
+    if (green > 1.0) {
+        green /= 255.99999f;
+    }
+    
+    if (blue  > 1.0) {
+        blue  /= 255.99999f;
+    }
 
-	return [NSColor colorWithCalibratedRed:red green:green blue:blue alpha:alpha];
+    return [NSColor colorWithCalibratedRed:red green:green blue:blue alpha:alpha];
 }
 
 - (NSColor *)invertColor
 {
-	NSColor *obj = [self colorUsingColorSpace:[NSColorSpace deviceRGBColorSpace]];
+    NSColor *obj = [self colorUsingColorSpace:[NSColorSpace deviceRGBColorSpace]];
 
-	return [NSColor colorWithCalibratedRed:(1.0 - [obj redComponent])
-									 green:(1.0 - [obj greenComponent])
-									  blue:(1.0 - [obj blueComponent])
-									 alpha:[obj alphaComponent]];
+    return [NSColor colorWithCalibratedRed:(1.0 - [obj redComponent])
+                                     green:(1.0 - [obj greenComponent])
+                                      blue:(1.0 - [obj blueComponent])
+                                     alpha:[obj alphaComponent]];
 }
 
 + (id)defineUserInterfaceItem:(id)normalItem invertedItem:(id)invertedItem
 {
-	return [NSColor defineUserInterfaceItem:normalItem invertedItem:invertedItem withOperator:YES];
+    return [NSColor defineUserInterfaceItem:normalItem invertedItem:invertedItem withOperator:YES];
 }
 
 + (id)defineUserInterfaceItem:(id)normalItem invertedItem:(id)invertedItem withOperator:(BOOL)specialCondition
 {
-	BOOL invertedColors = [TPCPreferences invertSidebarColors];
+    BOOL invertedColors = [TPCPreferences invertSidebarColors];
 
-	if (invertedColors && specialCondition) {
-		return invertedItem;
-	} else {
-		return normalItem;
-	}
+    if (invertedColors && specialCondition) {
+        return invertedItem;
+    } else {
+        return normalItem;
+    }
 }
 
 #pragma mark -
@@ -103,104 +103,104 @@
 
 + (NSColor *)formatterWhiteColor
 {
-	return TXCalibratedRGBColor(1.00, 1.00, 1.00);
+    return TXCalibratedRGBColor(1.00, 1.00, 1.00);
 }
 
 + (NSColor *)formatterBlackColor
 {
-	return TXCalibratedRGBColor(0.00, 0.00, 0.00);
+    return TXCalibratedRGBColor(0.00, 0.00, 0.00);
 }
 
 + (NSColor *)formatterNavyBlueColor
 {
-	return TXCalibratedRGBColor(0.04, 0.00, 0.52);
+    return TXCalibratedRGBColor(0.04, 0.00, 0.52);
 }
 
 + (NSColor *)formatterDarkGreenColor
 {
-	return TXCalibratedRGBColor(0.00, 0.54, 0.08);
+    return TXCalibratedRGBColor(0.00, 0.54, 0.08);
 }
 
 + (NSColor *)formatterRedColor
 {
-	return TXCalibratedRGBColor(1.00, 0.05, 0.04);
+    return TXCalibratedRGBColor(1.00, 0.05, 0.04);
 }
 
 + (NSColor *)formatterBrownColor
 {
-	return TXCalibratedRGBColor(0.55, 0.02, 0.02);
+    return TXCalibratedRGBColor(0.55, 0.02, 0.02);
 }
 
 + (NSColor *)formatterPurpleColor
 {
-	return TXCalibratedRGBColor(0.55, 0.00, 0.53);
+    return TXCalibratedRGBColor(0.55, 0.00, 0.53);
 }
 
 + (NSColor *)formatterOrangeColor
 {
-	return TXCalibratedRGBColor(1.00, 0.54, 0.09);
+    return TXCalibratedRGBColor(1.00, 0.54, 0.09);
 }
 
 + (NSColor *)formatterYellowColor
 {
-	return TXCalibratedRGBColor(1.00, 1.00, 0.15);
+    return TXCalibratedRGBColor(1.00, 1.00, 0.15);
 }
 
 + (NSColor *)formatterLimeGreenColor
 {
-	return TXCalibratedRGBColor(0.00, 1.00, 0.15);
+    return TXCalibratedRGBColor(0.00, 1.00, 0.15);
 }
 
 + (NSColor *)formatterTealColor
 {
-	return TXCalibratedRGBColor(0.00, 0.53, 0.53);
+    return TXCalibratedRGBColor(0.00, 0.53, 0.53);
 }
 
 + (NSColor *)formatterAquaCyanColor
 {
-	return TXCalibratedRGBColor(0.00, 1.00, 1.00);
+    return TXCalibratedRGBColor(0.00, 1.00, 1.00);
 }
 
 + (NSColor *)formatterLightBlueColor
 {
-	return TXCalibratedRGBColor(0.07, 0.00, 0.98);
+    return TXCalibratedRGBColor(0.07, 0.00, 0.98);
 }
 
 + (NSColor *)formatterFuchsiaPinkColor
 {
-	return TXCalibratedRGBColor(1.00, 0.00, 0.98);
+    return TXCalibratedRGBColor(1.00, 0.00, 0.98);
 }
 
 + (NSColor *)formatterNormalGrayColor
 {
-	return TXCalibratedRGBColor(0.53, 0.53, 0.53);
+    return TXCalibratedRGBColor(0.53, 0.53, 0.53);
 }
 
 + (NSColor *)formatterLightGrayColor
 {
-	return TXCalibratedRGBColor(0.80, 0.80, 0.80);
+    return TXCalibratedRGBColor(0.80, 0.80, 0.80);
 }
 
 + (NSArray *)possibleFormatterColors
 {
-	return @[
-		[self formatterWhiteColor],
-		[self formatterBlackColor],
-		[self formatterNavyBlueColor],
-		[self formatterDarkGreenColor],
-		[self formatterRedColor],
-		[self formatterBrownColor],
-		[self formatterPurpleColor],
-		[self formatterOrangeColor],
-		[self formatterYellowColor],
-		[self formatterLimeGreenColor],
-		[self formatterTealColor],
-		[self formatterAquaCyanColor],
-		[self formatterLightBlueColor],
-		[self formatterFuchsiaPinkColor],
-		[self formatterNormalGrayColor],
-		[self formatterLightGrayColor]
-	];
+    return @[
+        [self formatterWhiteColor],
+        [self formatterBlackColor],
+        [self formatterNavyBlueColor],
+        [self formatterDarkGreenColor],
+        [self formatterRedColor],
+        [self formatterBrownColor],
+        [self formatterPurpleColor],
+        [self formatterOrangeColor],
+        [self formatterYellowColor],
+        [self formatterLimeGreenColor],
+        [self formatterTealColor],
+        [self formatterAquaCyanColor],
+        [self formatterLightBlueColor],
+        [self formatterFuchsiaPinkColor],
+        [self formatterNormalGrayColor],
+        [self formatterLightGrayColor]
+    ];
 }
 
 #pragma mark -
@@ -208,31 +208,31 @@
 
 + (NSColor *)fromCSS:(NSString *)s
 {
-	if ([s hasPrefix:@"#"]) {
-		s = [s safeSubstringFromIndex:1];
+    if ([s hasPrefix:@"#"]) {
+        s = [s safeSubstringFromIndex:1];
 
-		NSInteger len = s.length;
+        NSInteger len = s.length;
 
-		if (len == 6) {
-			long n = strtol([s UTF8String], NULL, 16);
+        if (len == 6) {
+            long n = strtol([s UTF8String], NULL, 16);
 
-			NSInteger r = ((n >> 16) & 0xff);
-			NSInteger g = ((n >> 8) & 0xff);
-			NSInteger b = (n & 0xff);
+            NSInteger r = ((n >> 16) & 0xff);
+            NSInteger g = ((n >> 8) & 0xff);
+            NSInteger b = (n & 0xff);
 
-			return TXCalibratedRGBColor(r, b, g);
-		} else if (len == 3) {
-			long n = strtol([s UTF8String], NULL, 16);
+            return TXCalibratedRGBColor(r, b, g);
+        } else if (len == 3) {
+            long n = strtol([s UTF8String], NULL, 16);
 
-			NSInteger r = ((n >> 8) & 0xf);
-			NSInteger g = ((n >> 4) & 0xf);
-			NSInteger b = (n & 0xf);
+            NSInteger r = ((n >> 8) & 0xf);
+            NSInteger g = ((n >> 4) & 0xf);
+            NSInteger b = (n & 0xf);
 
-			return TXCalibratedRGBColor((r / 15.0), (g / 15.0), (b / 15.0));
-		}
-	}
+            return TXCalibratedRGBColor((r / 15.0), (g / 15.0), (b / 15.0));
+        }
+    }
 
-	return nil;
+    return nil;
 }
 
 #pragma mark -
@@ -240,22 +240,22 @@
 
 + (NSColor *)sourceListBackgroundColor
 {
-	return [NSColor colorWithCatalogName:@"System" colorName:@"_sourceListBackgroundColor"];
+    return [NSColor colorWithCatalogName:@"System" colorName:@"_sourceListBackgroundColor"];
 }
 
 + (NSColor *)sourceListBackgroundColorTop
 {
-	return [NSColor internalCalibratedRed:234 green:237 blue:242 alpha:1.0];
+    return [NSColor internalCalibratedRed:234 green:237 blue:242 alpha:1.0];
 }
 
 + (NSColor *)outlineViewHeaderTextColor
 {
-	return [self internalCalibratedRed:0.439216 green:0.494118 blue:0.54902 alpha:1.0];
+    return [self internalCalibratedRed:0.439216 green:0.494118 blue:0.54902 alpha:1.0];
 }
 
 + (NSColor *)outlineViewHeaderDisabledTextColor
 {
-	return [NSColor internalCalibratedRed:158 green:162 blue:173 alpha:1.0];
+    return [NSColor internalCalibratedRed:158 green:162 blue:173 alpha:1.0];
 }
 
 @end
@@ -264,13 +264,13 @@
 
 + (NSGradient *)gradientWithStartingColor:(NSColor *)startingColor endingColor:(NSColor *)endingColor
 {
-	return [[self alloc] initWithStartingColor:startingColor endingColor:endingColor];
+    return [[self alloc] initWithStartingColor:startingColor endingColor:endingColor];
 }
 
 + (NSGradient *)sourceListBackgroundGradientColor
 {
-	return [self gradientWithStartingColor:[NSColor internalCalibratedRed:234 green:237 blue:242 alpha:1.0]
-							   endingColor:[NSColor internalCalibratedRed:199 green:207 blue:216 alpha:1.0]];
+    return [self gradientWithStartingColor:[NSColor internalCalibratedRed:234 green:237 blue:242 alpha:1.0]
+                               endingColor:[NSColor internalCalibratedRed:199 green:207 blue:216 alpha:1.0]];
 }
 
 @end

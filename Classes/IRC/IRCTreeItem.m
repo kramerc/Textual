@@ -42,64 +42,64 @@
 - (id)init
 {
     if ((self = [super init])) {
-		self.treeUUID = [NSString stringWithUUID];
+        self.treeUUID = [NSString stringWithUUID];
 
-		return self;
+        return self;
     }
-	
+    
     return nil;
 }
 
 - (void)dealloc
 {
-	[self.operationQueue cancelAllOperations];
+    [self.operationQueue cancelAllOperations];
 }
 
 - (IRCClient *)client
 {
-	return nil;
+    return nil;
 }
 
 - (BOOL)isClient
 {
-	return NO;
+    return NO;
 }
 
 - (BOOL)isActive
 {
-	return NO;
+    return NO;
 }
 
 - (BOOL)isUnread
 {
-	return (self.treeUnreadCount > 0);
+    return (self.treeUnreadCount > 0);
 }
 
 - (void)resetState
 {
-	self.dockUnreadCount = 0;
-	self.treeUnreadCount = 0;
-	self.nicknameHighlightCount = 0;
+    self.dockUnreadCount = 0;
+    self.treeUnreadCount = 0;
+    self.nicknameHighlightCount = 0;
 }
 
 - (NSInteger)numberOfChildren
 {
-	return 0;
+    return 0;
 }
 
 - (IRCTreeItem *)childAtIndex:(NSInteger)index
 {
-	return nil;
+    return nil;
 }
 
 - (NSString *)label
 {
-	return NSStringEmptyPlaceholder;
+    return NSStringEmptyPlaceholder;
 }
 
 - (NSString *)name
 {
-	return NSStringEmptyPlaceholder;
+    return NSStringEmptyPlaceholder;
 }
 
 @end

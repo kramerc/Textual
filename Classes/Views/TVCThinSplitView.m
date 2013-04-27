@@ -41,102 +41,102 @@
 
 - (void)awakeFromNib
 {
-	[self updatePosition];
+    [self updatePosition];
 }
 
 - (void)setFixedViewIndex:(NSInteger)value
 {
-	if (NSDissimilarObjects(self.fixedViewIndex, value)) {
-		_fixedViewIndex = value;
+    if (NSDissimilarObjects(self.fixedViewIndex, value)) {
+        _fixedViewIndex = value;
 
-		if (self.viewIsInverted) {
-			if (_fixedViewIndex == 1) {
-				_fixedViewIndex = 0;
-			} else {
-				_fixedViewIndex = 1;
-			}
-		}
+        if (self.viewIsInverted) {
+            if (_fixedViewIndex == 1) {
+                _fixedViewIndex = 0;
+            } else {
+                _fixedViewIndex = 1;
+            }
+        }
 
-		[self adjustSubviews];
-	}
+        [self adjustSubviews];
+    }
 }
 
 - (void)setDividerPosition:(NSInteger)value
 {
-	if (NSDissimilarObjects(self.dividerPosition, value)) {
-		_dividerPosition = value;
+    if (NSDissimilarObjects(self.dividerPosition, value)) {
+        _dividerPosition = value;
 
-		[self adjustSubviews];
-	}
+        [self adjustSubviews];
+    }
 }
 
 - (void)setViewIsHidden:(BOOL)value
 {
-	if (NSDissimilarObjects(self.viewIsHidden, value)) {
-		_viewIsHidden = value;
+    if (NSDissimilarObjects(self.viewIsHidden, value)) {
+        _viewIsHidden = value;
 
-		[self adjustSubviews];
-	}
+        [self adjustSubviews];
+    }
 }
 
 - (void)setViewIsInverted:(BOOL)value
 {
-	if (NSDissimilarObjects(self.viewIsInverted, value)) {
-		_viewIsInverted = value;
-		
-		NSView *a = [self.subviews safeObjectAtIndex:0];
-		NSView *b = [self.subviews safeObjectAtIndex:1];
+    if (NSDissimilarObjects(self.viewIsInverted, value)) {
+        _viewIsInverted = value;
+        
+        NSView *a = [self.subviews safeObjectAtIndex:0];
+        NSView *b = [self.subviews safeObjectAtIndex:1];
 
-		[a removeFromSuperviewWithoutNeedingDisplay];
-		[b removeFromSuperviewWithoutNeedingDisplay];
+        [a removeFromSuperviewWithoutNeedingDisplay];
+        [b removeFromSuperviewWithoutNeedingDisplay];
 
-		[self addSubview:b];
-		[self addSubview:a];
+        [self addSubview:b];
+        [self addSubview:a];
 
-		if (self.fixedViewIndex == 1) {
-			_fixedViewIndex = 0;
-		} else {
-			_fixedViewIndex = 1;
-		}
+        if (self.fixedViewIndex == 1) {
+            _fixedViewIndex = 0;
+        } else {
+            _fixedViewIndex = 1;
+        }
 
-		[self adjustSubviews];
-	}
+        [self adjustSubviews];
+    }
 }
 
 - (void)drawDividerInRect:(NSRect)rect
 {
-	NSColor *dividerColor = [NSColor colorWithCalibratedWhite:0.65 alpha:1.0];
+    NSColor *dividerColor = [NSColor colorWithCalibratedWhite:0.65 alpha:1.0];
 
-	if ([TPCPreferences invertSidebarColors]) {
-		dividerColor = [dividerColor invertColor];
-	}
+    if ([TPCPreferences invertSidebarColors]) {
+        dividerColor = [dividerColor invertColor];
+    }
 
-	[dividerColor set];
+    [dividerColor set];
 
-	NSRectFill(rect);
+    NSRectFill(rect);
 }
 
 - (void)resizeSubviewsWithOldSize:(NSSize)oldSize
 {
-	[self adjustSubviews];
+    [self adjustSubviews];
 }
 
 - (void)mouseDown:(NSEvent *)e
 {
-	[super mouseDown:e];
+    [super mouseDown:e];
 
-	[self updatePosition];
+    [self updatePosition];
 }
 
 - (void)adjustSubviews
 {
-	NSInteger fixedIndex = self.fixedViewIndex;
-	
-	if (NSDissimilarObjects(self.subviews.count, 2)) {
-		[super adjustSubviews];
+    NSInteger fixedIndex = self.fixedViewIndex;
+    
+    if (NSDissimilarObjects(self.subviews.count, 2)) {
+        [super adjustSubviews];
 
-		return;
-	}
+        return;
+    }
 
     if ([self isSubviewCollapsed:self.subviews[fixedIndex]]) {
         [super adjustSubviews];
@@ -144,68 +144,68 @@
         return;
     }
 
-	NSSize frameSize = self.frame.size;
+    NSSize frameSize = self.frame.size;
 
-	NSInteger frameWidth = frameSize.width;
-	NSInteger frameHeight = frameSize.height;
+    NSInteger frameWidth = frameSize.width;
+    NSInteger frameHeight = frameSize.height;
 
-	NSView *flyingView = nil;
-	NSView *fixedView = [self.subviews safeObjectAtIndex:fixedIndex];
+    NSView *flyingView = nil;
+    NSView *fixedView = [self.subviews safeObjectAtIndex:fixedIndex];
 
-	if (fixedIndex == 1) {
-		flyingView = [self.subviews safeObjectAtIndex:0];
-	} else {
-		flyingView = [self.subviews safeObjectAtIndex:1];
-	}
-	
-	NSRect fixedFrame = fixedView.frame;
-	NSRect flyingFrame = flyingView.frame;
-	
-	if (self.viewIsHidden) {
-		fixedFrame = NSMakeRect(0, 0, 0, frameHeight);
-		flyingFrame.origin = NSZeroPoint;
-		flyingFrame.size = frameSize;
-	} else {
-		flyingFrame.size.width = ((frameWidth - self.dividerThickness) - self.dividerPosition);
-		flyingFrame.size.height = frameHeight;
-		flyingFrame.origin.x = 0;
-		flyingFrame.origin.y = 0;
+    if (fixedIndex == 1) {
+        flyingView = [self.subviews safeObjectAtIndex:0];
+    } else {
+        flyingView = [self.subviews safeObjectAtIndex:1];
+    }
+    
+    NSRect fixedFrame = fixedView.frame;
+    NSRect flyingFrame = flyingView.frame;
+    
+    if (self.viewIsHidden) {
+        fixedFrame = NSMakeRect(0, 0, 0, frameHeight);
+        flyingFrame.origin = NSZeroPoint;
+        flyingFrame.size = frameSize;
+    } else {
+        flyingFrame.size.width = ((frameWidth - self.dividerThickness) - self.dividerPosition);
+        flyingFrame.size.height = frameHeight;
+        flyingFrame.origin.x = 0;
+        flyingFrame.origin.y = 0;
 
-		if (fixedIndex == 0) {
-			flyingFrame.origin.x = (self.dividerPosition + self.dividerThickness);
-		}
+        if (fixedIndex == 0) {
+            flyingFrame.origin.x = (self.dividerPosition + self.dividerThickness);
+        }
 
-		if (flyingFrame.size.width < 0) {
-			flyingFrame.size.width = 0;
-		}
-		
-		fixedFrame.size.width = self.dividerPosition;
-		fixedFrame.size.height = frameHeight;
-		fixedFrame.origin.x = 0;
-		fixedFrame.origin.y = 0;
+        if (flyingFrame.size.width < 0) {
+            flyingFrame.size.width = 0;
+        }
+        
+        fixedFrame.size.width = self.dividerPosition;
+        fixedFrame.size.height = frameHeight;
+        fixedFrame.origin.x = 0;
+        fixedFrame.origin.y = 0;
 
-		if (fixedIndex == 1) {
-			fixedFrame.origin.x = (flyingFrame.size.width + self.dividerThickness);
-		}
+        if (fixedIndex == 1) {
+            fixedFrame.origin.x = (flyingFrame.size.width + self.dividerThickness);
+        }
 
-		if (fixedFrame.size.width > (frameWidth	- self.dividerThickness)) {
-			fixedFrame.size.width = (frameWidth	- self.dividerThickness);
-		}
-	}
+        if (fixedFrame.size.width > (frameWidth - self.dividerThickness)) {
+            fixedFrame.size.width = (frameWidth - self.dividerThickness);
+        }
+    }
 
-	[fixedView setFrame:fixedFrame];
-	[flyingView setFrame:flyingFrame];
+    [fixedView setFrame:fixedFrame];
+    [flyingView setFrame:flyingFrame];
 
-	[self setNeedsDisplay:YES];
+    [self setNeedsDisplay:YES];
 
-	[self.window invalidateCursorRectsForView:self];
+    [self.window invalidateCursorRectsForView:self];
 }
 
 - (void)updatePosition
 {
-	NSView *view = [self.subviews safeObjectAtIndex:self.fixedViewIndex];
+    NSView *view = [self.subviews safeObjectAtIndex:self.fixedViewIndex];
 
-	self.dividerPosition = view.frame.size.width;
+    self.dividerPosition = view.frame.size.width;
 }
 
 @end

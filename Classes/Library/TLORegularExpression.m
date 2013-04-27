@@ -41,87 +41,87 @@
 
 + (BOOL)string:(NSString *)haystack isMatchedByRegex:(NSString *)needle
 {
-	return [self string:haystack isMatchedByRegex:needle withoutCase:NO];
+    return [self string:haystack isMatchedByRegex:needle withoutCase:NO];
 }
 
 + (BOOL)string:(NSString *)haystack isMatchedByRegex:(NSString *)needle withoutCase:(BOOL)caseless
 {
     NSRange strRange = NSMakeRange(0, haystack.length);
 
-	NSRegularExpression *regex;
+    NSRegularExpression *regex;
 
-	if (caseless) {
-		regex = [NSRegularExpression regularExpressionWithPattern:needle options:NSRegularExpressionCaseInsensitive error:NULL];
-	} else {
-		regex = [NSRegularExpression regularExpressionWithPattern:needle options:0 error:NULL];
-	}
+    if (caseless) {
+        regex = [NSRegularExpression regularExpressionWithPattern:needle options:NSRegularExpressionCaseInsensitive error:NULL];
+    } else {
+        regex = [NSRegularExpression regularExpressionWithPattern:needle options:0 error:NULL];
+    }
 
-	NSUInteger numMatches = [regex numberOfMatchesInString:haystack options:0 range:strRange];
+    NSUInteger numMatches = [regex numberOfMatchesInString:haystack options:0 range:strRange];
 
-	return (numMatches >= 1);
+    return (numMatches >= 1);
 }
 
 + (NSRange)string:(NSString *)haystack rangeOfRegex:(NSString *)needle
 {
-	return [self string:haystack rangeOfRegex:needle withoutCase:NO];
+    return [self string:haystack rangeOfRegex:needle withoutCase:NO];
 }
 
 + (NSRange)string:(NSString *)haystack rangeOfRegex:(NSString *)needle withoutCase:(BOOL)caseless
 {
     NSRange strRange = NSMakeRange(0, haystack.length);
 
-	NSRegularExpression *regex;
+    NSRegularExpression *regex;
 
-	if (caseless) {
-		regex = [NSRegularExpression regularExpressionWithPattern:needle options:NSRegularExpressionCaseInsensitive error:NULL];
-	} else {
-		regex = [NSRegularExpression regularExpressionWithPattern:needle options:0 error:NULL];
-	}
+    if (caseless) {
+        regex = [NSRegularExpression regularExpressionWithPattern:needle options:NSRegularExpressionCaseInsensitive error:NULL];
+    } else {
+        regex = [NSRegularExpression regularExpressionWithPattern:needle options:0 error:NULL];
+    }
 
-	NSRange resultRange = [regex rangeOfFirstMatchInString:haystack options:0 range:strRange];
+    NSRange resultRange = [regex rangeOfFirstMatchInString:haystack options:0 range:strRange];
 
-	return resultRange;
+    return resultRange;
 }
 
 + (NSString *)string:(NSString *)haystack replacedByRegex:(NSString *)needle withString:(NSString *)puppy
 {
-	NSRange strRange = NSMakeRange(0, haystack.length);
+    NSRange strRange = NSMakeRange(0, haystack.length);
 
-	NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:needle options:0 error:NULL];
+    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:needle options:0 error:NULL];
 
-	NSString *newString = [regex stringByReplacingMatchesInString:haystack options:0 range:strRange withTemplate:puppy];
+    NSString *newString = [regex stringByReplacingMatchesInString:haystack options:0 range:strRange withTemplate:puppy];
 
-	return newString;
+    return newString;
 }
 
 + (NSArray *)matchesInString:(NSString *)haystack withRegex:(NSString *)needle
 {
-	return [self matchesInString:haystack withRegex:needle withoutCase:NO];
+    return [self matchesInString:haystack withRegex:needle withoutCase:NO];
 }
 
 + (NSArray *)matchesInString:(NSString *)haystack withRegex:(NSString *)needle withoutCase:(BOOL)caseless
 {
     NSRange strRange = NSMakeRange(0, haystack.length);
 
-	NSRegularExpression *regex;
+    NSRegularExpression *regex;
 
-	if (caseless) {
-		regex = [NSRegularExpression regularExpressionWithPattern:needle options:NSRegularExpressionCaseInsensitive error:NULL];
-	} else {
-		regex = [NSRegularExpression regularExpressionWithPattern:needle options:0 error:NULL];
-	}
+    if (caseless) {
+        regex = [NSRegularExpression regularExpressionWithPattern:needle options:NSRegularExpressionCaseInsensitive error:NULL];
+    } else {
+        regex = [NSRegularExpression regularExpressionWithPattern:needle options:0 error:NULL];
+    }
 
-	NSMutableArray *realMatches = [NSMutableArray array];
+    NSMutableArray *realMatches = [NSMutableArray array];
 
-	NSArray *matches = [regex matchesInString:haystack options:0 range:strRange];
+    NSArray *matches = [regex matchesInString:haystack options:0 range:strRange];
 
-	for (NSTextCheckingResult *result in matches) {
-		NSString *newStr = [haystack safeSubstringWithRange:result.range];
+    for (NSTextCheckingResult *result in matches) {
+        NSString *newStr = [haystack safeSubstringWithRange:result.range];
 
-		[realMatches safeAddObject:newStr];
-	}
+        [realMatches safeAddObject:newStr];
+    }
 
-	return realMatches;
+    return realMatches;
 }
 
 @end

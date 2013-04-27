@@ -41,69 +41,69 @@
 
 + (NSInteger)colonIndexForCommand:(NSString *)command
 {
-	/* The command index that Textual uses is complex for anyone who 
-	 has never seen it before, but on the other hand, it is also very
-	 convenient for storing static information about any IRC command
-	 that Textual may handle. For example, the internal command list
-	 keeps track of where the colon (:) should be placed for specific
-	 outgoing commands. Better than guessing. */
-	
-	NSArray *searchPath = [TPCPreferences IRCCommandIndex:NO];
+    /* The command index that Textual uses is complex for anyone who 
+     has never seen it before, but on the other hand, it is also very
+     convenient for storing static information about any IRC command
+     that Textual may handle. For example, the internal command list
+     keeps track of where the colon (:) should be placed for specific
+     outgoing commands. Better than guessing. */
+    
+    NSArray *searchPath = [TPCPreferences IRCCommandIndex:NO];
 
-	for (NSArray *indexInfo in searchPath) {
-		if (indexInfo.count == 5) {
-			NSString *matValue = indexInfo[1];
+    for (NSArray *indexInfo in searchPath) {
+        if (indexInfo.count == 5) {
+            NSString *matValue = indexInfo[1];
 
-			if ([matValue isEqualIgnoringCase:command] && [indexInfo boolAtIndex:3] == YES) {
-				return [indexInfo integerAtIndex:4];
-			}
-		}
- 	}
-	
-	return -1;
+            if ([matValue isEqualIgnoringCase:command] && [indexInfo boolAtIndex:3] == YES) {
+                return [indexInfo integerAtIndex:4];
+            }
+        }
+    }
+    
+    return -1;
 }
 
 + (NSString *)stringWithCommand:(NSString *)command arguments:(NSArray *)argList
 {
-	NSMutableString *builtString = [NSMutableString string];
+    NSMutableString *builtString = [NSMutableString string];
 
-	[builtString appendString:command.uppercaseString];
+    [builtString appendString:command.uppercaseString];
 
-	NSObjectIsEmptyAssertReturn(argList, builtString);
+    NSObjectIsEmptyAssertReturn(argList, builtString);
 
-	NSInteger colonIndexBase = [IRCSendingMessage colonIndexForCommand:command];
-	NSInteger colonIndexCount = 0;
+    NSInteger colonIndexBase = [IRCSendingMessage colonIndexForCommand:command];
+    NSInteger colonIndexCount = 0;
 
-	for (NSString *param in argList) {
-		NSObjectIsEmptyAssertLoopContinue(param);
-		
-		[builtString appendString:NSStringWhitespacePlaceholder];
+    for (NSString *param in argList) {
+        NSObjectIsEmptyAssertLoopContinue(param);
+        
+        [builtString appendString:NSStringWhitespacePlaceholder];
 
-		if (colonIndexBase == -1) {
-			// Guess where the colon (:) should go.
-			//
-			// A colon is supposed to represent a section of an outgoing command
-			// that has a paramater which contains spaces. For example, PRIVMSG
-			// is in the formoat "PRIVMSG #channel :long message" — The message
-			// will have spaces part of it, so we inform the server.
-			
-			if (colonIndexCount == (argList.count - 1) && ([param hasPrefix:@":"] || [param contains:NSStringWhitespacePlaceholder])) {
-				[builtString appendString:@":"];
-			}
-		} else {
-			// We know where it goes thanks to the command index.
-			
-			if (colonIndexCount == colonIndexBase) {
-				[builtString appendString:@":"];
-			}
-		}
+        if (colonIndexBase == -1) {
+            // Guess where the colon (:) should go.
+            //
+            // A colon is supposed to represent a section of an outgoing command
+            // that has a paramater which contains spaces. For example, PRIVMSG
+            // is in the formoat "PRIVMSG #channel :long message" — The message
+            // will have spaces part of it, so we inform the server.
+            
+            if (colonIndexCount == (argList.count - 1) && ([param hasPrefix:@":"] || [param contains:NSStringWhitespacePlaceholder])) {
+                [builtString appendString:@":"];
+            }
+        } else {
+            // We know where it goes thanks to the command index.
+            
+            if (colonIndexCount == colonIndexBase) {
+                [builtString appendString:@":"];
+            }
+        }
 
-		[builtString appendString:param];
+        [builtString appendString:param];
 
-		colonIndexCount += 1;
-	}
+        colonIndexCount += 1;
+    }
 
-	return builtString;
+    return builtString;
 }
 
 @end

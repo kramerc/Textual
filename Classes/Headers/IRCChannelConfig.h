@@ -38,8 +38,8 @@
 #import "TextualApplication.h"
 
 typedef enum IRCChannelType : NSInteger {
-	IRCChannelNormalType,
-	IRCChannelPrivateMessageType,
+    IRCChannelNormalType,
+    IRCChannelPrivateMessageType,
 } IRCChannelType;
 
 @interface IRCChannelConfig : NSObject <NSMutableCopying>

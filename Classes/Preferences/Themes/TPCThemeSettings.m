@@ -49,57 +49,57 @@
 
 - (NSColor *)colorForKey:(NSString *)key fromDictionary:(NSDictionary *)dict
 {
-	NSString *hexValue = [dict objectForKey:key];
+    NSString *hexValue = [dict objectForKey:key];
 
-	/* Supported format: #FFF or #FFFFFF */
-	if ([hexValue length] == 7 || [hexValue length] == 4) {
-		return [NSColor fromCSS:hexValue];
-	}
+    /* Supported format: #FFF or #FFFFFF */
+    if ([hexValue length] == 7 || [hexValue length] == 4) {
+        return [NSColor fromCSS:hexValue];
+    }
 
-	return nil;
+    return nil;
 }
 
 - (NSInteger)integerForKey:(NSString *)key fromDictionary:(NSDictionary *)dict
 {
-	return [dict integerForKey:key];
+    return [dict integerForKey:key];
 }
 
 - (TXNSDouble)doubleForKey:(NSString *)key fromDictionary:(NSDictionary *)dict
 {
-	return [dict doubleForKey:key];
+    return [dict doubleForKey:key];
 }
 
 - (NSString *)stringForKey:(NSString *)key fromDictionary:(NSDictionary *)dict
 {
-	return [dict stringForKey:key];
+    return [dict stringForKey:key];
 }
 
 - (BOOL)boolForKey:(NSString *)key fromDictionary:(NSDictionary *)dict
 {
-	return [dict boolForKey:key];
+    return [dict boolForKey:key];
 }
 
 - (NSFont *)fontForKey:(NSString *)key fromDictionary:(NSDictionary *)dict
 {
-	NSDictionary *fontDict = [dict dictionaryForKey:key];
+    NSDictionary *fontDict = [dict dictionaryForKey:key];
 
-	NSAssertReturnR((fontDict.count == 2), nil);
-	
-	NSString *fontName = [fontDict stringForKey:@"Font Name"];
+    NSAssertReturnR((fontDict.count == 2), nil);
+    
+    NSString *fontName = [fontDict stringForKey:@"Font Name"];
 
-	NSInteger fontSize = [fontDict integerForKey:@"Font Size"];
+    NSInteger fontSize = [fontDict integerForKey:@"Font Size"];
 
-	NSObjectIsEmptyAssertReturn(fontName, nil);
+    NSObjectIsEmptyAssertReturn(fontName, nil);
 
-	if ([NSFont fontIsAvailable:fontName] && fontSize >= 5.0) {
-		NSFont *theFont = [NSFont fontWithName:fontName size:fontSize];
+    if ([NSFont fontIsAvailable:fontName] && fontSize >= 5.0) {
+        NSFont *theFont = [NSFont fontWithName:fontName size:fontSize];
 
-		PointerIsEmptyAssertReturn(theFont, nil);
+        PointerIsEmptyAssertReturn(theFont, nil);
 
-		return theFont;
-	}
+        return theFont;
+    }
 
-	return nil;
+    return nil;
 }
 
 #pragma mark -
@@ -107,67 +107,67 @@
 
 - (NSString *)templateNameWithLineType:(TVCLogLineType)type
 {
-	NSString *typestr = [TVCLogLine lineTypeString:type];
+    NSString *typestr = [TVCLogLine lineTypeString:type];
 
-	return [@"Line Types/" stringByAppendingString:typestr];
+    return [@"Line Types/" stringByAppendingString:typestr];
 }
 
 - (NSString *)applicationTemplateRepositoryPath
 {
-	NSString *baseURL = [TPCPreferences applicationResourcesFolderPath];
-	
-	return [baseURL stringByAppendingPathComponent:@"/Style Default Templates/"];
+    NSString *baseURL = [TPCPreferences applicationResourcesFolderPath];
+    
+    return [baseURL stringByAppendingPathComponent:@"/Style Default Templates/"];
 }
 
 - (NSString *)customTemplateRepositoryPath
 {
-	NSString *filename = [TPCThemeController extractThemeName:[TPCPreferences themeName]];
+    NSString *filename = [TPCThemeController extractThemeName:[TPCPreferences themeName]];
 
-	NSString *path = [[TPCPreferences customThemeFolderPath] stringByAppendingPathComponent:filename];
+    NSString *path = [[TPCPreferences customThemeFolderPath] stringByAppendingPathComponent:filename];
 
-	return [path stringByAppendingPathComponent:@"/Data/Templates/"];
+    return [path stringByAppendingPathComponent:@"/Data/Templates/"];
 }
 
 - (GRMustacheTemplate *)templateWithLineType:(TVCLogLineType)type
 {
-	return [self templateWithName:[self templateNameWithLineType:type]];
+    return [self templateWithName:[self templateNameWithLineType:type]];
 }
 
 - (GRMustacheTemplate *)templateWithName:(NSString *)name
 {
-	if ([name hasSuffix:@".mustache"] == NO) {
-		name = [name stringByAppendingString:@".mustache"];
-	}
-	
-	NSError *load_error = nil;
+    if ([name hasSuffix:@".mustache"] == NO) {
+        name = [name stringByAppendingString:@".mustache"];
+    }
+    
+    NSError *load_error = nil;
 
-	NSString *customTemplPath = [[self customTemplateRepositoryPath] stringByAppendingPathComponent:name];
-	NSString *applicationPath = [[self applicationTemplateRepositoryPath] stringByAppendingPathComponent:name];
+    NSString *customTemplPath = [[self customTemplateRepositoryPath] stringByAppendingPathComponent:name];
+    NSString *applicationPath = [[self applicationTemplateRepositoryPath] stringByAppendingPathComponent:name];
 
-	/* First look for a custom template. */
-	GRMustacheTemplate *tmpl = [GRMustacheTemplate templateFromContentsOfFile:customTemplPath error:&load_error];
+    /* First look for a custom template. */
+    GRMustacheTemplate *tmpl = [GRMustacheTemplate templateFromContentsOfFile:customTemplPath error:&load_error];
 
-	if (PointerIsEmpty(tmpl) || load_error) {
-		/* If no custom template is found, then revert to application defaults. */
-		if (load_error.code == GRMustacheErrorCodeTemplateNotFound || load_error.code == 260) {
-			load_error = nil;
-			
-			tmpl = [GRMustacheTemplate templateFromContentsOfFile:applicationPath error:&load_error];
+    if (PointerIsEmpty(tmpl) || load_error) {
+        /* If no custom template is found, then revert to application defaults. */
+        if (load_error.code == GRMustacheErrorCodeTemplateNotFound || load_error.code == 260) {
+            load_error = nil;
+            
+            tmpl = [GRMustacheTemplate templateFromContentsOfFile:applicationPath error:&load_error];
 
-			if (PointerIsNotEmpty(tmpl)) {
-				return tmpl; // Return default template. 
-			}
-		}
+            if (PointerIsNotEmpty(tmpl)) {
+                return tmpl; // Return default template. 
+            }
+        }
 
-		/* If either template failed to load, then log a error. */
+        /* If either template failed to load, then log a error. */
         if (load_error) {
-			LogToConsole(TXTLS(@"StyleTemplateLoadFailed"), load_error);
+            LogToConsole(TXTLS(@"StyleTemplateLoadFailed"), load_error);
         }
         
-		return nil;
-	}
+        return nil;
+    }
 
-	return tmpl; // Return custom template. 
+    return tmpl; // Return custom template. 
 }
 
 #pragma mark -
@@ -175,50 +175,50 @@
 
 - (void)reloadWithPath:(NSString *)path
 {
-	/* Load style settings dictionary. */
-	NSDictionary *styleSettings = nil;
-	
-	NSString *dictPath = [path stringByAppendingPathComponent:@"/Data/Settings/styleSettings.plist"];
+    /* Load style settings dictionary. */
+    NSDictionary *styleSettings = nil;
+    
+    NSString *dictPath = [path stringByAppendingPathComponent:@"/Data/Settings/styleSettings.plist"];
 
-	if ([RZFileManager() fileExistsAtPath:dictPath]) {
-		styleSettings = [NSDictionary dictionaryWithContentsOfFile:dictPath];
+    if ([RZFileManager() fileExistsAtPath:dictPath]) {
+        styleSettings = [NSDictionary dictionaryWithContentsOfFile:dictPath];
 
-		/* Parse the dictionary values. */
-		self.channelViewFont			= [self fontForKey:@"Override Channel Font" fromDictionary:styleSettings];
+        /* Parse the dictionary values. */
+        self.channelViewFont            = [self fontForKey:@"Override Channel Font" fromDictionary:styleSettings];
 
-		self.nicknameFormat				= [self stringForKey:@"Nickname Format" fromDictionary:styleSettings];
-		self.timestampFormat			= [self stringForKey:@"Timestamp Format" fromDictionary:styleSettings];
+        self.nicknameFormat             = [self stringForKey:@"Nickname Format" fromDictionary:styleSettings];
+        self.timestampFormat            = [self stringForKey:@"Timestamp Format" fromDictionary:styleSettings];
 
-		self.forceInvertSidebarColors	= [self boolForKey:@"Force Invert Sidebars" fromDictionary:styleSettings];
+        self.forceInvertSidebarColors   = [self boolForKey:@"Force Invert Sidebars" fromDictionary:styleSettings];
 
-		self.underlyingWindowColor		= [self colorForKey:@"Underlying Window Color" fromDictionary:styleSettings];
+        self.underlyingWindowColor      = [self colorForKey:@"Underlying Window Color" fromDictionary:styleSettings];
 
-		self.indentationOffset			= [self doubleForKey:@"Indentation Offset" fromDictionary:styleSettings];
+        self.indentationOffset          = [self doubleForKey:@"Indentation Offset" fromDictionary:styleSettings];
 
-		/* Disable indentation? */
-		if (self.indentationOffset <= 0.0) {
-			self.indentationOffset = TXThemeDisabledIndentationOffset;
-		}
-	}
+        /* Disable indentation? */
+        if (self.indentationOffset <= 0.0) {
+            self.indentationOffset = TXThemeDisabledIndentationOffset;
+        }
+    }
 
-	/* Load localizations. */
-	self.languageLocalizations = nil;
+    /* Load localizations. */
+    self.languageLocalizations = nil;
 
-	dictPath = [path stringByAppendingPathComponent:@"/Data/Settings/styleLocalizations.plist"];
+    dictPath = [path stringByAppendingPathComponent:@"/Data/Settings/styleLocalizations.plist"];
 
-	if ([RZFileManager() fileExistsAtPath:dictPath]) {
-		self.languageLocalizations = [NSDictionary dictionaryWithContentsOfFile:dictPath];
-	}
+    if ([RZFileManager() fileExistsAtPath:dictPath]) {
+        self.languageLocalizations = [NSDictionary dictionaryWithContentsOfFile:dictPath];
+    }
 
-	/* Inform our defaults controller about a few overrides. */
-	/* These setValue calls basically tell the NSUserDefaultsController for the "Preferences" 
-	 window that the active theme has overrode a few user configurable options. The window then 
-	 blanks out the options specified to prevent the user from modifying. */
-	
-	[[RZUserDefaultsController() values] setValue:@(NSObjectIsEmpty(self.nicknameFormat))		forKey:@"Theme -> Nickname Format Preference Enabled"];
-	[[RZUserDefaultsController() values] setValue:@(NSObjectIsEmpty(self.timestampFormat))		forKey:@"Theme -> Timestamp Format Preference Enabled"];
-    [[RZUserDefaultsController() values] setValue:@(PointerIsEmpty(self.channelViewFont))		forKey:@"Theme -> Channel Font Preference Enabled"];
-	[[RZUserDefaultsController() values] setValue:@(self.forceInvertSidebarColors == NO)		forKey:@"Theme -> Invert Sidebar Colors Preference Enabled"];
+    /* Inform our defaults controller about a few overrides. */
+    /* These setValue calls basically tell the NSUserDefaultsController for the "Preferences" 
+     window that the active theme has overrode a few user configurable options. The window then 
+     blanks out the options specified to prevent the user from modifying. */
+    
+    [[RZUserDefaultsController() values] setValue:@(NSObjectIsEmpty(self.nicknameFormat))       forKey:@"Theme -> Nickname Format Preference Enabled"];
+    [[RZUserDefaultsController() values] setValue:@(NSObjectIsEmpty(self.timestampFormat))      forKey:@"Theme -> Timestamp Format Preference Enabled"];
+    [[RZUserDefaultsController() values] setValue:@(PointerIsEmpty(self.channelViewFont))       forKey:@"Theme -> Channel Font Preference Enabled"];
+    [[RZUserDefaultsController() values] setValue:@(self.forceInvertSidebarColors == NO)        forKey:@"Theme -> Invert Sidebar Colors Preference Enabled"];
 }
 
 @end

@@ -38,8 +38,8 @@
 #import "TextualApplication.h"
 
 typedef enum TVCLogRendererType : NSInteger {
-	TVCLogRendererHTMLType,
-	TVCLogRendererAttributedStringType,
+    TVCLogRendererHTMLType,
+    TVCLogRendererAttributedStringType,
 } TVCLogRendererType;
 
 @interface TVCLogRenderer : NSObject
@@ -53,8 +53,8 @@ typedef enum TVCLogRendererType : NSInteger {
 + (NSString *)renderTemplate:(NSString *)templateName attributes:(NSDictionary *)templateToken;
 
 + (NSString *)renderBody:(NSString *)body 
-			  controller:(TVCLogController *)log
-			  renderType:(TVCLogRendererType)drawingType
-			  properties:(NSDictionary *)inputDictionary
-			  resultInfo:(NSDictionary **)outputDictionary;
+              controller:(TVCLogController *)log
+              renderType:(TVCLogRendererType)drawingType
+              properties:(NSDictionary *)inputDictionary
+              resultInfo:(NSDictionary **)outputDictionary;
 @end

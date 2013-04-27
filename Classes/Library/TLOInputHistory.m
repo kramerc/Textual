@@ -37,98 +37,98 @@
 
 #import "TextualApplication.h"
 
-#define _inputHistoryMax			50
+#define _inputHistoryMax            50
 
 @implementation TLOInputHistory
 
 - (id)init
 {
-	if ((self = [super init])) {
-		self.historyBuffer = [NSMutableArray new];
-	}
-	
-	return self;
+    if ((self = [super init])) {
+        self.historyBuffer = [NSMutableArray new];
+    }
+    
+    return self;
 }
 
 - (void)add:(NSAttributedString *)s
 {
-	NSAttributedString *lo = self.historyBuffer.lastObject;
-	
-	self.historyBufferPosition = self.historyBuffer.count;
+    NSAttributedString *lo = self.historyBuffer.lastObject;
+    
+    self.historyBufferPosition = self.historyBuffer.count;
 
-	NSObjectIsEmptyAssert(s);
-	
-	if ([lo.string isEqualToString:s.string] == NO) {
-		[self.historyBuffer safeAddObject:s];
-	
-		if (self.historyBuffer.count > _inputHistoryMax) {
-			[self.historyBuffer safeRemoveObjectAtIndex:0];
-		}
-	
-		self.historyBufferPosition = self.historyBuffer.count;
-	}
+    NSObjectIsEmptyAssert(s);
+    
+    if ([lo.string isEqualToString:s.string] == NO) {
+        [self.historyBuffer safeAddObject:s];
+    
+        if (self.historyBuffer.count > _inputHistoryMax) {
+            [self.historyBuffer safeRemoveObjectAtIndex:0];
+        }
+    
+        self.historyBufferPosition = self.historyBuffer.count;
+    }
 }
 
 - (NSAttributedString *)up:(NSAttributedString *)s
 {
-	if (NSObjectIsNotEmpty(s)) {
-		NSAttributedString *cur = nil;
-		
-		if (0 <= self.historyBufferPosition && self.historyBufferPosition < self.historyBuffer.count) {
-			cur = [self.historyBuffer safeObjectAtIndex:self.historyBufferPosition];
-		}
-		
-		if (NSObjectIsEmpty(cur) || [cur.string isEqualToString:s.string] == NO) {
-			[self.historyBuffer safeAddObject:s];
-			
-			if (self.historyBuffer.count > _inputHistoryMax) {
-				[self.historyBuffer safeRemoveObjectAtIndex:0];
-				
-				self.historyBufferPosition += 1;
-			}
-		}
-	}	
+    if (NSObjectIsNotEmpty(s)) {
+        NSAttributedString *cur = nil;
+        
+        if (0 <= self.historyBufferPosition && self.historyBufferPosition < self.historyBuffer.count) {
+            cur = [self.historyBuffer safeObjectAtIndex:self.historyBufferPosition];
+        }
+        
+        if (NSObjectIsEmpty(cur) || [cur.string isEqualToString:s.string] == NO) {
+            [self.historyBuffer safeAddObject:s];
+            
+            if (self.historyBuffer.count > _inputHistoryMax) {
+                [self.historyBuffer safeRemoveObjectAtIndex:0];
+                
+                self.historyBufferPosition += 1;
+            }
+        }
+    }   
 
-	self.historyBufferPosition -= 1;
-	
-	if (self.historyBufferPosition < 0) {
-		self.historyBufferPosition = 0;
-		
-		return nil;
-	} else if (0 <= self.historyBufferPosition && self.historyBufferPosition < self.historyBuffer.count) {
-		return [self.historyBuffer safeObjectAtIndex:self.historyBufferPosition];
-	} else {
-		return [NSAttributedString emptyString];
-	}
+    self.historyBufferPosition -= 1;
+    
+    if (self.historyBufferPosition < 0) {
+        self.historyBufferPosition = 0;
+        
+        return nil;
+    } else if (0 <= self.historyBufferPosition && self.historyBufferPosition < self.historyBuffer.count) {
+        return [self.historyBuffer safeObjectAtIndex:self.historyBufferPosition];
+    } else {
+        return [NSAttributedString emptyString];
+    }
 }
 
 - (NSAttributedString *)down:(NSAttributedString *)s
 {
-	if (NSObjectIsEmpty(s)) {
-		self.historyBufferPosition = self.historyBuffer.count;
-		
-		return nil;
-	}
-	
-	NSAttributedString *cur = nil;
-	
-	if (0 <= self.historyBufferPosition && self.historyBufferPosition < self.historyBuffer.count) {
-		cur = [self.historyBuffer safeObjectAtIndex:self.historyBufferPosition];
-	}
+    if (NSObjectIsEmpty(s)) {
+        self.historyBufferPosition = self.historyBuffer.count;
+        
+        return nil;
+    }
+    
+    NSAttributedString *cur = nil;
+    
+    if (0 <= self.historyBufferPosition && self.historyBufferPosition < self.historyBuffer.count) {
+        cur = [self.historyBuffer safeObjectAtIndex:self.historyBufferPosition];
+    }
 
-	if (NSObjectIsEmpty(cur) || [cur.string isEqualToString:s.string] == NO) {
-		[self add:s];
-		
-		return [NSAttributedString emptyString];
-	} else {
-		self.historyBufferPosition += 1;
-		
-		if (0 <= self.historyBufferPosition && self.historyBufferPosition < self.historyBuffer.count) {
-			return [self.historyBuffer safeObjectAtIndex:self.historyBufferPosition];
-		}
+    if (NSObjectIsEmpty(cur) || [cur.string isEqualToString:s.string] == NO) {
+        [self add:s];
+        
+        return [NSAttributedString emptyString];
+    } else {
+        self.historyBufferPosition += 1;
+        
+        if (0 <= self.historyBufferPosition && self.historyBufferPosition < self.historyBuffer.count) {
+            return [self.historyBuffer safeObjectAtIndex:self.historyBufferPosition];
+        }
 
-		return [NSAttributedString emptyString];
-	}
+        return [NSAttributedString emptyString];
+    }
 }
 
 @end

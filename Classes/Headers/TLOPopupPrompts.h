@@ -37,19 +37,19 @@
 
 #import "TextualApplication.h"
 
-#define TXPopupPromptSuppressionPrefix					@"Text Input Prompt Suppression -> "
+#define TXPopupPromptSuppressionPrefix                  @"Text Input Prompt Suppression -> "
 
 /* TXPopupPromptSpecialSuppressionTextValue tells the dialog to force suppression on
  the dialog using the given key as soon as it closes instead of actually asking the user. 
  
  When using this, it is the job of the caller to validate the suppression value. The alert
  will always return YES for suppressed alerts so make sure that is the value you want. */
-#define TXPopupPromptSpecialSuppressionTextValue		@"<TXPopupPromptSpecialSuppressionTextValue>"	
+#define TXPopupPromptSpecialSuppressionTextValue        @"<TXPopupPromptSpecialSuppressionTextValue>"   
 
 typedef enum TLOPopupPromptReturnType : NSInteger {
-	TLOPopupPromptReturnPrimaryType,
-	TLOPopupPromptReturnSecondaryType,
-	TLOPopupPromptReturnOtherType,
+    TLOPopupPromptReturnPrimaryType,
+    TLOPopupPromptReturnSecondaryType,
+    TLOPopupPromptReturnOtherType,
 } TLOPopupPromptReturnType;
 
 @interface TLOPopupPrompts : NSObject
@@ -62,26 +62,26 @@ typedef enum TLOPopupPromptReturnType : NSInteger {
 + (void)popupPromptNilSelector:(TLOPopupPromptReturnType)returnCode;
 
 + (BOOL)dialogWindowWithQuestion:(NSString *)bodyText
-						   title:(NSString *)titleText
-				   defaultButton:(NSString *)buttonDefault
-				 alternateButton:(NSString *)buttonAlternate
-				  suppressionKey:(NSString *)suppressKey
-				 suppressionText:(NSString *)suppressText;
+                           title:(NSString *)titleText
+                   defaultButton:(NSString *)buttonDefault
+                 alternateButton:(NSString *)buttonAlternate
+                  suppressionKey:(NSString *)suppressKey
+                 suppressionText:(NSString *)suppressText;
 
 + (NSString *)dialogWindowWithInput:(NSString *)bodyText
-							  title:(NSString *)titleText
-					  defaultButton:(NSString *)buttonDefault
-					alternateButton:(NSString *)buttonAlternate
-					   defaultInput:(NSString *)defaultValue;
+                              title:(NSString *)titleText
+                      defaultButton:(NSString *)buttonDefault
+                    alternateButton:(NSString *)buttonAlternate
+                       defaultInput:(NSString *)defaultValue;
 
 - (void)sheetWindowWithQuestion:(NSWindow *)window
-						 target:(id)targetClass
-						 action:(SEL)actionSelector
-						   body:(NSString *)bodyText
-						  title:(NSString *)titleText
-				  defaultButton:(NSString *)buttonDefault
-				alternateButton:(NSString *)buttonAlternate
-					otherButton:(NSString *)otherButton
-				 suppressionKey:(NSString *)suppressKey
-				suppressionText:(NSString *)suppressText;
+                         target:(id)targetClass
+                         action:(SEL)actionSelector
+                           body:(NSString *)bodyText
+                          title:(NSString *)titleText
+                  defaultButton:(NSString *)buttonDefault
+                alternateButton:(NSString *)buttonAlternate
+                    otherButton:(NSString *)otherButton
+                 suppressionKey:(NSString *)suppressKey
+                suppressionText:(NSString *)suppressText;
 @end

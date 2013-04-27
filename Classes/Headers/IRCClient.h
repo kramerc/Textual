@@ -37,21 +37,21 @@
 
 #import "IRCTreeItem.h" // superclass
 
-#import "TVCLogLine.h"			// typedef enum
-#import "TLOGrowlController.h"	// typedef enum
+#import "TVCLogLine.h"          // typedef enum
+#import "TLOGrowlController.h"  // typedef enum
 
 typedef enum IRCConnectMode : NSInteger {
-	IRCConnectNormalMode,
-	IRCConnectRetryMode,
-	IRCConnectReconnectMode,
-	IRCConnectBadSSLCertificateMode,
+    IRCConnectNormalMode,
+    IRCConnectRetryMode,
+    IRCConnectReconnectMode,
+    IRCConnectBadSSLCertificateMode,
 } IRCConnectMode;
 
 typedef enum IRCDisconnectMode : NSInteger {
-	IRCDisconnectNormalMode,
-	IRCDisconnectTrialPeriodMode,
-	IRCDisconnectComputerSleepMode,
-	IRCDisconnectBadSSLCertificateMode,
+    IRCDisconnectNormalMode,
+    IRCDisconnectTrialPeriodMode,
+    IRCDisconnectComputerSleepMode,
+    IRCDisconnectBadSSLCertificateMode,
 } IRCDisconnectMode;
 
 @interface IRCClient : IRCTreeItem
@@ -63,25 +63,25 @@ typedef enum IRCDisconnectMode : NSInteger {
 @property (nonatomic, assign) IRCConnectMode connectType;
 @property (nonatomic, assign) IRCDisconnectMode disconnectType;
 @property (nonatomic, assign) NSInteger connectDelay;
-@property (nonatomic, assign) BOOL autojoinInProgress;			// YES if autojoin is running, else NO.
-@property (nonatomic, assign) BOOL hasIRCopAccess;				// YES if local user is IRCOp, else NO.
-@property (nonatomic, assign) BOOL isAutojoined;				// YES if autojoin has been completed, else NO.
-@property (nonatomic, assign) BOOL isAway;						// YES if Textual has knowledge of local user being away, else NO.
-@property (nonatomic, assign) BOOL isConnected;					// YES if socket is connected, else NO.
-@property (nonatomic, assign) BOOL isConnecting;				// YES if socket is connecting, else, NO. Set to NO on raw numeric 001.
-@property (nonatomic, assign) BOOL isIdentifiedWithNickServ;	// YES if NickServ identification was successful, else NO.
-@property (nonatomic, assign) BOOL isLoggedIn;					// YES if connected to server, else NO. Set to YES on raw numeric 001.
-@property (nonatomic, assign) BOOL isQuitting;					// YES if connection to IRC server is being quit, else NO.
-@property (nonatomic, assign) BOOL isWaitingForNickServ;		// YES if NickServ identification is pending, else NO.
-@property (nonatomic, assign) BOOL rawModeEnabled;				// YES if sent & received data should be logged to console, else NO.
-@property (nonatomic, assign) BOOL reconnectEnabled;			// YES if reconnection is allowed, else NO.
-@property (nonatomic, assign) BOOL serverHasNickServ;			// YES if NickServ service was found on server, else NO.
-@property (nonatomic, assign) BOOL CAPidentifyCTCP;				// YES if identify-ctcp CAP supported.
-@property (nonatomic, assign) BOOL CAPidentifyMsg;				// YES if identify-msg CAP supported.
-@property (nonatomic, assign) BOOL CAPinSASLRequest;			// YES if in SASL CAP authentication request, else NO.
-@property (nonatomic, assign) BOOL CAPisIdentifiedWithSASL;		// YES if SASL authentication was successful, else NO.
-@property (nonatomic, assign) BOOL CAPmultiPrefix;				// YES if multi-prefix CAP supported.
-@property (nonatomic, assign) BOOL CAPuserhostInNames;			// YES if userhost-in-names CAP supported.
+@property (nonatomic, assign) BOOL autojoinInProgress;          // YES if autojoin is running, else NO.
+@property (nonatomic, assign) BOOL hasIRCopAccess;              // YES if local user is IRCOp, else NO.
+@property (nonatomic, assign) BOOL isAutojoined;                // YES if autojoin has been completed, else NO.
+@property (nonatomic, assign) BOOL isAway;                      // YES if Textual has knowledge of local user being away, else NO.
+@property (nonatomic, assign) BOOL isConnected;                 // YES if socket is connected, else NO.
+@property (nonatomic, assign) BOOL isConnecting;                // YES if socket is connecting, else, NO. Set to NO on raw numeric 001.
+@property (nonatomic, assign) BOOL isIdentifiedWithNickServ;    // YES if NickServ identification was successful, else NO.
+@property (nonatomic, assign) BOOL isLoggedIn;                  // YES if connected to server, else NO. Set to YES on raw numeric 001.
+@property (nonatomic, assign) BOOL isQuitting;                  // YES if connection to IRC server is being quit, else NO.
+@property (nonatomic, assign) BOOL isWaitingForNickServ;        // YES if NickServ identification is pending, else NO.
+@property (nonatomic, assign) BOOL rawModeEnabled;              // YES if sent & received data should be logged to console, else NO.
+@property (nonatomic, assign) BOOL reconnectEnabled;            // YES if reconnection is allowed, else NO.
+@property (nonatomic, assign) BOOL serverHasNickServ;           // YES if NickServ service was found on server, else NO.
+@property (nonatomic, assign) BOOL CAPidentifyCTCP;             // YES if identify-ctcp CAP supported.
+@property (nonatomic, assign) BOOL CAPidentifyMsg;              // YES if identify-msg CAP supported.
+@property (nonatomic, assign) BOOL CAPinSASLRequest;            // YES if in SASL CAP authentication request, else NO.
+@property (nonatomic, assign) BOOL CAPisIdentifiedWithSASL;     // YES if SASL authentication was successful, else NO.
+@property (nonatomic, assign) BOOL CAPmultiPrefix;              // YES if multi-prefix CAP supported.
+@property (nonatomic, assign) BOOL CAPuserhostInNames;          // YES if userhost-in-names CAP supported.
 @property (nonatomic, assign) BOOL CAPawayNotify;               // YES if away-notify CAP supported.
 @property (nonatomic, strong) NSMutableArray *CAPacceptedCaps;
 @property (nonatomic, strong) NSMutableArray *CAPpendingCaps;

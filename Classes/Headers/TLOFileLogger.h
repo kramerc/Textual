@@ -37,9 +37,9 @@
 
 #import "TextualApplication.h"
 
-#define TLOFileLoggerConsoleDirectoryName				@"Console"
-#define TLOFileLoggerChannelDirectoryName				@"Channels"
-#define TLOFileLoggerPrivateMessageDirectoryName		@"Queries"
+#define TLOFileLoggerConsoleDirectoryName               @"Console"
+#define TLOFileLoggerChannelDirectoryName               @"Channels"
+#define TLOFileLoggerPrivateMessageDirectoryName        @"Queries"
 
 @interface TLOFileLogger : NSObject
 @property (nonatomic, nweak) IRCClient *client;
@@ -62,9 +62,9 @@
 // Data read is pretty hit-or-miss for plain text logging.
 // This class is designed to be used internally by Textual.
 // It is not recommended to try using it inside a plugin.
-- (id)data; // Types: (NSData			writePlainText == YES),
-			//		  (NSDictionary		writePlainText == NO)
-			//			or nil
+- (id)data; // Types: (NSData           writePlainText == YES),
+            //        (NSDictionary     writePlainText == NO)
+            //          or nil
 
 - (NSString *)buildPath;
 

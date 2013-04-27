@@ -37,17 +37,17 @@
 
 #import "TextualApplication.h"
 
-#define TXStringIsAlphabetic(c)						('a' <= (c) && (c) <= 'z' || 'A' <= (c) && (c) <= 'Z')
-#define TXStringIsBase10Numeric(c)					('0' <= (c) && (c) <= '9')
-#define TXStringIsAlphabeticNumeric(c)				(TXStringIsAlphabetic(c) || TXStringIsBase10Numeric(c))
-#define TXStringIsWordLetter(c)						(TXStringIsAlphabeticNumeric(c) || (c) == '_')
-#define TXStringIsIRCColor(c,f)						([NSNumber compareIRCColor:c against:f])
+#define TXStringIsAlphabetic(c)                     ('a' <= (c) && (c) <= 'z' || 'A' <= (c) && (c) <= 'Z')
+#define TXStringIsBase10Numeric(c)                  ('0' <= (c) && (c) <= '9')
+#define TXStringIsAlphabeticNumeric(c)              (TXStringIsAlphabetic(c) || TXStringIsBase10Numeric(c))
+#define TXStringIsWordLetter(c)                     (TXStringIsAlphabeticNumeric(c) || (c) == '_')
+#define TXStringIsIRCColor(c,f)                     ([NSNumber compareIRCColor:c against:f])
 
-#define NSStringEmptyPlaceholder			@""
-#define NSStringNewlinePlaceholder			@"\n"
-#define NSStringWhitespacePlaceholder		@" "
+#define NSStringEmptyPlaceholder            @""
+#define NSStringNewlinePlaceholder          @"\n"
+#define NSStringWhitespacePlaceholder       @" "
 
-#define NSStringNilValueSubstitute(s)		((s == nil) ? NSStringEmptyPlaceholder : s)
+#define NSStringNilValueSubstitute(s)       ((s == nil) ? NSStringEmptyPlaceholder : s)
 
 #pragma mark 
 #pragma mark String Helpers

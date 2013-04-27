@@ -41,36 +41,36 @@
 
 - (void)startSheet
 {
-	[self startSheetWithWindow:self.window];
+    [self startSheetWithWindow:self.window];
 }
 
 - (void)startSheetWithWindow:(NSWindow *)awindow
 {
-	[NSApp beginSheet:self.sheet
-	   modalForWindow:awindow
-		modalDelegate:self
-	   didEndSelector:@selector(sheetDidEnd:returnCode:contextInfo:)
-		  contextInfo:nil];
+    [NSApp beginSheet:self.sheet
+       modalForWindow:awindow
+        modalDelegate:self
+       didEndSelector:@selector(sheetDidEnd:returnCode:contextInfo:)
+          contextInfo:nil];
 }
 
 - (void)endSheet
 {
-	[NSApp endSheet:self.sheet];
+    [NSApp endSheet:self.sheet];
 }
 
 - (void)sheetDidEnd:(NSWindow *)sender returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo
 {
-	[self.sheet close];
+    [self.sheet close];
 }
 
 - (void)ok:(id)sender
 {
-	[self endSheet];
+    [self endSheet];
 }
 
 - (void)cancel:(id)sender
 {
-	[self endSheet];
+    [self endSheet];
 }
 
 @end

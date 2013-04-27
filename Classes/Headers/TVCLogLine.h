@@ -37,39 +37,39 @@
 
 #import "TextualApplication.h"
 
-#define TXLogLineUndefinedNicknameFormat	@"<%@%n>"
-#define TXLogLineActionNicknameFormat		@"%@ "
-#define TXLogLineNoticeNicknameFormat		@"-%@-"
-#define TXLogLineCTCPTypeNicknameFormat		@"-%@ CTCP-"
+#define TXLogLineUndefinedNicknameFormat    @"<%@%n>"
+#define TXLogLineActionNicknameFormat       @"%@ "
+#define TXLogLineNoticeNicknameFormat       @"-%@-"
+#define TXLogLineCTCPTypeNicknameFormat     @"-%@ CTCP-"
 
-#define TXLogLineSpecialNoticeMessageFormat		@"[%@]: %@"
+#define TXLogLineSpecialNoticeMessageFormat     @"[%@]: %@"
 
 typedef enum TVCLogLineType : NSInteger {
-	TVCLogLineActionType,
-	TVCLogLineActionNoHighlightType,
-	TVCLogLineCTCPType,
-	TVCLogLineDebugType,
-	TVCLogLineInviteType,
-	TVCLogLineJoinType,
-	TVCLogLineKickType,
-	TVCLogLineKillType,
-	TVCLogLineModeType,
-	TVCLogLineNickType,
-	TVCLogLineNoticeType,
-	TVCLogLinePartType,
-	TVCLogLinePrivateMessageType,
-	TVCLogLinePrivateMessageNoHighlightType,
-	TVCLogLineQuitType,
-	TVCLogLineTopicType,
-	TVCLogLineWebsiteType,
+    TVCLogLineActionType,
+    TVCLogLineActionNoHighlightType,
+    TVCLogLineCTCPType,
+    TVCLogLineDebugType,
+    TVCLogLineInviteType,
+    TVCLogLineJoinType,
+    TVCLogLineKickType,
+    TVCLogLineKillType,
+    TVCLogLineModeType,
+    TVCLogLineNickType,
+    TVCLogLineNoticeType,
+    TVCLogLinePartType,
+    TVCLogLinePrivateMessageType,
+    TVCLogLinePrivateMessageNoHighlightType,
+    TVCLogLineQuitType,
+    TVCLogLineTopicType,
+    TVCLogLineWebsiteType,
 } TVCLogLineType;
 
 typedef enum TVCLogMemberType : NSInteger {
-	TVCLogMemberNormalType,
-	TVCLogMemberLocalUserType,
+    TVCLogMemberNormalType,
+    TVCLogMemberLocalUserType,
 } TVCLogMemberType;
 
-#define IRCCommandFromLineType(t)		[TVCLogLine lineTypeString:t]
+#define IRCCommandFromLineType(t)       [TVCLogLine lineTypeString:t]
 
 @interface TVCLogLine : NSObject
 @property (nonatomic, assign) BOOL isEncrypted;
@@ -89,6 +89,6 @@ typedef enum TVCLogMemberType : NSInteger {
 + (NSString *)lineTypeString:(TVCLogLineType)type;
 + (NSString *)memberTypeString:(TVCLogMemberType)type;
 
-- (id)initWithDictionary:(NSDictionary *)dic;	// For internal use only. A plugin should not call.
-- (NSDictionary *)dictionaryValue;				// For internal use only. A plugin should not call.
+- (id)initWithDictionary:(NSDictionary *)dic;   // For internal use only. A plugin should not call.
+- (NSDictionary *)dictionaryValue;              // For internal use only. A plugin should not call.
 @end

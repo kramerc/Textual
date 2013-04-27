@@ -37,8 +37,8 @@
 
 #import "TextualApplication.h"
 
-#define TPCPreferencesMigrationAssistantUpgradePath		@"2.1.1"
-#define TPCPreferencesMigrationAssistantVersionKey		@"MigrationAssistantVersion"
+#define TPCPreferencesMigrationAssistantUpgradePath     @"2.1.1"
+#define TPCPreferencesMigrationAssistantVersionKey      @"MigrationAssistantVersion"
 
 @interface TPCPreferencesMigrationAssistant : NSObject
 + (void)convertExistingGlobalPreferences;

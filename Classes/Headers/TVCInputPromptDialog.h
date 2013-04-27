@@ -55,10 +55,10 @@
 - (NSString *)promptValue;
 
 - (void)alertWithMessageTitle:(NSString *)messageTitle
-				defaultButton:(NSString *)defaultButtonTitle
-			  alternateButton:(NSString *)alternateButtonTitle
-			  informativeText:(NSString *)informativeText
-			 defaultUserInput:(NSString *)userInputText;
+                defaultButton:(NSString *)defaultButtonTitle
+              alternateButton:(NSString *)alternateButtonTitle
+              informativeText:(NSString *)informativeText
+             defaultUserInput:(NSString *)userInputText;
 
 - (void)modalDidCloseWithDefaultButton:(id)sender;
 - (void)modalDidCloseWithAlternateButton:(id)sender;

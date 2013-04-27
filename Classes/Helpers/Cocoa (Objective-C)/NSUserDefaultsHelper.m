@@ -43,14 +43,14 @@
 {
     NSData *colorData = [self dataForKey:aKey];
 
-	NSObjectIsEmptyAssertReturn(colorData, nil);
+    NSObjectIsEmptyAssertReturn(colorData, nil);
 
     return [NSUnarchiver unarchiveObjectWithData:colorData];
 }
 
 - (void)setColor:(NSColor *)aColor forKey:(NSString *)aKey
 {
-	[self setObject:[NSArchiver archivedDataWithRootObject:aColor] forKey:aKey];
+    [self setObject:[NSArchiver archivedDataWithRootObject:aColor] forKey:aKey];
 }
 
 @end

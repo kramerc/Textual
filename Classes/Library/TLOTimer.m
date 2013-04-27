@@ -47,59 +47,59 @@
 
 - (id)init
 {
-	if ((self = [super init])) {
-		self.reqeatTimer = YES;
-		
-		self.selector = nil;
-		self.delegate = nil;
-	}
+    if ((self = [super init])) {
+        self.reqeatTimer = YES;
+        
+        self.selector = nil;
+        self.delegate = nil;
+    }
 
-	return self;
+    return self;
 }
 
 - (void)dealloc
 {
-	[self stop];
+    [self stop];
 }
 
 - (BOOL)timerIsActive
 {
-	return PointerIsNotEmpty(self.timer);
+    return PointerIsNotEmpty(self.timer);
 }
 
 - (void)start:(NSTimeInterval)interval
 {
-	PointerIsEmptyAssert(self.delegate);
-	PointerIsEmptyAssert(self.selector);
+    PointerIsEmptyAssert(self.delegate);
+    PointerIsEmptyAssert(self.selector);
 
-	[self stop];
+    [self stop];
 
-	self.timer = [NSTimer scheduledTimerWithTimeInterval:interval
-												  target:self
-												selector:@selector(onTimer:)
-												userInfo:nil
-												 repeats:self.reqeatTimer];
+    self.timer = [NSTimer scheduledTimerWithTimeInterval:interval
+                                                  target:self
+                                                selector:@selector(onTimer:)
+                                                userInfo:nil
+                                                 repeats:self.reqeatTimer];
 
-	[[NSRunLoop currentRunLoop] addTimer:self.timer forMode:NSEventTrackingRunLoopMode];
+    [[NSRunLoop currentRunLoop] addTimer:self.timer forMode:NSEventTrackingRunLoopMode];
 }
 
 - (void)stop
 {
-	[self.timer invalidate];
-	self.timer = nil;
+    [self.timer invalidate];
+    self.timer = nil;
 }
 
 - (void)onTimer:(id)sender
 {
-	NSAssertReturn(self.timerIsActive);
+    NSAssertReturn(self.timerIsActive);
 
-	if (self.reqeatTimer == NO) {
-		[self stop];
-	}
+    if (self.reqeatTimer == NO) {
+        [self stop];
+    }
 
-	if ([self.delegate respondsToSelector:self.selector]) {
-		objc_msgSend(self.delegate, self.selector, self);
-	}
+    if ([self.delegate respondsToSelector:self.selector]) {
+        objc_msgSend(self.delegate, self.selector, self);
+    }
 }
 
 @end

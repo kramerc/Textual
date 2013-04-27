@@ -47,18 +47,18 @@
 
 - (id)init
 {
-	if ((self = [super init])) {
-		self.isSpeaking = NO;
-		
-		self.itemsToBeSpoken = [NSMutableArray array];
+    if ((self = [super init])) {
+        self.isSpeaking = NO;
+        
+        self.itemsToBeSpoken = [NSMutableArray array];
 
-		self.speechSynthesizer = [NSSpeechSynthesizer new];
-		self.speechSynthesizer.delegate = self;
+        self.speechSynthesizer = [NSSpeechSynthesizer new];
+        self.speechSynthesizer.delegate = self;
 
-		return self;
-	}
+        return self;
+    }
 
-	return nil;
+    return nil;
 }
 
 #pragma mark -
@@ -66,44 +66,44 @@
 
 - (void)speak:(NSString *)message
 {
-	NSObjectIsEmptyAssert(message);
+    NSObjectIsEmptyAssert(message);
 
-	if (self.isSpeaking == NO) {
-		/* If we are already speaking, then we will allow the 
-		 delegate to the call the next queue entry once it is
-		 finished. We will only call it directly from here if
-		 nothing is being spoken because the delegate would
-		 never be called. */
+    if (self.isSpeaking == NO) {
+        /* If we are already speaking, then we will allow the 
+         delegate to the call the next queue entry once it is
+         finished. We will only call it directly from here if
+         nothing is being spoken because the delegate would
+         never be called. */
 
-		self.isSpeaking = YES;
+        self.isSpeaking = YES;
 
-		[self.speechSynthesizer startSpeakingString:message];
-	} else {
-		/* If we are talking right now, then add the message to the queue
-		 so that it can be processed after the delegate has called us. */
+        [self.speechSynthesizer startSpeakingString:message];
+    } else {
+        /* If we are talking right now, then add the message to the queue
+         so that it can be processed after the delegate has called us. */
 
-		[self.itemsToBeSpoken safeAddObject:message];
-	}
+        [self.itemsToBeSpoken safeAddObject:message];
+    }
 }
 
 - (void)stopSpeakingAndMoveForward
 {
-	NSAssertReturn(self.isSpeaking);
+    NSAssertReturn(self.isSpeaking);
 
-	[self.speechSynthesizer stopSpeaking]; // Will call delegate to do next item.
+    [self.speechSynthesizer stopSpeaking]; // Will call delegate to do next item.
 }
 
 - (void)speakNextQueueEntry
 {
-	NSObjectIsEmptyAssert(self.itemsToBeSpoken);
+    NSObjectIsEmptyAssert(self.itemsToBeSpoken);
 
-	self.isSpeaking = YES;
+    self.isSpeaking = YES;
 
-	NSString *nextMessage = [self.itemsToBeSpoken safeObjectAtIndex:0];
+    NSString *nextMessage = [self.itemsToBeSpoken safeObjectAtIndex:0];
 
-	[self.itemsToBeSpoken removeObjectAtIndex:0];
+    [self.itemsToBeSpoken removeObjectAtIndex:0];
 
-	[self.speechSynthesizer startSpeakingString:nextMessage];
+    [self.speechSynthesizer startSpeakingString:nextMessage];
 }
 
 #pragma mark -
@@ -111,11 +111,11 @@
 
 - (void)speechSynthesizer:(NSSpeechSynthesizer *)sender didFinishSpeaking:(BOOL)finishedSpeaking
 {
-	self.isSpeaking = NO;
+    self.isSpeaking = NO;
 
-	NSObjectIsEmptyAssert(self.itemsToBeSpoken); // Nothing to do.
-	
-	[self speakNextQueueEntry];
+    NSObjectIsEmptyAssert(self.itemsToBeSpoken); // Nothing to do.
+    
+    [self speakNextQueueEntry];
 }
 
 @end

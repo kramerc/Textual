@@ -43,57 +43,57 @@ const CGFloat kRotationForItalicText = -14.0;
 
 - (NSFont *)convertToItalics
 { 
-	NSFont *theFont = [RZFontManager() convertFont:self toHaveTrait:NSItalicFontMask];  
-	
-	if ([self fontTraitSet:NSItalicFontMask] == NO) {       
-		NSAffineTransform *fontTransform = [NSAffineTransform transform];    
-		NSAffineTransform *italicTransform	= [NSAffineTransform transform];  
-		
-		[fontTransform scaleBy:self.pointSize];
-		
-		NSAffineTransformStruct italicTransformData;   
-		
-		italicTransformData.m11 = 1;       
-		italicTransformData.m12 = 0;       
-		italicTransformData.m21 = (-tanf(kRotationForItalicText * (acosf(0) / 90)));        
-		italicTransformData.m22 = 1;         
-		italicTransformData.tX = 0;       
-		italicTransformData.tY = 0;      
-		     
-		[italicTransform setTransformStruct:italicTransformData];      
-		[fontTransform appendTransform:italicTransform]; 
-		
-		theFont = [NSFont fontWithDescriptor:[theFont fontDescriptor] textTransform:fontTransform];  
-		
-		if (theFont) {
-			return theFont;
-		}
-	}
-	
-	return self;
+    NSFont *theFont = [RZFontManager() convertFont:self toHaveTrait:NSItalicFontMask];  
+    
+    if ([self fontTraitSet:NSItalicFontMask] == NO) {       
+        NSAffineTransform *fontTransform = [NSAffineTransform transform];    
+        NSAffineTransform *italicTransform  = [NSAffineTransform transform];  
+        
+        [fontTransform scaleBy:self.pointSize];
+        
+        NSAffineTransformStruct italicTransformData;   
+        
+        italicTransformData.m11 = 1;       
+        italicTransformData.m12 = 0;       
+        italicTransformData.m21 = (-tanf(kRotationForItalicText * (acosf(0) / 90)));        
+        italicTransformData.m22 = 1;         
+        italicTransformData.tX = 0;       
+        italicTransformData.tY = 0;      
+             
+        [italicTransform setTransformStruct:italicTransformData];      
+        [fontTransform appendTransform:italicTransform]; 
+        
+        theFont = [NSFont fontWithDescriptor:[theFont fontDescriptor] textTransform:fontTransform];  
+        
+        if (theFont) {
+            return theFont;
+        }
+    }
+    
+    return self;
 }
 
 - (BOOL)fontTraitSet:(NSFontTraitMask)trait
 {
-	NSFontTraitMask fontTraits = [RZFontManager() traitsOfFont:self];    
-	
-	return ((fontTraits & trait) == trait);
+    NSFontTraitMask fontTraits = [RZFontManager() traitsOfFont:self];    
+    
+    return ((fontTraits & trait) == trait);
 }
 
 + (BOOL)fontIsAvailable:(NSString *)fontName
 {
-	if ([NSFont fontWithName:fontName size:9.0]) {
-		return YES;
-	}
-	
-	NSArray *systemFonts = [RZFontManager() availableFonts];
-	
-	return ([systemFonts containsObjectIgnoringCase:fontName]);
+    if ([NSFont fontWithName:fontName size:9.0]) {
+        return YES;
+    }
+    
+    NSArray *systemFonts = [RZFontManager() availableFonts];
+    
+    return ([systemFonts containsObjectIgnoringCase:fontName]);
 }
 
 - (BOOL)fontMatchesName:(NSString *)fontName
 {
-	return ([self.fontName isEqualIgnoringCase:fontName]);
+    return ([self.fontName isEqualIgnoringCase:fontName]);
 }
 
 @end

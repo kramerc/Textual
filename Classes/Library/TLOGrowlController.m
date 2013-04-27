@@ -37,7 +37,7 @@
 
 #import "TextualApplication.h"
 
-#define _clickInterval			2
+#define _clickInterval          2
 
 @interface TLOGrowlController ()
 @property (nonatomic, strong) NSDictionary *lastClickedContext;
@@ -48,127 +48,127 @@
 
 - (id)init
 {
-	if ((self = [super init])) {
+    if ((self = [super init])) {
 #ifdef TXForceNativeNotificationCenterDispatch
-		if ([TPCPreferences featureAvailableToOSXMountainLion]) {
-			[RZUserNotificationCenter() setDelegate:self];
-			
-			return self;
-		}
+        if ([TPCPreferences featureAvailableToOSXMountainLion]) {
+            [RZUserNotificationCenter() setDelegate:self];
+            
+            return self;
+        }
 #endif
-		
-		[GrowlApplicationBridge setGrowlDelegate:self];
-	}
-	
-	return self;
+        
+        [GrowlApplicationBridge setGrowlDelegate:self];
+    }
+    
+    return self;
 }
 
 - (void)notify:(TXNotificationType)eventType title:(NSString *)eventTitle description:(NSString *)eventDescription userInfo:(NSDictionary *)eventContext
 {
-	NSAssertReturn([TPCPreferences growlEnabledForEvent:eventType]);
+    NSAssertReturn([TPCPreferences growlEnabledForEvent:eventType]);
 
-	/* titleForEvent: invokes TXTLS for the event type. */
-	NSString *eventKind = [TPCPreferences titleForEvent:eventType];
-	
-	NSInteger eventPriority = 0;
-	
-	switch (eventType) {
-		case TXNotificationHighlightType:
-		{
-			eventPriority = 1;
-			eventTitle = TXTFLS(@"NotificationHighlightMessageTitle", eventTitle);
-			
-			break;
-		}
-		case TXNotificationNewPrivateMessageType:
-		{
-			eventPriority = 1;
-			eventTitle = TXTLS(@"NotificationNewPrivateMessageMessageTitle");
-			
-			break;
-		}
-		case TXNotificationChannelMessageType:
-		{
-			eventTitle = TXTFLS(@"NotificationChannelMessageMessageTitle", eventTitle);
-			
-			break;
-		}
-		case TXNotificationChannelNoticeType:
-		{
-			eventTitle = TXTFLS(@"NotificationChannelNoticeMessageTitle", eventTitle);
-			
-			break;
-		}
-		case TXNotificationPrivateMessageType:
-		{
-			eventTitle = TXTLS(@"NotificationPrivateMessageMessageTitle");
-			
-			break;
-		}
-		case TXNotificationPrivateNoticeType:
-		{
-			eventTitle = TXTLS(@"NotificationPrivateNoticeMessageTitle");
-			
-			break;
-		}
-		case TXNotificationKickType:
-		{
-			eventTitle = TXTFLS(@"NotificationKickedMessageTitle", eventTitle);
-			
-			break;
-		}
-		case TXNotificationInviteType:
-		{
-			eventTitle = TXTFLS(@"NotificationInvitedMessageTitle", eventTitle);
-			
-			break;
-		}
-		case TXNotificationConnectType:
-		{
-			eventTitle = TXTFLS(@"NotificationConnectedMessageTitle", eventTitle);
-			eventDescription = TXTLS(@"NotificationConnectedMessageDescription");
-			
-			break;
-		}
-		case TXNotificationDisconnectType:
-		{
-			eventTitle = TXTFLS(@"NotificationDisconnectMessageTitle", eventTitle);
-			eventDescription = TXTLS(@"NotificationDisconnectMessageDescription");
-			
-			break;
-		}
-		case TXNotificationAddressBookMatchType: 
-		{
-			eventTitle = TXTLS(@"NotificationAddressBookMatchMessageTitle");
-			
-			break;
-		}
-	}
+    /* titleForEvent: invokes TXTLS for the event type. */
+    NSString *eventKind = [TPCPreferences titleForEvent:eventType];
+    
+    NSInteger eventPriority = 0;
+    
+    switch (eventType) {
+        case TXNotificationHighlightType:
+        {
+            eventPriority = 1;
+            eventTitle = TXTFLS(@"NotificationHighlightMessageTitle", eventTitle);
+            
+            break;
+        }
+        case TXNotificationNewPrivateMessageType:
+        {
+            eventPriority = 1;
+            eventTitle = TXTLS(@"NotificationNewPrivateMessageMessageTitle");
+            
+            break;
+        }
+        case TXNotificationChannelMessageType:
+        {
+            eventTitle = TXTFLS(@"NotificationChannelMessageMessageTitle", eventTitle);
+            
+            break;
+        }
+        case TXNotificationChannelNoticeType:
+        {
+            eventTitle = TXTFLS(@"NotificationChannelNoticeMessageTitle", eventTitle);
+            
+            break;
+        }
+        case TXNotificationPrivateMessageType:
+        {
+            eventTitle = TXTLS(@"NotificationPrivateMessageMessageTitle");
+            
+            break;
+        }
+        case TXNotificationPrivateNoticeType:
+        {
+            eventTitle = TXTLS(@"NotificationPrivateNoticeMessageTitle");
+            
+            break;
+        }
+        case TXNotificationKickType:
+        {
+            eventTitle = TXTFLS(@"NotificationKickedMessageTitle", eventTitle);
+            
+            break;
+        }
+        case TXNotificationInviteType:
+        {
+            eventTitle = TXTFLS(@"NotificationInvitedMessageTitle", eventTitle);
+            
+            break;
+        }
+        case TXNotificationConnectType:
+        {
+            eventTitle = TXTFLS(@"NotificationConnectedMessageTitle", eventTitle);
+            eventDescription = TXTLS(@"NotificationConnectedMessageDescription");
+            
+            break;
+        }
+        case TXNotificationDisconnectType:
+        {
+            eventTitle = TXTFLS(@"NotificationDisconnectMessageTitle", eventTitle);
+            eventDescription = TXTLS(@"NotificationDisconnectMessageDescription");
+            
+            break;
+        }
+        case TXNotificationAddressBookMatchType: 
+        {
+            eventTitle = TXTLS(@"NotificationAddressBookMatchMessageTitle");
+            
+            break;
+        }
+    }
 
-	eventDescription = [eventDescription stripIRCEffects];
+    eventDescription = [eventDescription stripIRCEffects];
 
 #ifdef TXForceNativeNotificationCenterDispatch
-	if ([TPCPreferences featureAvailableToOSXMountainLion]) {
-		NSUserNotification *notification = [NSUserNotification new];
-		
-		notification.title = eventTitle;
-		notification.informativeText = eventDescription;
-		notification.deliveryDate = [NSDate date];
-		notification.userInfo = eventContext;
-		
-		[RZUserNotificationCenter() scheduleNotification:notification];
-		
-		return;
-	}
+    if ([TPCPreferences featureAvailableToOSXMountainLion]) {
+        NSUserNotification *notification = [NSUserNotification new];
+        
+        notification.title = eventTitle;
+        notification.informativeText = eventDescription;
+        notification.deliveryDate = [NSDate date];
+        notification.userInfo = eventContext;
+        
+        [RZUserNotificationCenter() scheduleNotification:notification];
+        
+        return;
+    }
 #endif
-	
-	[GrowlApplicationBridge notifyWithTitle:eventTitle
-								description:eventDescription
-						   notificationName:eventKind
-								   iconData:nil
-								   priority:(int)eventPriority
-								   isSticky:NO
-							   clickContext:eventContext];
+    
+    [GrowlApplicationBridge notifyWithTitle:eventTitle
+                                description:eventDescription
+                           notificationName:eventKind
+                                   iconData:nil
+                                   priority:(int)eventPriority
+                                   isSticky:NO
+                               clickContext:eventContext];
 }
 
 /* NSUserNotificationCenter */
@@ -176,11 +176,11 @@
 #ifdef TXForceNativeNotificationCenterDispatch
 
 - (void)userNotificationCenter:(NSUserNotificationCenter *)center
-	   didActivateNotification:(NSUserNotification *)notification
+       didActivateNotification:(NSUserNotification *)notification
 {
-	[RZUserNotificationCenter() removeDeliveredNotification:notification];
-	
-	[self growlNotificationWasClicked:[notification userInfo]];
+    [RZUserNotificationCenter() removeDeliveredNotification:notification];
+    
+    [self growlNotificationWasClicked:[notification userInfo]];
 }
 
 #endif
@@ -189,69 +189,69 @@
 
 - (NSString *)applicationNameForGrowl
 {
-	return [TPCPreferences applicationName];
+    return [TPCPreferences applicationName];
 }
 
 - (NSDictionary *)registrationDictionaryForGrowl
 {
-	NSArray *allNotifications = @[
-		TXTLS(@"TXNotificationAddressBookMatchType"),
-		TXTLS(@"TXNotificationChannelMessageType"),
-		TXTLS(@"TXNotificationChannelNoticeType"),
-		TXTLS(@"TXNotificationConnectType"),
-		TXTLS(@"TXNotificationDisconnectType"),
-		TXTLS(@"TXNotificationHighlightType"),
-		TXTLS(@"TXNotificationInviteType"),
-		TXTLS(@"TXNotificationKickType"),
-		TXTLS(@"TXNotificationNewPrivateMessageType"),
-		TXTLS(@"TXNotificationPrivateMessageType"),
-		TXTLS(@"TXNotificationPrivateNoticeType")
-	];
-	
-	return @{
-		GROWL_NOTIFICATIONS_ALL : allNotifications,
-		GROWL_NOTIFICATIONS_DEFAULT : allNotifications
-	};
+    NSArray *allNotifications = @[
+        TXTLS(@"TXNotificationAddressBookMatchType"),
+        TXTLS(@"TXNotificationChannelMessageType"),
+        TXTLS(@"TXNotificationChannelNoticeType"),
+        TXTLS(@"TXNotificationConnectType"),
+        TXTLS(@"TXNotificationDisconnectType"),
+        TXTLS(@"TXNotificationHighlightType"),
+        TXTLS(@"TXNotificationInviteType"),
+        TXTLS(@"TXNotificationKickType"),
+        TXTLS(@"TXNotificationNewPrivateMessageType"),
+        TXTLS(@"TXNotificationPrivateMessageType"),
+        TXTLS(@"TXNotificationPrivateNoticeType")
+    ];
+    
+    return @{
+        GROWL_NOTIFICATIONS_ALL : allNotifications,
+        GROWL_NOTIFICATIONS_DEFAULT : allNotifications
+    };
 }
 
 - (void)growlNotificationWasClicked:(NSDictionary *)context 
 {
-	NSTimeInterval now = [NSDate epochTime];
-	
-	if ((now - self.lastClickedTime) < _clickInterval) {
-		if (self.lastClickedContext && [self.lastClickedContext isEqual:context]) {
-			return;
-		}
-	}
-	
-	self.lastClickedTime = now;
-	self.lastClickedContext = context;
+    NSTimeInterval now = [NSDate epochTime];
+    
+    if ((now - self.lastClickedTime) < _clickInterval) {
+        if (self.lastClickedContext && [self.lastClickedContext isEqual:context]) {
+            return;
+        }
+    }
+    
+    self.lastClickedTime = now;
+    self.lastClickedContext = context;
 
-	[self.masterController.mainWindow makeKeyAndOrderFront:nil];
+    [self.masterController.mainWindow makeKeyAndOrderFront:nil];
 
-	[NSApp activateIgnoringOtherApps:YES];
+    [NSApp activateIgnoringOtherApps:YES];
 
-	if ([context isKindOfClass:[NSDictionary class]]) {
-		NSString *uid = [context objectForKey:@"client"];
-		NSString *cid = [context objectForKey:@"channel"];
-		
-		IRCClient *u = nil;
-		IRCChannel *c = nil;
+    if ([context isKindOfClass:[NSDictionary class]]) {
+        NSString *uid = [context objectForKey:@"client"];
+        NSString *cid = [context objectForKey:@"channel"];
+        
+        IRCClient *u = nil;
+        IRCChannel *c = nil;
 
-		NSObjectIsEmptyAssert(uid);
-		
-		if (cid) {
-			c = [self.worldController findChannelByClientId:uid channelId:cid];
-		} else {
-			u = [self.worldController findClientById:uid];
-		}
-		
-		if (c) {
-			[self.worldController select:c];
-		} else if (u) {
-			[self.worldController select:u];
-		}
-	}
+        NSObjectIsEmptyAssert(uid);
+        
+        if (cid) {
+            c = [self.worldController findChannelByClientId:uid channelId:cid];
+        } else {
+            u = [self.worldController findClientById:uid];
+        }
+        
+        if (c) {
+            [self.worldController select:c];
+        } else if (u) {
+            [self.worldController select:u];
+        }
+    }
 }
 
 - (BOOL)hasNetworkClientEntitlement 

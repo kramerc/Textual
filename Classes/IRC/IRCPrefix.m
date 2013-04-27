@@ -41,14 +41,14 @@
 
 - (id)init
 {
-	if ((self = [super init])) {
-		self.hostmask	= NSStringEmptyPlaceholder;
-		self.nickname	= NSStringEmptyPlaceholder;
-		self.username	= NSStringEmptyPlaceholder;
-		self.address	= NSStringEmptyPlaceholder;
-	}
+    if ((self = [super init])) {
+        self.hostmask   = NSStringEmptyPlaceholder;
+        self.nickname   = NSStringEmptyPlaceholder;
+        self.username   = NSStringEmptyPlaceholder;
+        self.address    = NSStringEmptyPlaceholder;
+    }
 
-	return self;
+    return self;
 }
 
 @end

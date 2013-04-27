@@ -41,22 +41,22 @@
 
 - (NSString *)stringValue
 {
-	NSString *value = [super stringValue];
+    NSString *value = [super stringValue];
 
-	return [value trim];
+    return [value trim];
 }
 
 - (NSString *)firstTokenStringValue
 {
-	NSString *value = self.stringValue;
+    NSString *value = self.stringValue;
 
-	NSInteger spacePosition = [value stringPosition:NSStringWhitespacePlaceholder];
+    NSInteger spacePosition = [value stringPosition:NSStringWhitespacePlaceholder];
 
-	if (spacePosition >= 1) {
-		return [value safeSubstringToIndex:spacePosition];
-	}
+    if (spacePosition >= 1) {
+        return [value safeSubstringToIndex:spacePosition];
+    }
 
-	return value;
+    return value;
 }
 
 @end
@@ -65,14 +65,14 @@
 
 - (BOOL)isFocused
 {
-	return (self.window.firstResponder == self);
+    return (self.window.firstResponder == self);
 }
 
 - (void)focus
 {
     if ([self isFocused] == NO) {
-		[self.window makeFirstResponder:self];
-	}
+        [self.window makeFirstResponder:self];
+    }
 }
 
 - (NSRange)fullSelectionRange

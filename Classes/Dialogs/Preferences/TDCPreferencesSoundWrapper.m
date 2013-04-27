@@ -41,75 +41,75 @@
 
 - (id)initWithEventType:(TXNotificationType)aEventType
 {
-	if ((self = [super init])) {
-		self.eventType = aEventType;
-		
-		return self;
-	}
+    if ((self = [super init])) {
+        self.eventType = aEventType;
+        
+        return self;
+    }
 
-	return nil;
+    return nil;
 }
 
 + (TDCPreferencesSoundWrapper *)soundWrapperWithEventType:(TXNotificationType)eventType
 {
-	return [[TDCPreferencesSoundWrapper alloc] initWithEventType:eventType];
+    return [[TDCPreferencesSoundWrapper alloc] initWithEventType:eventType];
 }
 
 - (NSString *)displayName
 {
-	return [TPCPreferences titleForEvent:self.eventType];
+    return [TPCPreferences titleForEvent:self.eventType];
 }
 
 - (NSString *)alertSound
 {
-	NSString *soundd = [TPCPreferences soundForEvent:self.eventType];
+    NSString *soundd = [TPCPreferences soundForEvent:self.eventType];
 
-	NSObjectIsEmptyAssertReturn(soundd, TXEmptySoundAlertLabel);
+    NSObjectIsEmptyAssertReturn(soundd, TXEmptySoundAlertLabel);
 
-	return soundd;
+    return soundd;
 }
 
 - (void)setAlertSound:(NSString *)value
 {
-	if ([value isEqualToString:TXEmptySoundAlertLabel]) {
-		value = TXEmptySoundAlertPreference;
-	}
-	
-	if (NSObjectIsNotEmpty(value)) {
-		[TLOSoundPlayer play:value];
-	}
-	
-	[TPCPreferences setSound:value forEvent:self.eventType];
+    if ([value isEqualToString:TXEmptySoundAlertLabel]) {
+        value = TXEmptySoundAlertPreference;
+    }
+    
+    if (NSObjectIsNotEmpty(value)) {
+        [TLOSoundPlayer play:value];
+    }
+    
+    [TPCPreferences setSound:value forEvent:self.eventType];
 }
 
 - (BOOL)pushNotification
 {
-	return [TPCPreferences growlEnabledForEvent:self.eventType];
+    return [TPCPreferences growlEnabledForEvent:self.eventType];
 }
 
 - (void)setPushNotification:(BOOL)value
 {
-	[TPCPreferences setGrowlEnabled:value forEvent:self.eventType];
+    [TPCPreferences setGrowlEnabled:value forEvent:self.eventType];
 }
 
 - (BOOL)speakEvent
 {
-	return [TPCPreferences speakEvent:self.eventType];
+    return [TPCPreferences speakEvent:self.eventType];
 }
 
 - (void)setSpeakEvent:(BOOL)value
 {
-	[TPCPreferences setEventIsSpoken:value forEvent:self.eventType];
+    [TPCPreferences setEventIsSpoken:value forEvent:self.eventType];
 }
 
 - (BOOL)disabledWhileAway
 {
-	return [TPCPreferences disabledWhileAwayForEvent:self.eventType];
+    return [TPCPreferences disabledWhileAwayForEvent:self.eventType];
 }
 
 - (void)setDisabledWhileAway:(BOOL)value
 {
-	[TPCPreferences setDisabledWhileAway:value forEvent:self.eventType];
+    [TPCPreferences setDisabledWhileAway:value forEvent:self.eventType];
 }
 
 @end

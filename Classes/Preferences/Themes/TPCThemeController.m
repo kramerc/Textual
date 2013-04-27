@@ -41,85 +41,85 @@
 
 - (id)init
 {
-	if ((self = [super init])) {
-		self.customSettings = [TPCThemeSettings new];
-	}
-	
-	return self;
+    if ((self = [super init])) {
+        self.customSettings = [TPCThemeSettings new];
+    }
+    
+    return self;
 }
 
 - (void)validateFilePathExistanceAndReload
 {
-	NSString *filekind = [TPCThemeController extractThemeSource:[TPCPreferences themeName]];
-	NSString *filename = [TPCThemeController extractThemeName:[TPCPreferences themeName]];
+    NSString *filekind = [TPCThemeController extractThemeSource:[TPCPreferences themeName]];
+    NSString *filename = [TPCThemeController extractThemeName:[TPCPreferences themeName]];
 
-	NSObjectIsEmptyAssert(filekind);
-	NSObjectIsEmptyAssert(filename);
+    NSObjectIsEmptyAssert(filekind);
+    NSObjectIsEmptyAssert(filename);
 
-	NSString *path = nil;
+    NSString *path = nil;
 
-	/* Determine the path. */
-	if ([filekind isEqualToString:@"resource"]) {
-		path = [[TPCPreferences bundledThemeFolderPath] stringByAppendingPathComponent:filename];
-	} else {
-		path = [[TPCPreferences customThemeFolderPath] stringByAppendingPathComponent:filename];
-	}
+    /* Determine the path. */
+    if ([filekind isEqualToString:@"resource"]) {
+        path = [[TPCPreferences bundledThemeFolderPath] stringByAppendingPathComponent:filename];
+    } else {
+        path = [[TPCPreferences customThemeFolderPath] stringByAppendingPathComponent:filename];
+    }
 
-	/* Does the path exist? */
-	if ([RZFileManager() fileExistsAtPath:path] == NO) {
-		/* Path does not exist. If the path is to a custom theme, then check whether a
-		 bundled theme with the same name exists. If it does not, throw exception. */
-		
-		if ([filekind isEqualToString:@"resource"] == NO) {
-			path = [[TPCPreferences bundledThemeFolderPath] stringByAppendingPathComponent:filename];
+    /* Does the path exist? */
+    if ([RZFileManager() fileExistsAtPath:path] == NO) {
+        /* Path does not exist. If the path is to a custom theme, then check whether a
+         bundled theme with the same name exists. If it does not, throw exception. */
+        
+        if ([filekind isEqualToString:@"resource"] == NO) {
+            path = [[TPCPreferences bundledThemeFolderPath] stringByAppendingPathComponent:filename];
 
-			if ([RZFileManager() fileExistsAtPath:path] == NO) {
-				NSAssert(NO, @"No path to local resources.");
-			}
-		} else {
-			/* Path that was checked is not a custom theme. Throw exception. */
-			
-			NSAssert(NO, @"No path to local resources.");
-		}
-	}
+            if ([RZFileManager() fileExistsAtPath:path] == NO) {
+                NSAssert(NO, @"No path to local resources.");
+            }
+        } else {
+            /* Path that was checked is not a custom theme. Throw exception. */
+            
+            NSAssert(NO, @"No path to local resources.");
+        }
+    }
 
-	self.baseURL = [NSURL fileURLWithPath:path];
+    self.baseURL = [NSURL fileURLWithPath:path];
 
-	/* Reload theme settings. */
-	[self.customSettings reloadWithPath:path];
+    /* Reload theme settings. */
+    [self.customSettings reloadWithPath:path];
 }
 
 - (void)load
 {
-	[self validateFilePathExistanceAndReload];
+    [self validateFilePathExistanceAndReload];
 }
 
 + (NSString *)buildResourceFilename:(NSString *)name
 {
-	return [NSString stringWithFormat:@"resource:%@", name];
+    return [NSString stringWithFormat:@"resource:%@", name];
 }
 
 + (NSString *)buildUserFilename:(NSString *)name
 {
-	return [NSString stringWithFormat:@"user:%@", name];
+    return [NSString stringWithFormat:@"user:%@", name];
 }
 
 + (NSString *)extractThemeSource:(NSString *)source
 {
-	if ([source hasPrefix:@"user:"] == NO && [source hasPrefix:@"resource:"] == NO) {
-		return nil;
+    if ([source hasPrefix:@"user:"] == NO && [source hasPrefix:@"resource:"] == NO) {
+        return nil;
     }
 
-	return [source safeSubstringToIndex:[source stringPosition:@":"]];
+    return [source safeSubstringToIndex:[source stringPosition:@":"]];
 }
 
 + (NSString *)extractThemeName:(NSString *)source
 {
-	if ([source hasPrefix:@"user:"] == NO && [source hasPrefix:@"resource:"] == NO) {
-		return nil;
+    if ([source hasPrefix:@"user:"] == NO && [source hasPrefix:@"resource:"] == NO) {
+        return nil;
     }
-	
-	return [source safeSubstringAfterIndex:[source stringPosition:@":"]];	
+    
+    return [source safeSubstringAfterIndex:[source stringPosition:@":"]];   
 }
 
 @end

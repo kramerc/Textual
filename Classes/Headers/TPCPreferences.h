@@ -37,44 +37,44 @@
 
 #import "TextualApplication.h"
 
-#define TXDefaultTextualLogStyle			@"resource:Simplified Light"
-#define TXDefaultTextualLogFont				@"Lucida Grande"
-#define TXDefaultTextualTimestampFormat		@"[%H:%M:%S]"
+#define TXDefaultTextualLogStyle            @"resource:Simplified Light"
+#define TXDefaultTextualLogFont             @"Lucida Grande"
+#define TXDefaultTextualTimestampFormat     @"[%H:%M:%S]"
 
 typedef enum TXNicknameHighlightMatchType : NSInteger {
-	TXNicknameHighlightPartialMatchType = 0,
-	TXNicknameHighlightExactMatchType,
+    TXNicknameHighlightPartialMatchType = 0,
+    TXNicknameHighlightExactMatchType,
     TXNicknameHighlightRegularExpressionMatchType,
 } TXNicknameHighlightMatchType;
 
 typedef enum TXTabKeyAction : NSInteger {
-	TXTabKeyNickCompleteAction = 0,
-	TXTabKeyUnreadChannelAction,
-	TXTabKeyNoneTypeAction = 100,
+    TXTabKeyNickCompleteAction = 0,
+    TXTabKeyUnreadChannelAction,
+    TXTabKeyNoneTypeAction = 100,
 } TXTabKeyAction;
 
 typedef enum TXUserDoubleClickAction : NSInteger {
-	TXUserDoubleClickWhoisAction = 100,
-	TXUserDoubleClickPrivateMessageAction = 200,
+    TXUserDoubleClickWhoisAction = 100,
+    TXUserDoubleClickPrivateMessageAction = 200,
 } TXUserDoubleClickAction;
 
 typedef enum TXNoticeSendLocationType : NSInteger {
-	TXNoticeSendServerConsoleType = 0,
-	TXNoticeSendCurrentChannelType = 1,
+    TXNoticeSendServerConsoleType = 0,
+    TXNoticeSendCurrentChannelType = 1,
 } TXNoticeSendLocationType;
 
 typedef enum TXCommandWKeyAction : NSInteger {
-	TXCommandWKeyCloseWindowAction = 0,
-	TXCommandWKeyPartChannelAction = 1,
-	TXCommandWKeyDisconnectAction = 2,
-	TXCommandWKeyTerminateAction = 3,
+    TXCommandWKeyCloseWindowAction = 0,
+    TXCommandWKeyPartChannelAction = 1,
+    TXCommandWKeyDisconnectAction = 2,
+    TXCommandWKeyTerminateAction = 3,
 } TXCommandWKeyAction;
 
 typedef enum TXHostmaskBanFormat : NSInteger {
-	TXHostmaskBanWHNINFormat  = 0, // With Hostmask, No Username/Nickname
-	TXHostmaskBanWHAINNFormat = 1, // With Hostmask and Username, No Nickname
-	TXHostmaskBanWHANNIFormat = 2, // With Hostmask and Nickname, No Username
-	TXHostmaskBanExactFormat  = 3, // Exact Match
+    TXHostmaskBanWHNINFormat  = 0, // With Hostmask, No Username/Nickname
+    TXHostmaskBanWHAINNFormat = 1, // With Hostmask and Username, No Nickname
+    TXHostmaskBanWHANNIFormat = 2, // With Hostmask and Nickname, No Username
+    TXHostmaskBanExactFormat  = 3, // Exact Match
 } TXHostmaskBanFormat;
 
 @interface TPCPreferences : NSObject

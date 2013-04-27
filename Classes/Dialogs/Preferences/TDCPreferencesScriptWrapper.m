@@ -41,23 +41,23 @@
 
 - (id)init
 {
-	if ((self = [super init])) {
+    if ((self = [super init])) {
         self.scripts = [NSMutableArray new];
-	}
+    }
     
-	return self;
+    return self;
 }
 
 - (void)populateData
 {
-	[self.scripts addObjectsFromArray:[RZPluginManager() supportedAppleScriptCommands]];
-	[self.scripts addObjectsFromArray:[RZPluginManager() supportedUserInputCommands]];
+    [self.scripts addObjectsFromArray:[RZPluginManager() supportedAppleScriptCommands]];
+    [self.scripts addObjectsFromArray:[RZPluginManager() supportedUserInputCommands]];
 
     for (NSString *command in [RZPluginManager() dangerousCommandNames]) {
         [self.scripts removeObject:command];
     }
-	
-	[self.scripts sortUsingSelector:@selector(compare:)];
+    
+    [self.scripts sortUsingSelector:@selector(compare:)];
 }
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView
@@ -67,7 +67,7 @@
 
 - (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
 {
-	return [self.scripts safeObjectAtIndex:rowIndex];
+    return [self.scripts safeObjectAtIndex:rowIndex];
 }
 
 @end

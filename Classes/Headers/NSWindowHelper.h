@@ -37,8 +37,8 @@
 
 #import "TextualApplication.h"
 
-#define NSWindowNegateActionWithAttachedSheet()			if ([[NSApp mainWindow] attachedSheet]) { return; }
-#define NSWindowNegateActionWithAttachedSheetR(r)		if ([[NSApp mainWindow] attachedSheet]) { return r; }
+#define NSWindowNegateActionWithAttachedSheet()         if ([[NSApp mainWindow] attachedSheet]) { return; }
+#define NSWindowNegateActionWithAttachedSheetR(r)       if ([[NSApp mainWindow] attachedSheet]) { return r; }
 
 @interface NSWindow (TXWindowHelper)
 - (void)exactlyCenterWindow;

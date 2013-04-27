@@ -37,9 +37,9 @@
 
 #import "TextualApplication.h"
 
-#define TXMaximumIRCBodyLength				512
-#define TXMaximumIRCNicknameLength			50
-#define TXMaximumNodesPerModeCommand		4
+#define TXMaximumIRCBodyLength              512
+#define TXMaximumIRCNicknameLength          50
+#define TXMaximumNodesPerModeCommand        4
 
 /* "*" is not actually considered a valid character for a nickname. We include it for ZNC. */
 #define IRCNicknameValidCharacters          @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-\\[]{}^`|*"

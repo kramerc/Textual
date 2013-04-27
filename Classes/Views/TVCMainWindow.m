@@ -41,37 +41,37 @@
 
 - (id)initWithContentRect:(NSRect)contentRect styleMask:(NSUInteger)windowStyle backing:(NSBackingStoreType)bufferingType defer:(BOOL)deferCreation
 {
-	if ((self = [super initWithContentRect:contentRect styleMask:windowStyle backing:bufferingType defer:deferCreation])) {
-		self.keyHandler = [TLOKeyEventHandler new];
-	}
-	
-	return self;
+    if ((self = [super initWithContentRect:contentRect styleMask:windowStyle backing:bufferingType defer:deferCreation])) {
+        self.keyHandler = [TLOKeyEventHandler new];
+    }
+    
+    return self;
 }
 
 - (void)setKeyHandlerTarget:(id)target
 {
-	[self.keyHandler setTarget:target];
+    [self.keyHandler setTarget:target];
 }
 
 - (void)registerKeyHandler:(SEL)selector key:(NSInteger)code modifiers:(NSUInteger)mods
 {
-	[self.keyHandler registerSelector:selector key:code modifiers:mods];
+    [self.keyHandler registerSelector:selector key:code modifiers:mods];
 }
 
 - (void)registerKeyHandler:(SEL)selector character:(UniChar)c modifiers:(NSUInteger)mods
 {
-	[self.keyHandler registerSelector:selector character:c modifiers:mods];
+    [self.keyHandler registerSelector:selector character:c modifiers:mods];
 }
 
 /* Three Finger Swipe Event
-	This event will only work if 
-		System Preferences -> Trackpad -> More Gestures -> Swipe between full-screen apps
-	is not set to "Swipe left or right with three fingers"
+    This event will only work if 
+        System Preferences -> Trackpad -> More Gestures -> Swipe between full-screen apps
+    is not set to "Swipe left or right with three fingers"
  */
 - (void)swipeWithEvent:(NSEvent *)event
 {
     CGFloat x = [event deltaX];
-	
+    
     if (x > 0) {
         [self.masterController selectNextSelection:nil];
     } else if (x < 0) {
@@ -81,98 +81,98 @@
 
 - (void)beginGestureWithEvent:(NSEvent *)event
 {
-	CGFloat TVCSwipeMinimumLength = [TPCPreferences swipeMinimumLength];
-	NSAssertReturn(TVCSwipeMinimumLength > 0);
+    CGFloat TVCSwipeMinimumLength = [TPCPreferences swipeMinimumLength];
+    NSAssertReturn(TVCSwipeMinimumLength > 0);
 
-	NSSet *touches = [event touchesMatchingPhase:NSTouchPhaseAny inView:nil];
+    NSSet *touches = [event touchesMatchingPhase:NSTouchPhaseAny inView:nil];
 
-	self.twoFingerTouches = [NSMutableDictionary dictionary];
+    self.twoFingerTouches = [NSMutableDictionary dictionary];
 
-	for (NSTouch *touch in touches) {
-		// Cannot use safeSetObject because identiy is not an NSString
-		// It's cool though cause touch is guarunteed not to be nil
+    for (NSTouch *touch in touches) {
+        // Cannot use safeSetObject because identiy is not an NSString
+        // It's cool though cause touch is guarunteed not to be nil
 
-		self.twoFingerTouches[touch.identity] = touch;
-	}
+        self.twoFingerTouches[touch.identity] = touch;
+    }
 }
 
 - (void)endGestureWithEvent:(NSEvent *)event
 {
-	CGFloat TVCSwipeMinimumLength = [TPCPreferences swipeMinimumLength];
-	NSAssertReturn(TVCSwipeMinimumLength > 0);
+    CGFloat TVCSwipeMinimumLength = [TPCPreferences swipeMinimumLength];
+    NSAssertReturn(TVCSwipeMinimumLength > 0);
 
-	NSObjectIsEmptyAssert(self.twoFingerTouches);
-	
-	NSSet *touches = [event touchesMatchingPhase:NSTouchPhaseAny inView:nil];
+    NSObjectIsEmptyAssert(self.twoFingerTouches);
+    
+    NSSet *touches = [event touchesMatchingPhase:NSTouchPhaseAny inView:nil];
 
-	NSMutableDictionary *beginTouches = [self.twoFingerTouches copy];
+    NSMutableDictionary *beginTouches = [self.twoFingerTouches copy];
 
-	self.twoFingerTouches = nil;
+    self.twoFingerTouches = nil;
 
-	NSMutableArray *magnitudes = [NSMutableArray array];
+    NSMutableArray *magnitudes = [NSMutableArray array];
 
-	for (NSTouch *touch in touches) {
-		NSTouch *beginTouch = [beginTouches objectForKey:touch.identity];
+    for (NSTouch *touch in touches) {
+        NSTouch *beginTouch = [beginTouches objectForKey:touch.identity];
 
-		PointerIsEmptyAssertLoopContinue(beginTouch);
+        PointerIsEmptyAssertLoopContinue(beginTouch);
 
-		CGFloat magnitude = (touch.normalizedPosition.x - beginTouch.normalizedPosition.x);
+        CGFloat magnitude = (touch.normalizedPosition.x - beginTouch.normalizedPosition.x);
 
-		[magnitudes safeAddObject:@(magnitude)];
-	}
+        [magnitudes safeAddObject:@(magnitude)];
+    }
 
-	if (magnitudes.count < 2) {
-		return;
-	}
+    if (magnitudes.count < 2) {
+        return;
+    }
 
-	CGFloat sum = 0.f;
-	
-	for (NSNumber *magnitude in magnitudes) {
-		sum += magnitude.floatValue;
-	}
-	
-	CGFloat absSum = fabsf(sum);
+    CGFloat sum = 0.f;
+    
+    for (NSNumber *magnitude in magnitudes) {
+        sum += magnitude.floatValue;
+    }
+    
+    CGFloat absSum = fabsf(sum);
 
-	if (absSum < TVCSwipeMinimumLength) {
-		return;
-	}
+    if (absSum < TVCSwipeMinimumLength) {
+        return;
+    }
 
-	if (sum > 0) {
-		[self.masterController selectNextSelection:nil];
+    if (sum > 0) {
+        [self.masterController selectNextSelection:nil];
     } else if (sum < 0) {
-		[self.masterController selectPreviousWindow:nil];
+        [self.masterController selectPreviousWindow:nil];
     }
 }
 
 - (void)sendEvent:(NSEvent *)e
 {
-	if ([e type] == NSKeyDown) {
-		if ([self.keyHandler processKeyEvent:e]) {
-			return;
-		}
-	}
-	
-	[super sendEvent:e];
+    if ([e type] == NSKeyDown) {
+        if ([self.keyHandler processKeyEvent:e]) {
+            return;
+        }
+    }
+    
+    [super sendEvent:e];
 }
 
 - (void)endEditingFor:(id)object
 {
-	/* WebHTMLView results in this method being called.
-	 *
-	 * The documentation states "The endEditingFor: method should be used only as a
-	 * last resort if the field editor refuses to resign first responder status."
-	 *
-	 * The documentation then goes to say how you should try setting makeFirstResponder first.
-	 */
+    /* WebHTMLView results in this method being called.
+     *
+     * The documentation states "The endEditingFor: method should be used only as a
+     * last resort if the field editor refuses to resign first responder status."
+     *
+     * The documentation then goes to say how you should try setting makeFirstResponder first.
+     */
 
-	if ([self makeFirstResponder:self] == NO) {
-		[super endEditingFor:object];
-	}
+    if ([self makeFirstResponder:self] == NO) {
+        [super endEditingFor:object];
+    }
 }
 
 - (BOOL)canBecomeMainWindow
 {
-	return YES;
+    return YES;
 }
 
 @end

@@ -41,21 +41,21 @@
 
 + (void)play:(NSString *)name
 {
-	NSObjectIsEmptyAssert(name);
-	
-	if ([name isEqualToString:TXEmptySoundAlertPreference]) {
-		return;
-	} else if ([name isEqualToString:@"Beep"]) {
-		NSBeep();
-	} else {
-		NSSound *sound = [NSSound soundNamed:name];
-		
-		if (sound) {
-			[sound play];
-		} else {
-			LogToConsole(@"Error: Unable to find sound \"%@\"", name);
-		}
-	}
+    NSObjectIsEmptyAssert(name);
+    
+    if ([name isEqualToString:TXEmptySoundAlertPreference]) {
+        return;
+    } else if ([name isEqualToString:@"Beep"]) {
+        NSBeep();
+    } else {
+        NSSound *sound = [NSSound soundNamed:name];
+        
+        if (sound) {
+            [sound play];
+        } else {
+            LogToConsole(@"Error: Unable to find sound \"%@\"", name);
+        }
+    }
 }
 
 @end

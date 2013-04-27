@@ -41,14 +41,14 @@
 
 - (NSString *)stringContent
 {
-	return [self stringForType:NSStringPboardType];
+    return [self stringForType:NSStringPboardType];
 }
 
 - (void)setStringContent:(NSString *)s
 {
-	[self declareTypes:@[NSStringPboardType] owner:nil];
-	
-	[self setString:s forType:NSStringPboardType];
+    [self declareTypes:@[NSStringPboardType] owner:nil];
+    
+    [self setString:s forType:NSStringPboardType];
 }
 
 @end

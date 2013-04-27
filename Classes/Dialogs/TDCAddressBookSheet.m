@@ -41,63 +41,63 @@
 
 - (id)init
 {
-	if ((self = [super init])) {
-		[NSBundle loadNibNamed:@"TDCAddressBookSheet" owner:self];
-	}
+    if ((self = [super init])) {
+        [NSBundle loadNibNamed:@"TDCAddressBookSheet" owner:self];
+    }
 
-	return self;
+    return self;
 }
 
 - (void)start
 {
-	if (self.ignore.entryType == IRCAddressBookIgnoreEntryType) {
-		self.sheet = self.ignoreView;
-		
-		if (NSObjectIsNotEmpty(self.ignore.hostmask)) {
-			[self.hostmaskField setStringValue:self.ignore.hostmask];
-		} 
-	} else {
-		self.sheet = self.notifyView;
-		
-		if (NSObjectIsNotEmpty(self.ignore.hostmask)) {
-			[self.nicknameField setStringValue:self.ignore.hostmask];
-		} 
-	}
-	
-	[self.ignoreCTCPCheck				setState:self.ignore.ignoreCTCP];
-	[self.ignoreJPQECheck				setState:self.ignore.ignoreJPQE];
-	[self.ignoreNoticesCheck			setState:self.ignore.ignoreNotices];
-	[self.ignorePrivateHighlightsCheck	setState:self.ignore.ignorePrivateHighlights];
-	[self.ignorePrivateMessagesCheck	setState:self.ignore.ignorePrivateMessages];
-	[self.ignorePublicHighlightsCheck	setState:self.ignore.ignorePublicHighlights];
-	[self.ignorePublicMessagesCheck		setState:self.ignore.ignorePublicMessages];
-	[self.notifyJoinsCheck				setState:self.ignore.notifyJoins];
-	
-	[self startSheet];
+    if (self.ignore.entryType == IRCAddressBookIgnoreEntryType) {
+        self.sheet = self.ignoreView;
+        
+        if (NSObjectIsNotEmpty(self.ignore.hostmask)) {
+            [self.hostmaskField setStringValue:self.ignore.hostmask];
+        } 
+    } else {
+        self.sheet = self.notifyView;
+        
+        if (NSObjectIsNotEmpty(self.ignore.hostmask)) {
+            [self.nicknameField setStringValue:self.ignore.hostmask];
+        } 
+    }
+    
+    [self.ignoreCTCPCheck               setState:self.ignore.ignoreCTCP];
+    [self.ignoreJPQECheck               setState:self.ignore.ignoreJPQE];
+    [self.ignoreNoticesCheck            setState:self.ignore.ignoreNotices];
+    [self.ignorePrivateHighlightsCheck  setState:self.ignore.ignorePrivateHighlights];
+    [self.ignorePrivateMessagesCheck    setState:self.ignore.ignorePrivateMessages];
+    [self.ignorePublicHighlightsCheck   setState:self.ignore.ignorePublicHighlights];
+    [self.ignorePublicMessagesCheck     setState:self.ignore.ignorePublicMessages];
+    [self.notifyJoinsCheck              setState:self.ignore.notifyJoins];
+    
+    [self startSheet];
 }
 
 - (void)ok:(id)sender
 {
-	if (self.ignore.entryType == IRCAddressBookIgnoreEntryType) {
-		self.ignore.hostmask = self.hostmaskField.firstTokenStringValue;
-	} else {
-		self.ignore.hostmask = self.nicknameField.firstTokenStringValue;
-	}
+    if (self.ignore.entryType == IRCAddressBookIgnoreEntryType) {
+        self.ignore.hostmask = self.hostmaskField.firstTokenStringValue;
+    } else {
+        self.ignore.hostmask = self.nicknameField.firstTokenStringValue;
+    }
 
-	self.ignore.ignoreCTCP					= [self.ignoreCTCPCheck state];
-	self.ignore.ignoreJPQE					= [self.ignoreJPQECheck state];
-	self.ignore.ignoreNotices				= [self.ignoreNoticesCheck state];
-	self.ignore.ignorePrivateHighlights		= [self.ignorePrivateHighlightsCheck state];
-	self.ignore.ignorePrivateMessages		= [self.ignorePrivateMessagesCheck state];
-	self.ignore.ignorePublicHighlights		= [self.ignorePublicHighlightsCheck state];
-	self.ignore.ignorePublicMessages		= [self.ignorePublicMessagesCheck state];
-	self.ignore.notifyJoins					= [self.notifyJoinsCheck state];
-	
-	if ([self.delegate respondsToSelector:@selector(ignoreItemSheetOnOK:)]) {
-		[self.delegate ignoreItemSheetOnOK:self];
-	}
-	
-	[super ok:nil];
+    self.ignore.ignoreCTCP                  = [self.ignoreCTCPCheck state];
+    self.ignore.ignoreJPQE                  = [self.ignoreJPQECheck state];
+    self.ignore.ignoreNotices               = [self.ignoreNoticesCheck state];
+    self.ignore.ignorePrivateHighlights     = [self.ignorePrivateHighlightsCheck state];
+    self.ignore.ignorePrivateMessages       = [self.ignorePrivateMessagesCheck state];
+    self.ignore.ignorePublicHighlights      = [self.ignorePublicHighlightsCheck state];
+    self.ignore.ignorePublicMessages        = [self.ignorePublicMessagesCheck state];
+    self.ignore.notifyJoins                 = [self.notifyJoinsCheck state];
+    
+    if ([self.delegate respondsToSelector:@selector(ignoreItemSheetOnOK:)]) {
+        [self.delegate ignoreItemSheetOnOK:self];
+    }
+    
+    [super ok:nil];
 }
 
 #pragma mark -
@@ -105,9 +105,9 @@
 
 - (void)windowWillClose:(NSNotification *)note
 {
-	if ([self.delegate respondsToSelector:@selector(ignoreItemSheetWillClose:)]) {
-		[self.delegate ignoreItemSheetWillClose:self];
-	}
+    if ([self.delegate respondsToSelector:@selector(ignoreItemSheetWillClose:)]) {
+        [self.delegate ignoreItemSheetWillClose:self];
+    }
 }
 
 @end

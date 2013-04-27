@@ -41,51 +41,51 @@
 
 - (id)init
 {
-	if ((self = [super init])) {
-		[self parseLine:NSStringEmptyPlaceholder];
-	}
-	
-	return self;
+    if ((self = [super init])) {
+        [self parseLine:NSStringEmptyPlaceholder];
+    }
+    
+    return self;
 }
 
 - (id)initWithLine:(NSString *)line
 {
-	if ((self = [super init])) {
-		[self parseLine:line];
-	}
-	
-	return self;
+    if ((self = [super init])) {
+        [self parseLine:line];
+    }
+    
+    return self;
 }
 
 - (void)parseLine:(NSString *)line
 {
-	self.command = NSStringEmptyPlaceholder;
-	
-	self.sender = [IRCPrefix new];
-	self.params = [NSMutableArray new];
-	
-	NSMutableString *s = [line mutableCopy];
+    self.command = NSStringEmptyPlaceholder;
+    
+    self.sender = [IRCPrefix new];
+    self.params = [NSMutableArray new];
+    
+    NSMutableString *s = [line mutableCopy];
 
-	// ---- //
+    // ---- //
 
     /* Get extensions from in front of input string. See IRCv3.atheme.org for
      more information regarding extensions in the IRC protocol. */
-	
-	NSMutableDictionary *extensions = [NSMutableDictionary dictionary];
-	
-	if ([s hasPrefix:@"@"]) {
-		NSString *t = [s.getToken substringFromIndex:1]; //Get token and remove @.
-		
-		NSArray *values = [t componentsSeparatedByString:@","];
+    
+    NSMutableDictionary *extensions = [NSMutableDictionary dictionary];
+    
+    if ([s hasPrefix:@"@"]) {
+        NSString *t = [s.getToken substringFromIndex:1]; //Get token and remove @.
+        
+        NSArray *values = [t componentsSeparatedByString:@","];
 
-		for (NSString *comp in values) {
-			NSArray *info = [comp componentsSeparatedByString:@"="];
+        for (NSString *comp in values) {
+            NSArray *info = [comp componentsSeparatedByString:@"="];
 
             NSAssertReturnLoopContinue(info.count == 2);
-			
-			[extensions safeSetObject:info[1] forKey:info[0]];
-		}
-	}
+            
+            [extensions safeSetObject:info[1] forKey:info[0]];
+        }
+    }
 
     /* Process value of supported extensions. */
 
@@ -94,108 +94,108 @@
      for in that dictionary. The third value is what should be returned if the key does not exist in
      the dictionary. It is designed as an easy way to set a default value for a missing dictionary key. */
     
-	NSString *serverTime = NSDictionaryObjectKeyValueCompare(extensions, @"t", [extensions objectForKey:@"time"]);
+    NSString *serverTime = NSDictionaryObjectKeyValueCompare(extensions, @"t", [extensions objectForKey:@"time"]);
 
-	if (NSObjectIsNotEmpty(serverTime)) {
-		NSDateFormatter *dateFormatter = [NSDateFormatter new];
-		
-		[dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-		[dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"]; //2011-10-19T16:40:51.620Z
-		
-		NSDate *date = [dateFormatter dateFromString:serverTime];
+    if (NSObjectIsNotEmpty(serverTime)) {
+        NSDateFormatter *dateFormatter = [NSDateFormatter new];
+        
+        [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+        [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"]; //2011-10-19T16:40:51.620Z
+        
+        NSDate *date = [dateFormatter dateFromString:serverTime];
 
         /* If no date is returned by using the defined date format, then we are going to 
          take the doubleValue of our input and compare it against the epoch start time.
          If that does not return anything either, then we will simply set the date that
          this message was processed as the date used. */
         
-		if (PointerIsEmpty(date)) {
-			date = [NSDate dateWithTimeIntervalSince1970:[serverTime doubleValue]];
-		}
-		
-		if (PointerIsEmpty(date)) {
-			date = [NSDate date];
-		}
-		
-		self.receivedAt = date;
-	} else {
-		self.receivedAt = [NSDate date];
-	}
+        if (PointerIsEmpty(date)) {
+            date = [NSDate dateWithTimeIntervalSince1970:[serverTime doubleValue]];
+        }
+        
+        if (PointerIsEmpty(date)) {
+            date = [NSDate date];
+        }
+        
+        self.receivedAt = date;
+    } else {
+        self.receivedAt = [NSDate date];
+    }
 
-	// ---- //
+    // ---- //
 
     /* Begin the parsing of the actual input string. */
     /* First thing to do is get the sender information from in 
      front of the message. */
     
-	if ([s hasPrefix:@":"]) {
-		NSString *t = [s.getToken safeSubstringFromIndex:1];
-		
-		self.sender.hostmask = t;
+    if ([s hasPrefix:@":"]) {
+        NSString *t = [s.getToken safeSubstringFromIndex:1];
+        
+        self.sender.hostmask = t;
         self.sender.nickname = [t nicknameFromHostmask];
 
         if ([t isHostmask]) {
             self.sender.username = [t usernameFromHostmask];
             self.sender.address = [t addressFromHostmask];
         }
-	}
+    }
 
     /* Now that we have the sender information… continue to the
      actual command being used. */
     
-	self.command = [s.getToken uppercaseString];
-	
-	self.numericReply = [self.command integerValue];
+    self.command = [s.getToken uppercaseString];
+    
+    self.numericReply = [self.command integerValue];
 
     /* After the sender information and command information is extracted,
      there is not much left to the parse. Just searching for the beginning
      of a message segment or getting the next token. */
     
-	while (NSObjectIsNotEmpty(s)) {
-		if ([s hasPrefix:@":"]) {
-			[self.params safeAddObject:[s safeSubstringFromIndex:1]];
-			
-			break;
-		} else {
-			[self.params safeAddObject:s.getToken];
-		}
-	}
-	
+    while (NSObjectIsNotEmpty(s)) {
+        if ([s hasPrefix:@":"]) {
+            [self.params safeAddObject:[s safeSubstringFromIndex:1]];
+            
+            break;
+        } else {
+            [self.params safeAddObject:s.getToken];
+        }
+    }
+    
 }
 
 - (NSString *)paramAt:(NSInteger)index
 {
-	if (index < self.params.count) {
-		return [self.params safeObjectAtIndex:index];
-	} else {
-		return NSStringEmptyPlaceholder;
-	}
+    if (index < self.params.count) {
+        return [self.params safeObjectAtIndex:index];
+    } else {
+        return NSStringEmptyPlaceholder;
+    }
 }
 
 - (NSString *)sequence
 {
-	if ([self.params count] < 2) {
-		return [self sequence:0];
-	} else {
-		return [self sequence:1];
-	}
+    if ([self.params count] < 2) {
+        return [self sequence:0];
+    } else {
+        return [self sequence:1];
+    }
 }
 
 - (NSString *)sequence:(NSInteger)index
 {
-	NSMutableString *s = [NSMutableString string];
-	
-	for (NSInteger i = index; i < self.params.count; i++) {
-		NSString *e = [self.params safeObjectAtIndex:i];
-		
-		if (NSDissimilarObjects(i, index)) {
-			[s appendString:NSStringWhitespacePlaceholder];
-		}
-		
-		[s appendString:e];
-	}
-	
-	return s;
+    NSMutableString *s = [NSMutableString string];
+    
+    for (NSInteger i = index; i < self.params.count; i++) {
+        NSString *e = [self.params safeObjectAtIndex:i];
+        
+        if (NSDissimilarObjects(i, index)) {
+            [s appendString:NSStringWhitespacePlaceholder];
+        }
+        
+        [s appendString:e];
+    }
+    
+    return s;
 }
 
 @end

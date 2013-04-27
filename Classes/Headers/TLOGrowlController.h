@@ -40,35 +40,35 @@
 #import <Growl/Growl.h>
 
 typedef enum TXNotificationType : NSInteger {
-	TXNotificationHighlightType				= 1000,
-	TXNotificationNewPrivateMessageType		= 1001,
-	TXNotificationChannelMessageType		= 1002,
-	TXNotificationChannelNoticeType			= 1003,
-	TXNotificationPrivateMessageType		= 1004,
-	TXNotificationPrivateNoticeType			= 1005,
-	TXNotificationKickType					= 1006,
-	TXNotificationInviteType				= 1007,
-	TXNotificationConnectType				= 1008,
-	TXNotificationDisconnectType			= 1009,
-	TXNotificationAddressBookMatchType		= 1010,
+    TXNotificationHighlightType             = 1000,
+    TXNotificationNewPrivateMessageType     = 1001,
+    TXNotificationChannelMessageType        = 1002,
+    TXNotificationChannelNoticeType         = 1003,
+    TXNotificationPrivateMessageType        = 1004,
+    TXNotificationPrivateNoticeType         = 1005,
+    TXNotificationKickType                  = 1006,
+    TXNotificationInviteType                = 1007,
+    TXNotificationConnectType               = 1008,
+    TXNotificationDisconnectType            = 1009,
+    TXNotificationAddressBookMatchType      = 1010,
 } TXNotificationType;
 
-#define TXNotificationDialogStandardNicknameFormat		@"%@ %@"
-#define TXNotificationDialogActionNicknameFormat			@"• %@: %@"
+#define TXNotificationDialogStandardNicknameFormat      @"%@ %@"
+#define TXNotificationDialogActionNicknameFormat            @"• %@: %@"
 
-#define TXNotificationHighlightLogStandardActionFormat			@"• %@: %@"
-#define TXNotificationHighlightLogStandardMessageFormat			@"%@ %@"
-#define TXNotificationHighlightLogAlternativeActionFormat		@"• %@ %@"
+#define TXNotificationHighlightLogStandardActionFormat          @"• %@: %@"
+#define TXNotificationHighlightLogStandardMessageFormat         @"%@ %@"
+#define TXNotificationHighlightLogAlternativeActionFormat       @"• %@ %@"
 
 #ifdef TXForceNativeNotificationCenterDispatch
-	#define GrowlControllerDelegate GrowlApplicationBridgeDelegate,NSUserNotificationCenterDelegate
+    #define GrowlControllerDelegate GrowlApplicationBridgeDelegate,NSUserNotificationCenterDelegate
 #else
-	#define GrowlControllerDelegate GrowlApplicationBridgeDelegate
+    #define GrowlControllerDelegate GrowlApplicationBridgeDelegate
 #endif
 
 @interface TLOGrowlController : NSObject <GrowlControllerDelegate>
 - (void)notify:(TXNotificationType)eventType
-		 title:(NSString *)eventTitle
+         title:(NSString *)eventTitle
    description:(NSString *)eventDescription
-	  userInfo:(NSDictionary *)eventContext;
+      userInfo:(NSDictionary *)eventContext;
 @end

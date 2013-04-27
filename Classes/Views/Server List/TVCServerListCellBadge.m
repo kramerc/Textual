@@ -57,90 +57,90 @@
 
 - (NSSize)scaledSize
 {
-	PointerIsEmptyAssertReturn(self.cachedBadgeImage, NSZeroSize);
+    PointerIsEmptyAssertReturn(self.cachedBadgeImage, NSZeroSize);
 
-	NSSize imageSize = self.cachedBadgeImage.size;
+    NSSize imageSize = self.cachedBadgeImage.size;
 
-	return imageSize;
+    return imageSize;
 }
 
 - (NSImage *)drawBadgeForCellItem:(id)cellItem withDrawingContext:(NSDictionary *)drawContext
 {
-	/* Do input validation. */
-	PointerIsEmptyAssertReturn(cellItem, nil);
+    /* Do input validation. */
+    PointerIsEmptyAssertReturn(cellItem, nil);
 
-	NSObjectIsEmptyAssertReturn(drawContext, nil);
+    NSObjectIsEmptyAssertReturn(drawContext, nil);
 
-	/* Define local context information. */
-	IRCChannel *channel = cellItem;
+    /* Define local context information. */
+    IRCChannel *channel = cellItem;
 
-	BOOL isSelected = [drawContext boolForKey:@"isSelected"];
-	BOOL isKeyWindow = [drawContext boolForKey:@"isKeyWindow"];
+    BOOL isSelected = [drawContext boolForKey:@"isSelected"];
+    BOOL isKeyWindow = [drawContext boolForKey:@"isKeyWindow"];
 
-	/* Gather information about the badge to draw. */
-	BOOL drawMessageBadge = (isSelected == NO || (isKeyWindow == NO && isSelected));
+    /* Gather information about the badge to draw. */
+    BOOL drawMessageBadge = (isSelected == NO || (isKeyWindow == NO && isSelected));
 
-	NSInteger channelTreeUnreadCount = channel.treeUnreadCount;
-	NSInteger nicknameHighlightCount = channel.nicknameHighlightCount;
+    NSInteger channelTreeUnreadCount = channel.treeUnreadCount;
+    NSInteger nicknameHighlightCount = channel.nicknameHighlightCount;
 
-	BOOL isHighlight = (nicknameHighlightCount >= 1);
+    BOOL isHighlight = (nicknameHighlightCount >= 1);
 
-	/* Begin draw if we want to. */
-	if (channelTreeUnreadCount >= 1 && drawMessageBadge) {
-		/* Build our local context. */
-		NSMutableDictionary *newContext = [drawContext mutableCopy];
+    /* Begin draw if we want to. */
+    if (channelTreeUnreadCount >= 1 && drawMessageBadge) {
+        /* Build our local context. */
+        NSMutableDictionary *newContext = [drawContext mutableCopy];
 
-		/* Remove information that is constantly changing so we do not
-		 keep redrawing when we do not have to. To see the information
-		 passed to drawContext see TVCServerListCell.m. */
-		[newContext removeObjectForKey:@"rowIndex"];
-		[newContext removeObjectForKey:@"isKeyWindow"];
+        /* Remove information that is constantly changing so we do not
+         keep redrawing when we do not have to. To see the information
+         passed to drawContext see TVCServerListCell.m. */
+        [newContext removeObjectForKey:@"rowIndex"];
+        [newContext removeObjectForKey:@"isKeyWindow"];
 
-		/* Add new items. */
-		[newContext setBool:isHighlight forKey:@"isHighlight"];
-		
-		[newContext setInteger:channelTreeUnreadCount forKey:@"unreadCount"];
+        /* Add new items. */
+        [newContext setBool:isHighlight forKey:@"isHighlight"];
+        
+        [newContext setInteger:channelTreeUnreadCount forKey:@"unreadCount"];
 
-		/* Compare context to cache. */
-		if (self.cachedDrawContext && [newContext isEqualToDictionary:self.cachedDrawContext]) {
-			/* We have a cache and the context has not changed. Return image if it exists. */
+        /* Compare context to cache. */
+        if (self.cachedDrawContext && [newContext isEqualToDictionary:self.cachedDrawContext]) {
+            /* We have a cache and the context has not changed. Return image if it exists. */
 
-			if (self.cachedBadgeImage) {
-				return self.cachedBadgeImage;
-			}
-		}
+            if (self.cachedBadgeImage) {
+                return self.cachedBadgeImage;
+            }
+        }
 
-		/* The draw engine reads this. */
-		self.cachedDrawContext = newContext;
+        /* The draw engine reads this. */
+        self.cachedDrawContext = newContext;
 
-		/* If we got to this point, then that means we have to draw a new image. */
+        /* If we got to this point, then that means we have to draw a new image. */
 
-		/* { */
-			/* Get the string being draw. */
-			NSAttributedString *mcstring = [self messageCountBadgeText:channelTreeUnreadCount selected:(isSelected && isHighlight == NO)];
+        /* { */
+            /* Get the string being draw. */
+            NSAttributedString *mcstring = [self messageCountBadgeText:channelTreeUnreadCount selected:(isSelected && isHighlight == NO)];
 
-			/* Get the rect being drawn. */
-			NSRect badgeRect = [self messageCountBadgeRectWithText:mcstring];
+            /* Get the rect being drawn. */
+            NSRect badgeRect = [self messageCountBadgeRectWithText:mcstring];
 
-			/* Draw the badge. */
-			NSImage *finalBadge = [self completeDrawFor:mcstring inFrame:badgeRect];
+            /* Draw the badge. */
+            NSImage *finalBadge = [self completeDrawFor:mcstring inFrame:badgeRect];
 
-			PointerIsEmptyAssertReturn(finalBadge, nil);
+            PointerIsEmptyAssertReturn(finalBadge, nil);
 
-			/* Update cache. */
-			self.cachedBadgeImage = finalBadge;
+            /* Update cache. */
+            self.cachedBadgeImage = finalBadge;
 
-			return finalBadge;
-		/* } @end */
-	} else {
-		/* We do not need to draw anything for the context so destroy the cache. */
+            return finalBadge;
+        /* } @end */
+    } else {
+        /* We do not need to draw anything for the context so destroy the cache. */
 
-		self.cachedDrawContext = nil;
-		self.cachedBadgeImage = nil;
-	}
+        self.cachedDrawContext = nil;
+        self.cachedBadgeImage = nil;
+    }
 
-	/* Return nil if we do not have anything. */
-	return nil;
+    /* Return nil if we do not have anything. */
+    return nil;
 }
 
 #pragma mark -
@@ -148,139 +148,139 @@
 
 - (NSAttributedString *)messageCountBadgeText:(NSInteger)messageCount selected:(BOOL)isSelected
 {
-	NSString *messageCountString = TXFormattedNumber(messageCount);
+    NSString *messageCountString = TXFormattedNumber(messageCount);
 
     /* Pick which font size best aligns with the badge. */
-	NSColor *textColor = self.serverList.messageCountBadgeNormalTextColor;
+    NSColor *textColor = self.serverList.messageCountBadgeNormalTextColor;
 
-	if (isSelected) {
-		textColor = self.serverList.messageCountBadgeSelectedTextColor;
-	}
+    if (isSelected) {
+        textColor = self.serverList.messageCountBadgeSelectedTextColor;
+    }
 
-	NSFont *textFont = self.serverList.messageCountBadgeFont;
+    NSFont *textFont = self.serverList.messageCountBadgeFont;
 
-	NSMutableDictionary *attributes = [NSMutableDictionary dictionary];
+    NSMutableDictionary *attributes = [NSMutableDictionary dictionary];
 
-	[attributes setObject:textFont forKey:NSFontAttributeName];
-	[attributes setObject:textColor forKey:NSForegroundColorAttributeName];
+    [attributes setObject:textFont forKey:NSFontAttributeName];
+    [attributes setObject:textColor forKey:NSForegroundColorAttributeName];
 
-	NSAttributedString *mcstring = [NSAttributedString stringWithBase:messageCountString attributes:attributes];
+    NSAttributedString *mcstring = [NSAttributedString stringWithBase:messageCountString attributes:attributes];
 
-	return mcstring;
+    return mcstring;
 }
 
 - (NSRect)messageCountBadgeRectWithText:(NSAttributedString *)mcstring
 {
-	NSInteger messageCountWidth = (mcstring.size.width + (self.serverList.messageCountBadgePadding * 2));
+    NSInteger messageCountWidth = (mcstring.size.width + (self.serverList.messageCountBadgePadding * 2));
 
-	NSRect badgeFrame = NSMakeRect(0, 1, messageCountWidth, self.serverList.messageCountBadgeHeight);
+    NSRect badgeFrame = NSMakeRect(0, 1, messageCountWidth, self.serverList.messageCountBadgeHeight);
 
-	if (badgeFrame.size.width < self.serverList.messageCountBadgeMinimumWidth) {
-		badgeFrame.size.width = self.serverList.messageCountBadgeMinimumWidth;
-	 }
-	 
-	 return badgeFrame;
+    if (badgeFrame.size.width < self.serverList.messageCountBadgeMinimumWidth) {
+        badgeFrame.size.width = self.serverList.messageCountBadgeMinimumWidth;
+     }
+     
+     return badgeFrame;
 }
 
 - (NSImage *)completeDrawFor:(NSAttributedString *)mcstring inFrame:(NSRect)badgeFrame
 {
-	/*************************************************************/
-	/* Prepare drawing. */
-	/*************************************************************/
+    /*************************************************************/
+    /* Prepare drawing. */
+    /*************************************************************/
 
-	BOOL isGraphite = [self.cachedDrawContext boolForKey:@"isGraphite"];
-	BOOL isSelected = [self.cachedDrawContext boolForKey:@"isSelected"];
-	BOOL isHighlight = [self.cachedDrawContext boolForKey:@"isHighlight"];
-	
-	/* Create blank badge image. */
-	/* 1 point is added to size to allow room for a shadow. */
-	NSSize imageSize = NSMakeSize(badgeFrame.size.width, (badgeFrame.size.height + 1));
-	
-	NSImage *newDrawImage = [NSImage newImageWithSize:imageSize];
+    BOOL isGraphite = [self.cachedDrawContext boolForKey:@"isGraphite"];
+    BOOL isSelected = [self.cachedDrawContext boolForKey:@"isSelected"];
+    BOOL isHighlight = [self.cachedDrawContext boolForKey:@"isHighlight"];
+    
+    /* Create blank badge image. */
+    /* 1 point is added to size to allow room for a shadow. */
+    NSSize imageSize = NSMakeSize(badgeFrame.size.width, (badgeFrame.size.height + 1));
+    
+    NSImage *newDrawImage = [NSImage newImageWithSize:imageSize];
 
-	/* Lock focus for drawing. */
-	[newDrawImage lockFocus];
-	
-	/*************************************************************/
-	/* Begin drawing. */
-	/*************************************************************/
+    /* Lock focus for drawing. */
+    [newDrawImage lockFocus];
+    
+    /*************************************************************/
+    /* Begin drawing. */
+    /*************************************************************/
 
-	NSBezierPath *badgePath;
+    NSBezierPath *badgePath;
 
-	/* Draw the badge's drop shadow. */
-	if (isSelected == NO) {
-		NSRect shadowFrame = badgeFrame;
+    /* Draw the badge's drop shadow. */
+    if (isSelected == NO) {
+        NSRect shadowFrame = badgeFrame;
 
-		/* The shadow frame is a round rectangle that matches the one
-		 being drawn with a 1 point offset below the badge to give the 
-		 appearance of a drop shadow. */
-		shadowFrame.origin.y -= 1;
+        /* The shadow frame is a round rectangle that matches the one
+         being drawn with a 1 point offset below the badge to give the 
+         appearance of a drop shadow. */
+        shadowFrame.origin.y -= 1;
 
-		badgePath = [NSBezierPath bezierPathWithRoundedRect:shadowFrame
-													xRadius:(self.serverList.messageCountBadgeHeight / 2.0)
-													yRadius:(self.serverList.messageCountBadgeHeight / 2.0)];
+        badgePath = [NSBezierPath bezierPathWithRoundedRect:shadowFrame
+                                                    xRadius:(self.serverList.messageCountBadgeHeight / 2.0)
+                                                    yRadius:(self.serverList.messageCountBadgeHeight / 2.0)];
 
-		[self.serverList.messageCountBadgeShadowColor set];
+        [self.serverList.messageCountBadgeShadowColor set];
 
-		[badgePath fill];
-	}
+        [badgePath fill];
+    }
 
-	/*************************************************************/
-	/* Background color drawing. */
-	/*************************************************************/
+    /*************************************************************/
+    /* Background color drawing. */
+    /*************************************************************/
 
-	/* Draw the background color. */
-	NSColor *backgroundColor;
+    /* Draw the background color. */
+    NSColor *backgroundColor;
 
-	if (isHighlight) {
-		backgroundColor = self.serverList.messageCountBadgeHighlightBackgroundColor;
-	} else {
-		if (isSelected) {
-			backgroundColor = self.serverList.messageCountBadgeSelectedBackgroundColor;
-		} else {
-			if (isGraphite) {
-				backgroundColor = self.serverList.messageCountBadgeGraphtieBackgroundColor;
-			} else {
-				backgroundColor = self.serverList.messageCountBadgeAquaBackgroundColor;
-			}
-		}
-	}
+    if (isHighlight) {
+        backgroundColor = self.serverList.messageCountBadgeHighlightBackgroundColor;
+    } else {
+        if (isSelected) {
+            backgroundColor = self.serverList.messageCountBadgeSelectedBackgroundColor;
+        } else {
+            if (isGraphite) {
+                backgroundColor = self.serverList.messageCountBadgeGraphtieBackgroundColor;
+            } else {
+                backgroundColor = self.serverList.messageCountBadgeAquaBackgroundColor;
+            }
+        }
+    }
 
-	badgePath = [NSBezierPath bezierPathWithRoundedRect:badgeFrame
-												xRadius:(self.serverList.messageCountBadgeHeight / 2.0)
-												yRadius:(self.serverList.messageCountBadgeHeight / 2.0)];
+    badgePath = [NSBezierPath bezierPathWithRoundedRect:badgeFrame
+                                                xRadius:(self.serverList.messageCountBadgeHeight / 2.0)
+                                                yRadius:(self.serverList.messageCountBadgeHeight / 2.0)];
 
-	[backgroundColor set];
+    [backgroundColor set];
 
-	[badgePath fill];
+    [badgePath fill];
 
-	/*************************************************************/
-	/* Badge text drawing. */
-	/*************************************************************/
+    /*************************************************************/
+    /* Badge text drawing. */
+    /*************************************************************/
 
-	/* Center the text relative to the badge itself. */
-	NSPoint badgeTextPoint;
+    /* Center the text relative to the badge itself. */
+    NSPoint badgeTextPoint;
 
-	badgeTextPoint = NSMakePoint((NSMidX(badgeFrame) - (mcstring.size.width / 2.0)),
-								(NSMidY(badgeFrame) - (mcstring.size.height / 2.0)));
+    badgeTextPoint = NSMakePoint((NSMidX(badgeFrame) - (mcstring.size.width / 2.0)),
+                                (NSMidY(badgeFrame) - (mcstring.size.height / 2.0)));
 
-	
-	if ([TPCPreferences runningInHighResolutionMode]) {
-		badgeTextPoint.y -= 0.5;
-	}
-	
-	/* The actual draw. */
-	[mcstring drawAtPoint:badgeTextPoint];
+    
+    if ([TPCPreferences runningInHighResolutionMode]) {
+        badgeTextPoint.y -= 0.5;
+    }
+    
+    /* The actual draw. */
+    [mcstring drawAtPoint:badgeTextPoint];
 
-	/*************************************************************/
-	/* Finish drawing. */
-	/*************************************************************/
+    /*************************************************************/
+    /* Finish drawing. */
+    /*************************************************************/
 
-	/* Remove focus from the draw image. */
-	[newDrawImage unlockFocus];
+    /* Remove focus from the draw image. */
+    [newDrawImage unlockFocus];
 
-	/* Return the result. */
-	return newDrawImage;
+    /* Return the result. */
+    return newDrawImage;
 }
 
 #pragma mark -
@@ -288,7 +288,7 @@
 
 - (TVCServerList *)serverList
 {
-	return self.masterController.serverList;
+    return self.masterController.serverList;
 }
 
 @end

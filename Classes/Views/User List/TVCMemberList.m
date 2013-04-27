@@ -43,59 +43,59 @@
 
 - (void)keyDown:(NSEvent *)e
 {
-	if (self.keyDelegate) {
-		switch ([e keyCode]) {
-			case 123 ... 126:
-			case 116:
-			case 121:
-				break;
-			default:
-				if ([self.keyDelegate respondsToSelector:@selector(memberListViewKeyDown:)]) {
-					[self.keyDelegate memberListViewKeyDown:e];
-				}
-				
-				break;
-		}
-	}
+    if (self.keyDelegate) {
+        switch ([e keyCode]) {
+            case 123 ... 126:
+            case 116:
+            case 121:
+                break;
+            default:
+                if ([self.keyDelegate respondsToSelector:@selector(memberListViewKeyDown:)]) {
+                    [self.keyDelegate memberListViewKeyDown:e];
+                }
+                
+                break;
+        }
+    }
 }
 
 - (void)rightMouseDown:(NSEvent *)theEvent
 {
-	NSWindowNegateActionWithAttachedSheet();
+    NSWindowNegateActionWithAttachedSheet();
 
-	[super rightMouseDown:theEvent];
+    [super rightMouseDown:theEvent];
 }
 
 - (void)updateBackgroundColor
 {
-	BOOL enableScrollViewLayers = [RZUserDefaults() boolForKey:@"TVCListViewEnableLayeredBackViews"];
+    BOOL enableScrollViewLayers = [RZUserDefaults() boolForKey:@"TVCListViewEnableLayeredBackViews"];
 
-	if (enableScrollViewLayers) {
-		CALayer *scrollLayer = self.scrollView.contentView.layer;
+    if (enableScrollViewLayers) {
+        CALayer *scrollLayer = self.scrollView.contentView.layer;
 
-		if ([TPCPreferences invertSidebarColors]) {
-			[scrollLayer setBackgroundColor:[self.properBackgroundColor aCGColor]];
-		} else {
-			[scrollLayer setBackgroundColor:[NSColor.clearColor aCGColor]];
-		}
-	} else {
-		if ([TPCPreferences invertSidebarColors] || self.masterController.mainWindowIsActive == NO) {
-			[self setBackgroundColor:[NSColor clearColor]];
+        if ([TPCPreferences invertSidebarColors]) {
+            [scrollLayer setBackgroundColor:[self.properBackgroundColor aCGColor]];
+        } else {
+            [scrollLayer setBackgroundColor:[NSColor.clearColor aCGColor]];
+        }
+    } else {
+        if ([TPCPreferences invertSidebarColors] || self.masterController.mainWindowIsActive == NO) {
+            [self setBackgroundColor:[NSColor clearColor]];
 
-			[self.scrollView setBackgroundColor:self.properBackgroundColor];
-		} else {
-			[self setBackgroundColor:self.properBackgroundColor];
+            [self.scrollView setBackgroundColor:self.properBackgroundColor];
+        } else {
+            [self setBackgroundColor:self.properBackgroundColor];
 
-			[self.scrollView setBackgroundColor:[NSColor clearColor]];
-		}
-	}
+            [self.scrollView setBackgroundColor:[NSColor clearColor]];
+        }
+    }
 
-	[self setNeedsDisplay:YES];
+    [self setNeedsDisplay:YES];
 }
 
 - (NSScrollView *)scrollView
 {
-	return (id)self.superview.superview;
+    return (id)self.superview.superview;
 }
 
 - (void)drawContextMenuHighlightForRow:(int)row
@@ -108,60 +108,60 @@
 
 - (NSColor *)properBackgroundColor
 {
-	if (self.masterController.mainWindowIsActive) {
-		return [self activeWindowListBackgroundColor];
-	} else {
-		return [self inactiveWindowListBackgroundColor];
-	}
+    if (self.masterController.mainWindowIsActive) {
+        return [self activeWindowListBackgroundColor];
+    } else {
+        return [self inactiveWindowListBackgroundColor];
+    }
 }
 
 - (NSColor *)activeWindowListBackgroundColor
 {
-	return [NSColor defineUserInterfaceItem:[NSColor sourceListBackgroundColor]
-							   invertedItem:[NSColor internalCalibratedRed:38.0 green:38.0 blue:38.0 alpha:1.0]];
+    return [NSColor defineUserInterfaceItem:[NSColor sourceListBackgroundColor]
+                               invertedItem:[NSColor internalCalibratedRed:38.0 green:38.0 blue:38.0 alpha:1.0]];
 }
 
 - (NSColor *)inactiveWindowListBackgroundColor
 {
-	return [NSColor defineUserInterfaceItem:[NSColor internalCalibratedRed:237.0 green:237.0 blue:237.0 alpha:1.0]
-							   invertedItem:[NSColor internalCalibratedRed:38.0 green:38.0 blue:38.0 alpha:1.0]];
+    return [NSColor defineUserInterfaceItem:[NSColor internalCalibratedRed:237.0 green:237.0 blue:237.0 alpha:1.0]
+                               invertedItem:[NSColor internalCalibratedRed:38.0 green:38.0 blue:38.0 alpha:1.0]];
 }
 
 - (NSColor *)userMarkBadgeBackgroundColor_XGraphite
 {
-	return [NSColor defineUserInterfaceItem:[NSColor internalCalibratedRed:132 green:147 blue:163 alpha:1.0]
-							   invertedItem:[NSColor internalCalibratedRed:48 green:48 blue:48 alpha:1.0]];
+    return [NSColor defineUserInterfaceItem:[NSColor internalCalibratedRed:132 green:147 blue:163 alpha:1.0]
+                               invertedItem:[NSColor internalCalibratedRed:48 green:48 blue:48 alpha:1.0]];
 }
 
 - (NSColor *)userMarkBadgeBackgroundColor_XAqua
 {
-	return [NSColor defineUserInterfaceItem:[NSColor internalCalibratedRed:152 green:168 blue:202 alpha:1.0]
-							   invertedItem:[NSColor internalCalibratedRed:48 green:48 blue:48 alpha:1.0]];
+    return [NSColor defineUserInterfaceItem:[NSColor internalCalibratedRed:152 green:168 blue:202 alpha:1.0]
+                               invertedItem:[NSColor internalCalibratedRed:48 green:48 blue:48 alpha:1.0]];
 }
 
 - (NSColor *)userMarkBadgeBackgroundColor_YDefault // InspIRCd-2.0
 {
-	return [NSColor internalCalibratedRed:162 green:86 blue:58 alpha:1.0];
+    return [NSColor internalCalibratedRed:162 green:86 blue:58 alpha:1.0];
 }
 
 - (NSColor *)userMarkBadgeBackgroundColor_QDefault
 {
-	return [NSColor internalCalibratedRed:186 green:0 blue:0 alpha:1.0];
+    return [NSColor internalCalibratedRed:186 green:0 blue:0 alpha:1.0];
 }
 
 - (NSColor *)userMarkBadgeBackgroundColor_ADefault
 {
-	return [NSColor internalCalibratedRed:157 green:0 blue:89 alpha:1.0];
+    return [NSColor internalCalibratedRed:157 green:0 blue:89 alpha:1.0];
 }
 
 - (NSColor *)userMarkBadgeBackgroundColor_ODefault
 {
-	return [NSColor internalCalibratedRed:90 green:51 blue:156 alpha:1.0];
+    return [NSColor internalCalibratedRed:90 green:51 blue:156 alpha:1.0];
 }
 
 - (NSColor *)userMarkBadgeBackgroundColor_HDefault
 {
-	return [NSColor internalCalibratedRed:17 green:125 blue:19 alpha:1.0];
+    return [NSColor internalCalibratedRed:17 green:125 blue:19 alpha:1.0];
 }
 
 - (NSColor *)userMarkBadgeBackgroundColor_VDefault
@@ -171,133 +171,133 @@
 
 - (NSColor *)userMarkBadgeBackgroundColor_Y // InspIRCd-2.0
 {
-	return [RZUserDefaults() colorForKey:@"User List Mode Badge Colors —> +y"];
+    return [RZUserDefaults() colorForKey:@"User List Mode Badge Colors —> +y"];
 }
 
 - (NSColor *)userMarkBadgeBackgroundColor_Q
 {
-	return [RZUserDefaults() colorForKey:@"User List Mode Badge Colors —> +q"];
+    return [RZUserDefaults() colorForKey:@"User List Mode Badge Colors —> +q"];
 }
 
 - (NSColor *)userMarkBadgeBackgroundColor_A
 {
-	return [RZUserDefaults() colorForKey:@"User List Mode Badge Colors —> +a"];
+    return [RZUserDefaults() colorForKey:@"User List Mode Badge Colors —> +a"];
 }
 
 - (NSColor *)userMarkBadgeBackgroundColor_O
 {
-	return [RZUserDefaults() colorForKey:@"User List Mode Badge Colors —> +o"];
+    return [RZUserDefaults() colorForKey:@"User List Mode Badge Colors —> +o"];
 }
 
 - (NSColor *)userMarkBadgeBackgroundColor_H
 {
-	return [RZUserDefaults() colorForKey:@"User List Mode Badge Colors —> +h"];
+    return [RZUserDefaults() colorForKey:@"User List Mode Badge Colors —> +h"];
 }
 
 - (NSColor *)userMarkBadgeBackgroundColor_V
 {
-	return [RZUserDefaults() colorForKey:@"User List Mode Badge Colors —> +v"];
+    return [RZUserDefaults() colorForKey:@"User List Mode Badge Colors —> +v"];
 }
 
 - (NSColor *)userMarkBadgeSelectedBackgroundColor
 {
-	return [NSColor whiteColor];
+    return [NSColor whiteColor];
 }
 
 - (NSColor *)userMarkBadgeNormalTextColor
 {
-	return [NSColor whiteColor];
+    return [NSColor whiteColor];
 }
 
 - (NSColor *)userMarkBadgeSelectedTextColor
 {
-	return [NSColor defineUserInterfaceItem:[NSColor internalCalibratedRed:158 green:169 blue:197 alpha:1.0]
-							   invertedItem:[NSColor internalCalibratedRed:36.0 green:36.0 blue:36.0 alpha:1.0]];
+    return [NSColor defineUserInterfaceItem:[NSColor internalCalibratedRed:158 green:169 blue:197 alpha:1.0]
+                               invertedItem:[NSColor internalCalibratedRed:36.0 green:36.0 blue:36.0 alpha:1.0]];
 }
 
 - (NSColor *)userMarkBadgeShadowColor
 {
-	return [NSColor defineUserInterfaceItem:[NSColor colorWithCalibratedWhite:1.00 alpha:0.60]
-							   invertedItem:[NSColor internalCalibratedRed:60.0 green:60.0 blue:60.0 alpha:1.0]];
+    return [NSColor defineUserInterfaceItem:[NSColor colorWithCalibratedWhite:1.00 alpha:0.60]
+                               invertedItem:[NSColor internalCalibratedRed:60.0 green:60.0 blue:60.0 alpha:1.0]];
 }
 
 - (NSFont *)userMarkBadgeFont
 {
-	return [RZFontManager() fontWithFamily:@"Helvetica" traits:NSBoldFontMask weight:15 size:10.5];
+    return [RZFontManager() fontWithFamily:@"Helvetica" traits:NSBoldFontMask weight:15 size:10.5];
 }
 
 - (NSInteger)userMarkBadgeMargin
 {
-	return 5.0;
+    return 5.0;
 }
 
 - (NSInteger)userMarkBadgeWidth
 {
-	return 18.0;
+    return 18.0;
 }
 
 - (NSInteger)userMarkBadgeHeight
 {
-	return 14.0;
+    return 14.0;
 }
 
 - (NSFont *)normalCellFont
 {
-	if ([TPCPreferences useLargeFontForSidebars]) {
-		return [NSFont fontWithName:@"LucidaGrande" size:12.0];
-	} else {
-		return [NSFont fontWithName:@"LucidaGrande" size:11.0];
-	}
+    if ([TPCPreferences useLargeFontForSidebars]) {
+        return [NSFont fontWithName:@"LucidaGrande" size:12.0];
+    } else {
+        return [NSFont fontWithName:@"LucidaGrande" size:11.0];
+    }
 }
 
 - (NSFont *)selectedCellFont
 {
-	if ([TPCPreferences useLargeFontForSidebars]) {
-		return [NSFont fontWithName:@"LucidaGrande-Bold" size:12.0];
-	} else {
-		return [NSFont fontWithName:@"LucidaGrande-Bold" size:11.0];
-	}
+    if ([TPCPreferences useLargeFontForSidebars]) {
+        return [NSFont fontWithName:@"LucidaGrande-Bold" size:12.0];
+    } else {
+        return [NSFont fontWithName:@"LucidaGrande-Bold" size:11.0];
+    }
 }
 
 - (NSColor *)normalCellTextColor
 {
-	return [NSColor defineUserInterfaceItem:[NSColor blackColor]
-							   invertedItem:[NSColor internalCalibratedRed:225.0 green:224.0 blue:224.0 alpha:1.0]];
+    return [NSColor defineUserInterfaceItem:[NSColor blackColor]
+                               invertedItem:[NSColor internalCalibratedRed:225.0 green:224.0 blue:224.0 alpha:1.0]];
 }
 
 - (NSColor *)awayUserCellTextColor
 {
-	return [NSColor defineUserInterfaceItem:[NSColor colorWithCalibratedWhite:0.0 alpha:0.6]
-							   invertedItem:[NSColor internalCalibratedRed:225.0 green:224.0 blue:224.0 alpha:0.6]];
+    return [NSColor defineUserInterfaceItem:[NSColor colorWithCalibratedWhite:0.0 alpha:0.6]
+                               invertedItem:[NSColor internalCalibratedRed:225.0 green:224.0 blue:224.0 alpha:0.6]];
 }
 
 - (NSColor *)selectedCellTextColor
 {
-	return [NSColor defineUserInterfaceItem:[NSColor whiteColor]
-							   invertedItem:[NSColor internalCalibratedRed:36.0 green:36.0 blue:36.0 alpha:1.0]];
+    return [NSColor defineUserInterfaceItem:[NSColor whiteColor]
+                               invertedItem:[NSColor internalCalibratedRed:36.0 green:36.0 blue:36.0 alpha:1.0]];
 }
 
 - (NSColor *)normalCellTextShadowColor
 {
-	return [NSColor defineUserInterfaceItem:[NSColor colorWithSRGBRed:1.0 green:1.0 blue:1.0 alpha:0.6]
-							   invertedItem:[NSColor colorWithCalibratedWhite:0.00 alpha:0.90]];
+    return [NSColor defineUserInterfaceItem:[NSColor colorWithSRGBRed:1.0 green:1.0 blue:1.0 alpha:0.6]
+                               invertedItem:[NSColor colorWithCalibratedWhite:0.00 alpha:0.90]];
 }
 
 - (NSColor *)normalSelectedCellTextShadowColorForActiveWindow
 {
-	return [NSColor defineUserInterfaceItem:[NSColor colorWithCalibratedWhite:0.00 alpha:0.48]
-							   invertedItem:[NSColor colorWithCalibratedWhite:1.00 alpha:0.30]];
+    return [NSColor defineUserInterfaceItem:[NSColor colorWithCalibratedWhite:0.00 alpha:0.48]
+                               invertedItem:[NSColor colorWithCalibratedWhite:1.00 alpha:0.30]];
 }
 
 - (NSColor *)normalSelectedCellTextShadowColorForInactiveWindow
 {
-	return [NSColor defineUserInterfaceItem:[NSColor colorWithCalibratedWhite:0.00 alpha:0.30]
-							   invertedItem:[NSColor colorWithCalibratedWhite:1.00 alpha:0.30]];
+    return [NSColor defineUserInterfaceItem:[NSColor colorWithCalibratedWhite:0.00 alpha:0.30]
+                               invertedItem:[NSColor colorWithCalibratedWhite:1.00 alpha:0.30]];
 }
 
 - (NSColor *)graphiteSelectedCellTextShadowColorForActiveWindow
 {
-	return [NSColor internalCalibratedRed:17 green:73 blue:126 alpha:1.00];
+    return [NSColor internalCalibratedRed:17 green:73 blue:126 alpha:1.00];
 }
 
 @end
@@ -309,16 +309,16 @@
 
 - (id)initWithFrame:(NSRect)frame
 {
-	if ((self = [super initWithFrame:frame])) {
-		self.layer = [CAScrollLayer layer];
+    if ((self = [super initWithFrame:frame])) {
+        self.layer = [CAScrollLayer layer];
 
-		self.wantsLayer = YES;
-		self.layerContentsRedrawPolicy = NSViewLayerContentsRedrawNever;
+        self.wantsLayer = YES;
+        self.layerContentsRedrawPolicy = NSViewLayerContentsRedrawNever;
 
-		return self;
-	}
+        return self;
+    }
 
-	return nil;
+    return nil;
 }
 
 @end
@@ -330,27 +330,27 @@
 
 - (void)swapClipView
 {
-	self.wantsLayer = YES;
+    self.wantsLayer = YES;
 
     id documentView = self.documentView;
 
-	TVCMemberListScrollClipView *clipView = [[TVCMemberListScrollClipView alloc] initWithFrame:self.contentView.frame];
+    TVCMemberListScrollClipView *clipView = [[TVCMemberListScrollClipView alloc] initWithFrame:self.contentView.frame];
 
-	self.contentView = clipView;
-	self.documentView = documentView;
+    self.contentView = clipView;
+    self.documentView = documentView;
 }
 
 - (void)awakeFromNib
 {
-	BOOL enableScrollViewLayers = [RZUserDefaults() boolForKey:@"TVCListViewEnableLayeredBackViews"];
+    BOOL enableScrollViewLayers = [RZUserDefaults() boolForKey:@"TVCListViewEnableLayeredBackViews"];
 
-	if (enableScrollViewLayers) {
-		[super awakeFromNib];
+    if (enableScrollViewLayers) {
+        [super awakeFromNib];
 
-		if ([self.contentView isKindOfClass:[TVCMemberListScrollClipView class]] == NO) {
-			[self swapClipView];
-		}
-	}
+        if ([self.contentView isKindOfClass:[TVCMemberListScrollClipView class]] == NO) {
+            [self swapClipView];
+        }
+    }
 }
 
 @end

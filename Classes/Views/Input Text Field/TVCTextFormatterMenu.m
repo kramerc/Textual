@@ -39,99 +39,99 @@
 
 @implementation TVCTextFormatterMenu
 
-#define _formattingMenuForegroundColorEnabledTag		95005
-#define _formattingMenuBackgroundColorEnabledTag		95007
-#define _formattingMenuForegroundColorDisabledTag		95004
-#define _formattingMenuBackgroundColorDisabledTag		95006
-#define _formattingMenuRainbowColorMenuItemTag			99
+#define _formattingMenuForegroundColorEnabledTag        95005
+#define _formattingMenuBackgroundColorEnabledTag        95007
+#define _formattingMenuForegroundColorDisabledTag       95004
+#define _formattingMenuBackgroundColorDisabledTag       95006
+#define _formattingMenuRainbowColorMenuItemTag          99
 
 #pragma mark -
 #pragma mark Menu Management
 
 - (void)enableSheetField:(TVCTextField *)field
 {
-	self.sheetOverrideEnabled = YES;
+    self.sheetOverrideEnabled = YES;
 
-	self.textField = field;
+    self.textField = field;
 }
 
 - (void)enableWindowField:(TVCTextField *)field
 {
-	self.sheetOverrideEnabled = NO;
+    self.sheetOverrideEnabled = NO;
 
-	self.textField = field;
+    self.textField = field;
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)item
 {
-	if ([self.textField.window attachedSheet] && self.sheetOverrideEnabled == NO) {
-		return NO;
-	}
+    if ([self.textField.window attachedSheet] && self.sheetOverrideEnabled == NO) {
+        return NO;
+    }
 
-	switch ([item tag]) {
-		case 95001:
-		{
-			NSMenu *rootMenu = [item menu];
+    switch ([item tag]) {
+        case 95001:
+        {
+            NSMenu *rootMenu = [item menu];
 
-			BOOL boldText		 = [self boldSet];
-			BOOL foregroundColor = [self foregroundColorSet];
-			BOOL backgroundColor = [self backgroundColorSet];
+            BOOL boldText        = [self boldSet];
+            BOOL foregroundColor = [self foregroundColorSet];
+            BOOL backgroundColor = [self backgroundColorSet];
 
-			[[rootMenu itemWithTag:_formattingMenuForegroundColorEnabledTag]  setHidden:foregroundColor];
-			[[rootMenu itemWithTag:_formattingMenuForegroundColorDisabledTag] setHidden:BOOLReverseValue(foregroundColor)];
+            [[rootMenu itemWithTag:_formattingMenuForegroundColorEnabledTag]  setHidden:foregroundColor];
+            [[rootMenu itemWithTag:_formattingMenuForegroundColorDisabledTag] setHidden:BOOLReverseValue(foregroundColor)];
 
-			[[rootMenu itemWithTag:_formattingMenuBackgroundColorEnabledTag]  setHidden:backgroundColor];
-			[[rootMenu itemWithTag:_formattingMenuBackgroundColorEnabledTag]  setEnabled:foregroundColor];
-			[[rootMenu itemWithTag:_formattingMenuBackgroundColorDisabledTag] setHidden:BOOLReverseValue(backgroundColor)];
+            [[rootMenu itemWithTag:_formattingMenuBackgroundColorEnabledTag]  setHidden:backgroundColor];
+            [[rootMenu itemWithTag:_formattingMenuBackgroundColorEnabledTag]  setEnabled:foregroundColor];
+            [[rootMenu itemWithTag:_formattingMenuBackgroundColorDisabledTag] setHidden:BOOLReverseValue(backgroundColor)];
 
-			[item setState:boldText];
+            [item setState:boldText];
 
-			if (boldText) {
-				[item setAction:@selector(removeBoldCharFromTextBox:)];
-			} else {
-				[item setAction:@selector(insertBoldCharIntoTextBox:)];
-			}
+            if (boldText) {
+                [item setAction:@selector(removeBoldCharFromTextBox:)];
+            } else {
+                [item setAction:@selector(insertBoldCharIntoTextBox:)];
+            }
 
-			return YES;
+            return YES;
 
-			break;
-		}
-		case 95002:
-		{
-			BOOL italicText = [self italicSet];
+            break;
+        }
+        case 95002:
+        {
+            BOOL italicText = [self italicSet];
 
-			if (italicText) {
-				[item setAction:@selector(removeItalicCharFromTextBox:)];
-			} else {
-				[item setAction:@selector(insertItalicCharIntoTextBox:)];
-			}
+            if (italicText) {
+                [item setAction:@selector(removeItalicCharFromTextBox:)];
+            } else {
+                [item setAction:@selector(insertItalicCharIntoTextBox:)];
+            }
 
-			[item setState:italicText];
+            [item setState:italicText];
 
-			return YES;
+            return YES;
 
-			break;
-		}
-		case 95003:
-		{
-			BOOL underlineText = [self underlineSet];
+            break;
+        }
+        case 95003:
+        {
+            BOOL underlineText = [self underlineSet];
 
-			if (underlineText) {
-				[item setAction:@selector(removeUnderlineCharFromTextBox:)];
-			} else {
-				[item setAction:@selector(insertUnderlineCharIntoTextBox:)];
-			}
+            if (underlineText) {
+                [item setAction:@selector(removeUnderlineCharFromTextBox:)];
+            } else {
+                [item setAction:@selector(insertUnderlineCharIntoTextBox:)];
+            }
 
-			[item setState:underlineText];
+            [item setState:underlineText];
 
-			return YES;
+            return YES;
 
-			break;
-		}
-		default: break;
-	}
+            break;
+        }
+        default: break;
+    }
 
-	return YES;
+    return YES;
 }
 
 #pragma mark -
@@ -144,27 +144,27 @@
 
 - (BOOL)boldSet
 {
-	return [self propertyIsSet:IRCTextFormatterBoldEffect];
+    return [self propertyIsSet:IRCTextFormatterBoldEffect];
 }
 
 - (BOOL)italicSet
 {
-	return [self propertyIsSet:IRCTextFormatterItalicEffect];
+    return [self propertyIsSet:IRCTextFormatterItalicEffect];
 }
 
 - (BOOL)underlineSet
 {
-	return [self propertyIsSet:IRCTextFormatterUnderlineEffect];
+    return [self propertyIsSet:IRCTextFormatterUnderlineEffect];
 }
 
 - (BOOL)foregroundColorSet
 {
-	return [self propertyIsSet:IRCTextFormatterForegroundColorEffect];
+    return [self propertyIsSet:IRCTextFormatterForegroundColorEffect];
 }
 
 - (BOOL)backgroundColorSet
 {
-	return [self propertyIsSet:IRCTextFormatterBackgroundColorEffect];
+    return [self propertyIsSet:IRCTextFormatterBackgroundColorEffect];
 }
 
 #pragma mark -
@@ -177,8 +177,8 @@
         if (selectedTextRange.location == NSNotFound || selectedTextRange.length == 0) return;
 
         [self.textField setIRCFormatterAttribute:IRCTextFormatterBoldEffect
-										   value:NSNumberWithBOOL(YES)
-										   range:selectedTextRange];
+                                           value:NSNumberWithBOOL(YES)
+                                           range:selectedTextRange];
 
         if ([self.textField respondsToSelector:@selector(focus)]) {
             [self.textField performSelector:@selector(focus)];
@@ -193,8 +193,8 @@
         if (selectedTextRange.location == NSNotFound || selectedTextRange.length == 0) return;
 
         [self.textField setIRCFormatterAttribute:IRCTextFormatterItalicEffect
-										   value:NSNumberWithBOOL(YES)
-										   range:selectedTextRange];
+                                           value:NSNumberWithBOOL(YES)
+                                           range:selectedTextRange];
 
         if ([self.textField respondsToSelector:@selector(focus)]) {
             [self.textField performSelector:@selector(focus)];
@@ -209,8 +209,8 @@
         if (selectedTextRange.location == NSNotFound || selectedTextRange.length == 0) return;
 
         [self.textField setIRCFormatterAttribute:IRCTextFormatterUnderlineEffect
-										   value:NSNumberWithBOOL(YES)
-										   range:selectedTextRange];
+                                           value:NSNumberWithBOOL(YES)
+                                           range:selectedTextRange];
 
         if ([self.textField respondsToSelector:@selector(focus)]) {
             [self.textField performSelector:@selector(focus)];
@@ -253,14 +253,14 @@
 
                 if ([charValue isEqualToString:NSStringWhitespacePlaceholder]) {
                     [self.textField setIRCFormatterAttribute:IRCTextFormatterForegroundColorEffect
-													   value:@0
-													   range:charRange];
+                                                       value:@0
+                                                       range:charRange];
                 } else {
                     colorChar = [colorCodes integerAtIndex:rainbowArrayIndex];
 
                     [self.textField setIRCFormatterAttribute:IRCTextFormatterForegroundColorEffect
-													   value:@(colorChar)
-													   range:charRange];
+                                                       value:@(colorChar)
+                                                       range:charRange];
                 }
 
                 charCountIndex++;
@@ -268,8 +268,8 @@
             }
         } else {
             [self.textField setIRCFormatterAttribute:IRCTextFormatterForegroundColorEffect
-											   value:@([sender tag])
-											   range:selectedTextRange];
+                                               value:@([sender tag])
+                                               range:selectedTextRange];
         }
 
         if ([self.textField respondsToSelector:@selector(focus)]) {
@@ -311,16 +311,16 @@
                 colorChar = [colorCodes integerAtIndex:rainbowArrayIndex];
 
                 [self.textField setIRCFormatterAttribute:IRCTextFormatterBackgroundColorEffect
-												   value:@(colorChar)
-												   range:charRange];
+                                                   value:@(colorChar)
+                                                   range:charRange];
 
                 charCountIndex++;
                 rainbowArrayIndex++;
             }
         } else {
             [self.textField setIRCFormatterAttribute:IRCTextFormatterBackgroundColorEffect
-											   value:@([sender tag])
-											   range:selectedTextRange];
+                                               value:@([sender tag])
+                                               range:selectedTextRange];
         }
 
         if ([self.textField respondsToSelector:@selector(focus)]) {
@@ -339,8 +339,8 @@
         if (selectedTextRange.location == NSNotFound || selectedTextRange.length == 0) return;
 
         [self.textField removeIRCFormatterAttribute:IRCTextFormatterBoldEffect
-											  range:selectedTextRange
-											  color:self.textField.defaultTextColor];
+                                              range:selectedTextRange
+                                              color:self.textField.defaultTextColor];
 
         if ([self.textField respondsToSelector:@selector(focus)]) {
             [self.textField performSelector:@selector(focus)];
@@ -355,8 +355,8 @@
         if (selectedTextRange.location == NSNotFound || selectedTextRange.length == 0) return;
 
         [self.textField removeIRCFormatterAttribute:IRCTextFormatterItalicEffect
-											  range:selectedTextRange
-											  color:self.textField.defaultTextColor];
+                                              range:selectedTextRange
+                                              color:self.textField.defaultTextColor];
 
         if ([self.textField respondsToSelector:@selector(focus)]) {
             [self.textField performSelector:@selector(focus)];
@@ -371,8 +371,8 @@
         if (selectedTextRange.location == NSNotFound || selectedTextRange.length == 0) return;
 
         [self.textField removeIRCFormatterAttribute:IRCTextFormatterUnderlineEffect
-											  range:selectedTextRange
-											  color:self.textField.defaultTextColor];
+                                              range:selectedTextRange
+                                              color:self.textField.defaultTextColor];
 
         if ([self.textField respondsToSelector:@selector(focus)]) {
             [self.textField performSelector:@selector(focus)];
@@ -387,8 +387,8 @@
         if (selectedTextRange.location == NSNotFound || selectedTextRange.length == 0) return;
 
         [self.textField removeIRCFormatterAttribute:IRCTextFormatterForegroundColorEffect
-											  range:selectedTextRange
-											  color:self.textField.defaultTextColor];
+                                              range:selectedTextRange
+                                              color:self.textField.defaultTextColor];
 
         if ([self.textField respondsToSelector:@selector(focus)]) {
             [self.textField performSelector:@selector(focus)];
@@ -403,8 +403,8 @@
         if (selectedTextRange.location == NSNotFound || selectedTextRange.length == 0) return;
 
         [self.textField removeIRCFormatterAttribute:IRCTextFormatterBackgroundColorEffect
-											  range:selectedTextRange
-											  color:self.textField.defaultTextColor];
+                                              range:selectedTextRange
+                                              color:self.textField.defaultTextColor];
 
         if ([self.textField respondsToSelector:@selector(focus)]) {
             [self.textField performSelector:@selector(focus)];

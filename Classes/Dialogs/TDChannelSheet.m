@@ -37,17 +37,17 @@
 
 #import "TextualApplication.h"
 
-#define _TXWindowToolbarHeight			25
+#define _TXWindowToolbarHeight          25
 
 @implementation TDChannelSheet
 
 - (id)init
 {
-	if ((self = [super init])) {
-		[NSBundle loadNibNamed:@"TDChannelSheet" owner:self];
-	}
+    if ((self = [super init])) {
+        [NSBundle loadNibNamed:@"TDChannelSheet" owner:self];
+    }
 
-	return self;
+    return self;
 }
 
 #pragma mark -
@@ -55,33 +55,33 @@
 
 - (void)onMenuBarItemChanged:(id)sender 
 {
-	switch ([sender indexOfSelectedItem]) {
-		case 0:	{	[self firstPane:self.generalView]; break;		}
-		case 1: {	[self firstPane:self.encryptionView]; break;	}
-        case 2: {	[self firstPane:self.defaultsView]; break;		}
-		default: {	[self firstPane:self.generalView]; break;		}
-	}
+    switch ([sender indexOfSelectedItem]) {
+        case 0: {   [self firstPane:self.generalView]; break;       }
+        case 1: {   [self firstPane:self.encryptionView]; break;    }
+        case 2: {   [self firstPane:self.defaultsView]; break;      }
+        default: {  [self firstPane:self.generalView]; break;       }
+    }
 } 
 
 - (void)firstPane:(NSView *)view 
 {
-	NSRect windowFrame = self.sheet.frame;
-	
-	windowFrame.size.width = view.frame.size.width;
-	windowFrame.size.height = (view.frame.size.height + _TXWindowToolbarHeight);
+    NSRect windowFrame = self.sheet.frame;
+    
+    windowFrame.size.width = view.frame.size.width;
+    windowFrame.size.height = (view.frame.size.height + _TXWindowToolbarHeight);
 
-	windowFrame.origin.y = (NSMaxY(self.sheet.frame) - windowFrame.size.height);
-	
-	if (NSObjectIsNotEmpty(self.contentView.subviews)) {
-		[self.contentView.subviews[0] removeFromSuperview];
-	}
-	
-	[self.sheet setFrame:windowFrame display:YES animate:YES];
-	
-	[self.contentView setFrame:view.frame];
-	[self.contentView addSubview:view];	
-	
-	[self.sheet recalculateKeyViewLoop];
+    windowFrame.origin.y = (NSMaxY(self.sheet.frame) - windowFrame.size.height);
+    
+    if (NSObjectIsNotEmpty(self.contentView.subviews)) {
+        [self.contentView.subviews[0] removeFromSuperview];
+    }
+    
+    [self.sheet setFrame:windowFrame display:YES animate:YES];
+    
+    [self.contentView setFrame:view.frame];
+    [self.contentView addSubview:view]; 
+    
+    [self.sheet recalculateKeyViewLoop];
 }
 
 #pragma mark -
@@ -89,63 +89,63 @@
 
 - (void)start
 {
-	[self load];
-	[self update];
-	
-	[self startSheet];
-	[self firstPane:self.generalView];
-	
-	[self.contentViewTabView setSelectedSegment:0];
+    [self load];
+    [self update];
+    
+    [self startSheet];
+    [self firstPane:self.generalView];
+    
+    [self.contentViewTabView setSelectedSegment:0];
 }
 
 - (void)load
 {
-	self.channelNameField.stringValue		= self.config.channelName;
-	self.defaultModesField.stringValue		= self.config.defaultModes;
-	self.defaultTopicField.stringValue		= self.config.defaultTopic;
-	self.encryptionKeyField.stringValue		= self.config.encryptionKey;
-	self.secretKeyField.stringValue			= self.config.secretKey;
-	
-	self.autoJoinCheck.state			= self.config.autoJoin;
-	self.ignoreHighlightsCheck.state	= self.config.ignoreHighlights;
-	self.pushNotificationsCheck.state	= self.config.pushNotifications;
-    self.JPQActivityCheck.state			= self.config.ignoreJPQActivity;
-    self.inlineImagesCheck.state		= self.config.ignoreInlineImages;
-	self.showTreeBadgeCountCheck.state  = self.config.showTreeBadgeCount;
+    self.channelNameField.stringValue       = self.config.channelName;
+    self.defaultModesField.stringValue      = self.config.defaultModes;
+    self.defaultTopicField.stringValue      = self.config.defaultTopic;
+    self.encryptionKeyField.stringValue     = self.config.encryptionKey;
+    self.secretKeyField.stringValue         = self.config.secretKey;
+    
+    self.autoJoinCheck.state            = self.config.autoJoin;
+    self.ignoreHighlightsCheck.state    = self.config.ignoreHighlights;
+    self.pushNotificationsCheck.state   = self.config.pushNotifications;
+    self.JPQActivityCheck.state         = self.config.ignoreJPQActivity;
+    self.inlineImagesCheck.state        = self.config.ignoreInlineImages;
+    self.showTreeBadgeCountCheck.state  = self.config.showTreeBadgeCount;
 }
 
 - (void)save
 {
-	self.config.channelName		= self.channelNameField.firstTokenStringValue;
-	self.config.defaultModes	= self.defaultModesField.stringValue;
-	self.config.defaultTopic	= self.defaultTopicField.stringValue;
-	self.config.secretKey		= self.secretKeyField.firstTokenStringValue;
-	self.config.encryptionKey	= self.encryptionKeyField.stringValue;
+    self.config.channelName     = self.channelNameField.firstTokenStringValue;
+    self.config.defaultModes    = self.defaultModesField.stringValue;
+    self.config.defaultTopic    = self.defaultTopicField.stringValue;
+    self.config.secretKey       = self.secretKeyField.firstTokenStringValue;
+    self.config.encryptionKey   = self.encryptionKeyField.stringValue;
     
-	self.config.autoJoin			= self.autoJoinCheck.state;
-	self.config.showTreeBadgeCount  = self.showTreeBadgeCountCheck.state;
-	self.config.pushNotifications	= self.pushNotificationsCheck.state;
-    self.config.ignoreHighlights	= self.ignoreHighlightsCheck.state;
-    self.config.ignoreInlineImages	= self.inlineImagesCheck.state;
-    self.config.ignoreJPQActivity	= self.JPQActivityCheck.state;
-	
-	if ([self.config.channelName isChannelName] == NO) {
-		self.config.channelName = [@"#" stringByAppendingString:self.config.channelName];
-	}
+    self.config.autoJoin            = self.autoJoinCheck.state;
+    self.config.showTreeBadgeCount  = self.showTreeBadgeCountCheck.state;
+    self.config.pushNotifications   = self.pushNotificationsCheck.state;
+    self.config.ignoreHighlights    = self.ignoreHighlightsCheck.state;
+    self.config.ignoreInlineImages  = self.inlineImagesCheck.state;
+    self.config.ignoreJPQActivity   = self.JPQActivityCheck.state;
+    
+    if ([self.config.channelName isChannelName] == NO) {
+        self.config.channelName = [@"#" stringByAppendingString:self.config.channelName];
+    }
 }
 
 - (void)update
 {
-	NSString *s = self.channelNameField.stringValue;
-	
-	[self.okButton setEnabled:[s isChannelName]];
-	
-	[self.channelNameField setEditable:self.newItem];
+    NSString *s = self.channelNameField.stringValue;
+    
+    [self.okButton setEnabled:[s isChannelName]];
+    
+    [self.channelNameField setEditable:self.newItem];
 }
 
 - (void)controlTextDidChange:(NSNotification *)note
 {
-	[self update];
+    [self update];
 }
 
 #pragma mark -
@@ -153,13 +153,13 @@
 
 - (void)ok:(id)sender
 {
-	[self save];
-	
-	if ([self.delegate respondsToSelector:@selector(channelSheetOnOK:)]) {
-		[self.delegate channelSheetOnOK:self];
-	}
-	
-	[super ok:nil];
+    [self save];
+    
+    if ([self.delegate respondsToSelector:@selector(channelSheetOnOK:)]) {
+        [self.delegate channelSheetOnOK:self];
+    }
+    
+    [super ok:nil];
 }
 
 #pragma mark -
@@ -167,9 +167,9 @@
 
 - (void)windowWillClose:(NSNotification *)note
 {
-	if ([self.delegate respondsToSelector:@selector(channelSheetWillClose:)]) {
-		[self.delegate channelSheetWillClose:self];
-	}
+    if ([self.delegate respondsToSelector:@selector(channelSheetWillClose:)]) {
+        [self.delegate channelSheetWillClose:self];
+    }
 }
 
 @end

@@ -41,46 +41,46 @@
 
 - (id)init
 {
-	if ((self = [super init])) {
-		[NSBundle loadNibNamed:@"TDCInviteSheet" owner:self];
-	}
+    if ((self = [super init])) {
+        [NSBundle loadNibNamed:@"TDCInviteSheet" owner:self];
+    }
 
-	return self;
+    return self;
 }
 
 - (void)startWithChannels:(NSArray *)channels
 {
-	NSString *target = nil;
-	
-	if (self.nicknames.count == 1) {
-		target = [self.nicknames safeObjectAtIndex:0];
-	} else if (self.nicknames.count == 2) {
-		NSString *firstn = [self.nicknames safeObjectAtIndex:0];
-		NSString *second = [self.nicknames safeObjectAtIndex:1];
-		
-		target = TXTFLS(@"InviteSheetTwoPeopleSelected", firstn, second);
-	} else {
-		target = TXTFLS(@"InviteSheetMultiplePeopleSelected", self.nicknames.count);
-	}
-	
-	self.headerTitleField.stringValue = TXTFLS(@"InviteSheetTargetDescription", target);
-	
-	for (NSString *s in channels) {
-		[self.channelListPopup addItemWithTitle:s];
-	}
-	
-	[self startSheet];
+    NSString *target = nil;
+    
+    if (self.nicknames.count == 1) {
+        target = [self.nicknames safeObjectAtIndex:0];
+    } else if (self.nicknames.count == 2) {
+        NSString *firstn = [self.nicknames safeObjectAtIndex:0];
+        NSString *second = [self.nicknames safeObjectAtIndex:1];
+        
+        target = TXTFLS(@"InviteSheetTwoPeopleSelected", firstn, second);
+    } else {
+        target = TXTFLS(@"InviteSheetMultiplePeopleSelected", self.nicknames.count);
+    }
+    
+    self.headerTitleField.stringValue = TXTFLS(@"InviteSheetTargetDescription", target);
+    
+    for (NSString *s in channels) {
+        [self.channelListPopup addItemWithTitle:s];
+    }
+    
+    [self startSheet];
 }
 
 - (void)ok:(id)sender
 {
-	NSString *channelName = self.channelListPopup.selectedItem.title;
-	
-	if ([self.delegate respondsToSelector:@selector(inviteSheet:onSelectChannel:)]) {
-		[self.delegate inviteSheet:self onSelectChannel:channelName];
-	}
+    NSString *channelName = self.channelListPopup.selectedItem.title;
+    
+    if ([self.delegate respondsToSelector:@selector(inviteSheet:onSelectChannel:)]) {
+        [self.delegate inviteSheet:self onSelectChannel:channelName];
+    }
 
-	[super ok:nil];
+    [super ok:nil];
 }
 
 #pragma mark -
@@ -88,9 +88,9 @@
 
 - (void)windowWillClose:(NSNotification *)note
 {
-	if ([self.delegate respondsToSelector:@selector(inviteSheetWillClose:)]) {
-		[self.delegate inviteSheetWillClose:self];
-	}
+    if ([self.delegate respondsToSelector:@selector(inviteSheetWillClose:)]) {
+        [self.delegate inviteSheetWillClose:self];
+    }
 }
 
 @end

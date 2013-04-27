@@ -44,31 +44,31 @@
 
 - (id)init
 {
-	if ((self = [super init])) {
-		[NSBundle loadNibNamed:@"TDCWelcomeSheet" owner:self];
-		
-		self.channelList = [NSMutableArray new];
+    if ((self = [super init])) {
+        [NSBundle loadNibNamed:@"TDCWelcomeSheet" owner:self];
+        
+        self.channelList = [NSMutableArray new];
 
-		/* Load the list of available IRC networks. */
-		NSString *slp = [[TPCPreferences applicationResourcesFolderPath] stringByAppendingPathComponent:@"IRCNetworks.plist"];
+        /* Load the list of available IRC networks. */
+        NSString *slp = [[TPCPreferences applicationResourcesFolderPath] stringByAppendingPathComponent:@"IRCNetworks.plist"];
 
-		self.serverList = [NSDictionary dictionaryWithContentsOfFile:slp];
+        self.serverList = [NSDictionary dictionaryWithContentsOfFile:slp];
 
-		/* Populate the server address field with the IRC network list. */
-		NSArray *sortedKeys = [self.serverList allKeys];
+        /* Populate the server address field with the IRC network list. */
+        NSArray *sortedKeys = [self.serverList allKeys];
 
-		sortedKeys = [sortedKeys sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-			/* We are sorting keys. They are NSString values. */
-			/* Sort without case so that "freenode" is under servers with a capital F. */
-			return [obj1 compare:obj2 options:NSCaseInsensitiveSearch];
-		}];
-		
-		for (NSString *key in sortedKeys) {
-			[self.serverAddressField addItemWithObjectValue:key];
-		}
-	}
-	
-	return self;
+        sortedKeys = [sortedKeys sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+            /* We are sorting keys. They are NSString values. */
+            /* Sort without case so that "freenode" is under servers with a capital F. */
+            return [obj1 compare:obj2 options:NSCaseInsensitiveSearch];
+        }];
+        
+        for (NSString *key in sortedKeys) {
+            [self.serverAddressField addItemWithObjectValue:key];
+        }
+    }
+    
+    return self;
 }
 
 #pragma mark -
@@ -76,13 +76,13 @@
 
 - (NSString *)nameMatchesServerInList:(NSString *)name
 {
-	for (NSString *key in self.serverList) {
-		if ([name isEqualIgnoringCase:key]) {
-			return key;
-		}
-	}
+    for (NSString *key in self.serverList) {
+        if ([name isEqualIgnoringCase:key]) {
+            return key;
+        }
+    }
 
-	return nil;
+    return nil;
 }
 
 #pragma mark -
@@ -90,142 +90,142 @@
 
 - (void)show
 {
-	[self tableViewSelectionIsChanging:nil];
-	[self updateOKButton];
+    [self tableViewSelectionIsChanging:nil];
+    [self updateOKButton];
 
-	self.channelTable.textEditingDelegate = self;
-	
-	[self.nicknameField setStringValue:[TPCPreferences defaultNickname]];
-	
-	[self startSheet];
+    self.channelTable.textEditingDelegate = self;
+    
+    [self.nicknameField setStringValue:[TPCPreferences defaultNickname]];
+    
+    [self startSheet];
 }
 
 - (void)close
 {
-	[super cancel:nil];
+    [super cancel:nil];
 }
 
 - (void)ok:(id)sender
 {
-	NSMutableArray *channels = [NSMutableArray array];
-	
-	for (__strong NSString *s in self.channelList) {
-		NSObjectIsEmptyAssertLoopContinue(s);
-		
-		if ([s isChannelName] == NO) {
-			s = [@"#" stringByAppendingString:s];
-		}
+    NSMutableArray *channels = [NSMutableArray array];
+    
+    for (__strong NSString *s in self.channelList) {
+        NSObjectIsEmptyAssertLoopContinue(s);
+        
+        if ([s isChannelName] == NO) {
+            s = [@"#" stringByAppendingString:s];
+        }
 
-		[channels safeAddObjectWithoutDuplication:s];
-	}
+        [channels safeAddObjectWithoutDuplication:s];
+    }
 
-	NSString *userServAddress = [self.serverAddressField.firstTokenStringValue cleanedServerHostmask];
+    NSString *userServAddress = [self.serverAddressField.firstTokenStringValue cleanedServerHostmask];
 
-	NSString *realhost = [self nameMatchesServerInList:userServAddress];
+    NSString *realhost = [self nameMatchesServerInList:userServAddress];
 
-	if (NSObjectIsEmpty(realhost)) {
-		realhost = userServAddress;
-	} else {
-		realhost = (self.serverList)[realhost];
-	}
-	
-	NSMutableDictionary *dic = [NSMutableDictionary dictionary];
-	
-	dic[@"channelList"]			= channels;
-	dic[@"serverAddress"]		= realhost;
-	dic[@"connectOnLaunch"]		= @(self.autoConnectCheck.state);
-	dic[@"identityNickname"]	= self.nicknameField.firstTokenStringValue;
+    if (NSObjectIsEmpty(realhost)) {
+        realhost = userServAddress;
+    } else {
+        realhost = (self.serverList)[realhost];
+    }
+    
+    NSMutableDictionary *dic = [NSMutableDictionary dictionary];
+    
+    dic[@"channelList"]         = channels;
+    dic[@"serverAddress"]       = realhost;
+    dic[@"connectOnLaunch"]     = @(self.autoConnectCheck.state);
+    dic[@"identityNickname"]    = self.nicknameField.firstTokenStringValue;
 
-	if ([self.delegate respondsToSelector:@selector(welcomeSheet:onOK:)]) {
-		[self.delegate welcomeSheet:self onOK:dic];
-	}
+    if ([self.delegate respondsToSelector:@selector(welcomeSheet:onOK:)]) {
+        [self.delegate welcomeSheet:self onOK:dic];
+    }
 
-	[super ok:nil];
+    [super ok:nil];
 }
 
 - (void)onAddChannel:(id)sender
 {
-	[self.channelList safeAddObject:NSStringEmptyPlaceholder];
-	
-	[self.channelTable reloadData];
-	
-	NSInteger row = (self.channelList.count - 1);
-	
-	[self.channelTable selectItemAtIndex:row];
-	[self.channelTable editColumn:0 row:row withEvent:nil select:YES];
+    [self.channelList safeAddObject:NSStringEmptyPlaceholder];
+    
+    [self.channelTable reloadData];
+    
+    NSInteger row = (self.channelList.count - 1);
+    
+    [self.channelTable selectItemAtIndex:row];
+    [self.channelTable editColumn:0 row:row withEvent:nil select:YES];
 }
 
 - (void)onDeleteChannel:(id)sender
 {
-	NSInteger n = [self.channelTable selectedRow];
-	
-	if (n >= 0) {
-		[self.channelList safeRemoveObjectAtIndex:n];
+    NSInteger n = [self.channelTable selectedRow];
+    
+    if (n >= 0) {
+        [self.channelList safeRemoveObjectAtIndex:n];
 
-		[self.channelTable reloadData];
-		
-		NSInteger count = self.channelList.count;
-		
-		if (count <= n) {
-			n = (count - 1);
-		}
-		
-		if (n >= 0) {
-			[self.channelTable selectItemAtIndex:n];
-		}
-		
-		[self tableViewSelectionIsChanging:nil];
-	}
+        [self.channelTable reloadData];
+        
+        NSInteger count = self.channelList.count;
+        
+        if (count <= n) {
+            n = (count - 1);
+        }
+        
+        if (n >= 0) {
+            [self.channelTable selectItemAtIndex:n];
+        }
+        
+        [self tableViewSelectionIsChanging:nil];
+    }
 }
 
 - (void)controlTextDidChange:(NSNotification *)note
 {
-	[self askAboutTheSupportChannel];
-	
-	[self updateOKButton];
+    [self askAboutTheSupportChannel];
+    
+    [self updateOKButton];
 }
 
 - (void)onServerAddressChanged:(id)sender
 {
-	[self askAboutTheSupportChannel];
-	
-	[self updateOKButton];
+    [self askAboutTheSupportChannel];
+    
+    [self updateOKButton];
 }
 
 - (void)askAboutTheSupportChannel
 {
-	NSString *host = self.serverAddressField.stringValue;
+    NSString *host = self.serverAddressField.stringValue;
 
-	if ([host hasSuffix:@"freenode.net"] || [host isEqualIgnoringCase:@"freenode"]) {
-		NSString *key = [TLOPopupPrompts suppressionKeyWithBase:@"welcomesheet_join_support_channel"];
+    if ([host hasSuffix:@"freenode.net"] || [host isEqualIgnoringCase:@"freenode"]) {
+        NSString *key = [TLOPopupPrompts suppressionKeyWithBase:@"welcomesheet_join_support_channel"];
 
-		BOOL enableDialog = [RZUserDefaults() boolForKey:key];
+        BOOL enableDialog = [RZUserDefaults() boolForKey:key];
 
-		if (enableDialog == NO) {
-			BOOL addSupportChannel = [TLOPopupPrompts dialogWindowWithQuestion:TXTLS(@"ConnectToSupportChannelQuestionDialogMessage")
-																		 title:TXTLS(@"ConnectToSupportChannelQuestionDialogTitle")
-																 defaultButton:TXTLS(@"YesButton")
-															   alternateButton:TXTLS(@"NoButton")
-																suppressionKey:@"welcomesheet_join_support_channel"
-															   suppressionText:TXPopupPromptSpecialSuppressionTextValue];
+        if (enableDialog == NO) {
+            BOOL addSupportChannel = [TLOPopupPrompts dialogWindowWithQuestion:TXTLS(@"ConnectToSupportChannelQuestionDialogMessage")
+                                                                         title:TXTLS(@"ConnectToSupportChannelQuestionDialogTitle")
+                                                                 defaultButton:TXTLS(@"YesButton")
+                                                               alternateButton:TXTLS(@"NoButton")
+                                                                suppressionKey:@"welcomesheet_join_support_channel"
+                                                               suppressionText:TXPopupPromptSpecialSuppressionTextValue];
 
-			if (addSupportChannel) {
-				[self.channelList safeAddObjectWithoutDuplication:@"#textual"];
+            if (addSupportChannel) {
+                [self.channelList safeAddObjectWithoutDuplication:@"#textual"];
 
-				[self.channelTable reloadData];
-			}
-		}
-	}
+                [self.channelTable reloadData];
+            }
+        }
+    }
 }
 
 - (void)updateOKButton
 {
-	NSString *nick = self.nicknameField.stringValue;
-	NSString *host = self.serverAddressField.stringValue;
-	
-	BOOL enabled = (NSObjectIsNotEmpty(nick) && NSObjectIsNotEmpty(host));
-	
-	[self.okButton setEnabled:enabled];
+    NSString *nick = self.nicknameField.stringValue;
+    NSString *host = self.serverAddressField.stringValue;
+    
+    BOOL enabled = (NSObjectIsNotEmpty(nick) && NSObjectIsNotEmpty(host));
+    
+    [self.okButton setEnabled:enabled];
 }
 
 #pragma mark -
@@ -233,33 +233,33 @@
 
 - (void)textDidEndEditing:(NSNotification *)note
 {
-	NSInteger n = [self.channelTable editedRow];
-	
-	if (n >= 0) {
-		NSString *s = [note.object textStorage].string.copy;
-		
-		self.channelList[n] = s;
-		
-		[self.channelTable reloadData];
-		[self.channelTable selectItemAtIndex:n];
-		
-		[self tableViewSelectionIsChanging:nil];
-	}
+    NSInteger n = [self.channelTable editedRow];
+    
+    if (n >= 0) {
+        NSString *s = [note.object textStorage].string.copy;
+        
+        self.channelList[n] = s;
+        
+        [self.channelTable reloadData];
+        [self.channelTable selectItemAtIndex:n];
+        
+        [self tableViewSelectionIsChanging:nil];
+    }
 }
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)sender
 {
-	return self.channelList.count;
+    return self.channelList.count;
 }
 
 - (id)tableView:(NSTableView *)sender objectValueForTableColumn:(NSTableColumn *)column row:(NSInteger)row
 {
-	return [self.channelList safeObjectAtIndex:row];
+    return [self.channelList safeObjectAtIndex:row];
 }
 
 - (void)tableViewSelectionIsChanging:(NSNotification *)note
 {
-	[self.deleteChannelButton setEnabled:(self.channelTable.selectedRow >= 0)];
+    [self.deleteChannelButton setEnabled:(self.channelTable.selectedRow >= 0)];
 }
 
 #pragma mark -
@@ -267,9 +267,9 @@
 
 - (void)windowWillClose:(NSNotification *)note
 {
-	if ([self.delegate respondsToSelector:@selector(welcomeSheetWillClose:)]) {
-		[self.delegate welcomeSheetWillClose:self];
-	}
+    if ([self.delegate respondsToSelector:@selector(welcomeSheetWillClose:)]) {
+        [self.delegate welcomeSheetWillClose:self];
+    }
 }
 
 @end

@@ -39,111 +39,111 @@
  in the next major version of Mac OS when Apple adds a API feature
  specific to that version. */
 
-// #define TXLoadMacOSVersionSpecificFeatures	1
+// #define TXLoadMacOSVersionSpecificFeatures   1
 
 #ifndef kASAppleScriptSuite
-	#define kASAppleScriptSuite 'ascr'
+    #define kASAppleScriptSuite 'ascr'
 #endif
 
 #ifndef kASSubroutineEvent
-	#define kASSubroutineEvent 'psbr'
+    #define kASSubroutineEvent 'psbr'
 #endif
 
 #ifndef keyASSubroutineName
-	#define keyASSubroutineName 'snam'
+    #define keyASSubroutineName 'snam'
 #endif
 
 // #if TXLoadMacOSVersionSpecificFeatures
-// 	#if defined(AVAILABLE_MAC_OS_X_VERSION_10_8_AND_LATER)
-// 		#define TXSystemIsMacOSMountainLionOrNewer
-// 	#endif
+//  #if defined(AVAILABLE_MAC_OS_X_VERSION_10_8_AND_LATER)
+//      #define TXSystemIsMacOSMountainLionOrNewer
+//  #endif
 // #endif
 
-#define NSAppKitVersionNumber10_6		1038
-#define NSAppKitVersionNumber10_7		1138
-#define NSAppKitVersionNumber10_7_2		1138.23
+#define NSAppKitVersionNumber10_6       1038
+#define NSAppKitVersionNumber10_7       1138
+#define NSAppKitVersionNumber10_7_2     1138.23
 
-//#define TXForceNativeNotificationCenterDispatch		— Force notification center use regardless of Growl's installation.
+//#define TXForceNativeNotificationCenterDispatch       — Force notification center use regardless of Growl's installation.
 
 #define LogToConsole(fmt, ...) NSLog([@"%s [Line %d]: " stringByAppendingString:fmt], __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__);
 
 #ifdef DEBUG
-	#define DebugLogToConsole(fmt, ...)			LogToConsole(fmt, ##__VA_ARGS__);
+    #define DebugLogToConsole(fmt, ...)         LogToConsole(fmt, ##__VA_ARGS__);
 #else
-	#define DebugLogToConsole(...)
+    #define DebugLogToConsole(...)
 #endif
 
 /* Shortcut defines. */
-#define RZAnimationCurrentContext()				[NSAnimationContext	currentContext]
-#define RZAppleEventManager()					[NSAppleEventManager sharedAppleEventManager]
-#define RZDistributedNotificationCenter()		[NSDistributedNotificationCenter defaultCenter]
-#define RZFileManager()							[NSFileManager defaultManager]
-#define RZFontManager()							[NSFontManager sharedFontManager]
-#define RZGraphicsCurrentContext()				[NSGraphicsContext currentContext]
-#define RZMainBundle()							[NSBundle mainBundle]
-#define RZMainScreen()							[NSScreen mainScreen]
-#define RZNotificationCenter()					[NSNotificationCenter defaultCenter]
-#define RZPasteboard()							[NSPasteboard generalPasteboard]
-#define RZProcessInfo()							[NSProcessInfo processInfo]
-#define RZSharedApplication()					[NSApplication sharedApplication]
-#define RZSpellChecker()						[NSSpellChecker	sharedSpellChecker]
-#define RZUserDefaults()						[NSUserDefaults	standardUserDefaults]
-#define RZUserDefaultsController()				[NSUserDefaultsController sharedUserDefaultsController]
-#define RZWorkspace()							[NSWorkspace sharedWorkspace]
-#define RZWorkspaceNotificationCenter()			[RZWorkspace() notificationCenter]
-#define RZRunningApplication()					[NSRunningApplication currentApplication]
-#define RZMainRunLoop()							[NSRunLoop mainRunLoop]
-#define RZCurrentRunLoop()						[NSRunLoop currentRunLoop]
+#define RZAnimationCurrentContext()             [NSAnimationContext currentContext]
+#define RZAppleEventManager()                   [NSAppleEventManager sharedAppleEventManager]
+#define RZDistributedNotificationCenter()       [NSDistributedNotificationCenter defaultCenter]
+#define RZFileManager()                         [NSFileManager defaultManager]
+#define RZFontManager()                         [NSFontManager sharedFontManager]
+#define RZGraphicsCurrentContext()              [NSGraphicsContext currentContext]
+#define RZMainBundle()                          [NSBundle mainBundle]
+#define RZMainScreen()                          [NSScreen mainScreen]
+#define RZNotificationCenter()                  [NSNotificationCenter defaultCenter]
+#define RZPasteboard()                          [NSPasteboard generalPasteboard]
+#define RZProcessInfo()                         [NSProcessInfo processInfo]
+#define RZSharedApplication()                   [NSApplication sharedApplication]
+#define RZSpellChecker()                        [NSSpellChecker sharedSpellChecker]
+#define RZUserDefaults()                        [NSUserDefaults standardUserDefaults]
+#define RZUserDefaultsController()              [NSUserDefaultsController sharedUserDefaultsController]
+#define RZWorkspace()                           [NSWorkspace sharedWorkspace]
+#define RZWorkspaceNotificationCenter()         [RZWorkspace() notificationCenter]
+#define RZRunningApplication()                  [NSRunningApplication currentApplication]
+#define RZMainRunLoop()                         [NSRunLoop mainRunLoop]
+#define RZCurrentRunLoop()                      [NSRunLoop currentRunLoop]
 
 #ifdef TXForceNativeNotificationCenterDispatch
-#define RZUserNotificationCenter()				[NSUserNotificationCenter defaultUserNotificationCenter]
+#define RZUserNotificationCenter()              [NSUserNotificationCenter defaultUserNotificationCenter]
 #endif
 
 /* Lazy-man defines. */
-#define PointerIsEmpty(s)						((s) == NULL || (s) == nil)
-#define PointerIsNotEmpty(s)					((s) != NULL && (s) != nil)
+#define PointerIsEmpty(s)                       ((s) == NULL || (s) == nil)
+#define PointerIsNotEmpty(s)                    ((s) != NULL && (s) != nil)
 
-#define BOOLReverseValue(b)						((b == YES) ? NO : YES)
-#define BOOLValueFromObject(b)					PointerIsNotEmpty(b)
-#define CFItemRefToID(s)						((id)(s))
-#define NSDissimilarObjects(o,n)				((o) != (n))
+#define BOOLReverseValue(b)                     ((b == YES) ? NO : YES)
+#define BOOLValueFromObject(b)                  PointerIsNotEmpty(b)
+#define CFItemRefToID(s)                        ((id)(s))
+#define NSDissimilarObjects(o,n)                ((o) != (n))
 
-#define NSAssertReturn(c)						if ((c) == NO) { return; }
-#define NSAssertReturnR(c, r)					if ((c) == NO) { return (r); }
-#define NSAssertReturnLoopContinue(c)			if ((c) == NO) { continue; }
-#define NSAssertReturnLoopBreak(c)				if ((c) == NO) { break; }
+#define NSAssertReturn(c)                       if ((c) == NO) { return; }
+#define NSAssertReturnR(c, r)                   if ((c) == NO) { return (r); }
+#define NSAssertReturnLoopContinue(c)           if ((c) == NO) { continue; }
+#define NSAssertReturnLoopBreak(c)              if ((c) == NO) { break; }
 
-#define NSObjectIsEmptyAssert(o)				if (NSObjectIsEmpty(o)) { return; }
-#define NSObjectIsEmptyAssertReturn(o, r)		if (NSObjectIsEmpty(o)) { return (r); }
-#define NSObjectIsEmptyAssertLoopContinue(o)	if (NSObjectIsEmpty(o)) { continue; }
-#define NSObjectIsEmptyAssertLoopBreak(o)		if (NSObjectIsEmpty(o)) { break; }
+#define NSObjectIsEmptyAssert(o)                if (NSObjectIsEmpty(o)) { return; }
+#define NSObjectIsEmptyAssertReturn(o, r)       if (NSObjectIsEmpty(o)) { return (r); }
+#define NSObjectIsEmptyAssertLoopContinue(o)    if (NSObjectIsEmpty(o)) { continue; }
+#define NSObjectIsEmptyAssertLoopBreak(o)       if (NSObjectIsEmpty(o)) { break; }
 
-#define PointerIsEmptyAssert(o)					if (PointerIsEmpty(o)) { return; }
-#define PointerIsEmptyAssertReturn(o, r)		if (PointerIsEmpty(o)) { return (r); }
-#define PointerIsEmptyAssertLoopContinue(o)		if (PointerIsEmpty(o)) { continue; }
-#define PointerIsEmptyAssertLoopBreak(o)		if (PointerIsEmpty(o)) { break; }
+#define PointerIsEmptyAssert(o)                 if (PointerIsEmpty(o)) { return; }
+#define PointerIsEmptyAssertReturn(o, r)        if (PointerIsEmpty(o)) { return (r); }
+#define PointerIsEmptyAssertLoopContinue(o)     if (PointerIsEmpty(o)) { continue; }
+#define PointerIsEmptyAssertLoopBreak(o)        if (PointerIsEmpty(o)) { break; }
 
-#define NSObjectIsKindOfClassAssert(o,c)				if ([(o) isKindOfClass:[c class]] == NO) { return; }
-#define NSObjectIsKindOfClassAssertReturn(o, c, r)		if ([(o) isKindOfClass:[c class]] == NO) { return (r); }
-#define NSObjectIsKindOfClassAssertContinue(o, c)		if ([(o) isKindOfClass:[c class]] == NO) { continue; }
-#define NSObjectIsKindOfClassAssertBreak(o,c)			if ([(o) isKindOfClass:[c class]] == NO) { break; }
+#define NSObjectIsKindOfClassAssert(o,c)                if ([(o) isKindOfClass:[c class]] == NO) { return; }
+#define NSObjectIsKindOfClassAssertReturn(o, c, r)      if ([(o) isKindOfClass:[c class]] == NO) { return (r); }
+#define NSObjectIsKindOfClassAssertContinue(o, c)       if ([(o) isKindOfClass:[c class]] == NO) { continue; }
+#define NSObjectIsKindOfClassAssertBreak(o,c)           if ([(o) isKindOfClass:[c class]] == NO) { break; }
 
-#define NSInvertedComparisonResult(c)			((c) * (-1))
+#define NSInvertedComparisonResult(c)           ((c) * (-1))
 
 /* Deprecation and symbol visibility. */
-#define TEXTUAL_EXTERN							__attribute__((visibility("default")))
-#define TEXTUAL_DEPRECATED						__attribute__((deprecated))
+#define TEXTUAL_EXTERN                          __attribute__((visibility("default")))
+#define TEXTUAL_DEPRECATED                      __attribute__((deprecated))
 
-#define TEXTUAL_DEPRECATED_ASSERT				NSAssert1(NO, @"Deprecated Method: %s", __PRETTY_FUNCTION__);
-#define TEXTUAL_DEPRECATED_ASSERT_C				NSCAssert1(NO, @"Deprecated Method: %s", __PRETTY_FUNCTION__);
+#define TEXTUAL_DEPRECATED_ASSERT               NSAssert1(NO, @"Deprecated Method: %s", __PRETTY_FUNCTION__);
+#define TEXTUAL_DEPRECATED_ASSERT_C             NSCAssert1(NO, @"Deprecated Method: %s", __PRETTY_FUNCTION__);
 
-#define TXDeveloperEnvironmentToken				@"TextualDeveloperEnvironment"
+#define TXDeveloperEnvironmentToken             @"TextualDeveloperEnvironment"
 
 /* The reference date is the date & time of the first commit to the
  Textual repo. Textual existed before then, of course, but the date
  will remain as the official reference date for its birthday. */
 
-#define TXBirthdayReferenceDate		1279871580.000000 // July 23, 2010 03:53:00 AM
+#define TXBirthdayReferenceDate     1279871580.000000 // July 23, 2010 03:53:00 AM
 
 /* nweak and uweak are pretty useless defines. They are
  only defined to make a long list of properties easier to 
@@ -152,11 +152,11 @@
  
  It doesn't make sense. I know. */
 
-#define nweak									weak
-#define uweak									unsafe_unretained
+#define nweak                                   weak
+#define uweak                                   unsafe_unretained
 
 /* Just like nweak and uweak, these are useless, but hey, whatever. */
-typedef double									TXNSDouble;
-typedef unsigned long long						TXFSLongInt;
+typedef double                                  TXNSDouble;
+typedef unsigned long long                      TXFSLongInt;
 
 /* @end */

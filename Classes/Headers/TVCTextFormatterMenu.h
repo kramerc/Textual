@@ -37,7 +37,7 @@
 
 #import "TextualApplication.h"
 
-#define IRCTextFormatterMenuTag			53037
+#define IRCTextFormatterMenuTag         53037
 
 @interface TVCTextFormatterMenu : NSObject
 @property (nonatomic, uweak) TVCTextField *textField;

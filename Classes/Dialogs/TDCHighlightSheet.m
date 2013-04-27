@@ -37,7 +37,7 @@
 
 #import "TextualApplication.h"
 
-#define _rowHeightMultiplier		17
+#define _rowHeightMultiplier        17
 
 @interface TDCHighlightSheet ()
 @property (nonatomic, readonly, nweak) NSMutableArray *highlightList;
@@ -48,7 +48,7 @@
 - (id)init
 {
     if ((self = [super init])) {
-		[NSBundle loadNibNamed:@"TDCHighlightSheet" owner:self];
+        [NSBundle loadNibNamed:@"TDCHighlightSheet" owner:self];
     }
     
     return self;
@@ -56,14 +56,14 @@
 
 - (void)show
 {
-	IRCClient *currentNetwork = self.worldController.selectedClient;
+    IRCClient *currentNetwork = self.worldController.selectedClient;
 
-	NSString *network = [currentNetwork altNetworkName];
+    NSString *network = [currentNetwork altNetworkName];
 
-	self.headerTitleField.stringValue = [NSString stringWithFormat:self.headerTitleField.stringValue, network];
+    self.headerTitleField.stringValue = [NSString stringWithFormat:self.headerTitleField.stringValue, network];
 
-	self.highlightListTable.selectionHighlightStyle = NSTableViewSelectionHighlightStyleNone;
-	
+    self.highlightListTable.selectionHighlightStyle = NSTableViewSelectionHighlightStyleNone;
+    
     [self startSheet];
 }
 
@@ -79,7 +79,7 @@
 
 - (NSMutableArray *)highlightList
 {
-	return self.worldController.selectedClient.highlights;
+    return self.worldController.selectedClient.highlights;
 }
 
 - (void)reloadTable
@@ -94,31 +94,31 @@
 
 - (CGFloat)tableView:(NSTableView *)tableView heightOfRow:(NSInteger)row
 {
-	NSObjectIsEmptyAssertReturn(self.highlightList, _rowHeightMultiplier);
-	
-	NSRect columnRect = [tableView rectOfColumn:1];
-	
-	NSArray *data = [self.highlightList safeObjectAtIndex:row];
+    NSObjectIsEmptyAssertReturn(self.highlightList, _rowHeightMultiplier);
+    
+    NSRect columnRect = [tableView rectOfColumn:1];
+    
+    NSArray *data = [self.highlightList safeObjectAtIndex:row];
 
-	NSAttributedString *baseString = [data safeObjectAtIndex:2];
+    NSAttributedString *baseString = [data safeObjectAtIndex:2];
 
-	NSInteger totalLines = [baseString wrappedLineCount:columnRect.size.width
-										 lineMultiplier:_rowHeightMultiplier
-											 forcedFont:[NSFont systemFontOfSize:13.0]];
+    NSInteger totalLines = [baseString wrappedLineCount:columnRect.size.width
+                                         lineMultiplier:_rowHeightMultiplier
+                                             forcedFont:[NSFont systemFontOfSize:13.0]];
 
-	return (totalLines * _rowHeightMultiplier);
+    return (totalLines * _rowHeightMultiplier);
 }
 
 - (id)tableView:(NSTableView *)sender objectValueForTableColumn:(NSTableColumn *)column row:(NSInteger)row
 {
     NSArray *item = [self.highlightList safeObjectAtIndex:row];
-	
+    
     if ([column.identifier isEqualToString:@"chan"]) {
-		return [item safeObjectAtIndex:0];
-	} else if ([column.identifier isEqualToString:@"time"]) {
-		NSInteger timeInterval = [item integerAtIndex:1];
-		
-		return TXTFLS(@"TimeAgo", TXSpecialReadableTime([NSDate secondsSinceUnixTimestamp:timeInterval], YES, nil));
+        return [item safeObjectAtIndex:0];
+    } else if ([column.identifier isEqualToString:@"time"]) {
+        NSInteger timeInterval = [item integerAtIndex:1];
+        
+        return TXTFLS(@"TimeAgo", TXSpecialReadableTime([NSDate secondsSinceUnixTimestamp:timeInterval], YES, nil));
     } else {
         return [item safeObjectAtIndex:2];
     }
@@ -129,9 +129,9 @@
 
 - (void)windowWillClose:(NSNotification *)note
 {
-	if ([self.delegate respondsToSelector:@selector(highlightSheetWillClose:)]) {
-		[self.delegate highlightSheetWillClose:self];
-	}
+    if ([self.delegate respondsToSelector:@selector(highlightSheetWillClose:)]) {
+        [self.delegate highlightSheetWillClose:self];
+    }
 }
 
 @end

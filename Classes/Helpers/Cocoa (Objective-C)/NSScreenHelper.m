@@ -41,7 +41,7 @@
 
 - (BOOL)runningInHighResolutionMode
 {
-	return ([self backingScaleFactor] == 2.0f);
+    return ([self backingScaleFactor] == 2.0f);
 }
 
 @end

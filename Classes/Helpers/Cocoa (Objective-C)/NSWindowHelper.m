@@ -41,86 +41,86 @@
 
 - (void)exactlyCenterWindow
 {
-	NSScreen *screen = [NSScreen mainScreen];
-	
-	if (screen) {
-		NSRect rect = [screen visibleFrame];
-		
-		NSPoint p = NSMakePoint((rect.origin.x + (rect.size.width / 2)), 
-								(rect.origin.y + (rect.size.height / 2)));
-		
-		NSInteger w = self.frame.size.width;
-		NSInteger h = self.frame.size.height;
-		
-		rect = NSMakeRect((p.x - (w / 2)), (p.y - (h / 2)), w, h);
-		
-		[self setFrame:rect display:YES animate:YES];
-	}	
+    NSScreen *screen = [NSScreen mainScreen];
+    
+    if (screen) {
+        NSRect rect = [screen visibleFrame];
+        
+        NSPoint p = NSMakePoint((rect.origin.x + (rect.size.width / 2)), 
+                                (rect.origin.y + (rect.size.height / 2)));
+        
+        NSInteger w = self.frame.size.width;
+        NSInteger h = self.frame.size.height;
+        
+        rect = NSMakeRect((p.x - (w / 2)), (p.y - (h / 2)), w, h);
+        
+        [self setFrame:rect display:YES animate:YES];
+    }   
 }
 
 - (void)saveWindowStateUsingKeyword:(NSString *)keyword
 {
-	NSObjectIsEmptyAssert(keyword);
+    NSObjectIsEmptyAssert(keyword);
 
-	keyword = [NSString stringWithFormat:@"Saved Window State —> Internal —> %@", keyword];
+    keyword = [NSString stringWithFormat:@"Saved Window State —> Internal —> %@", keyword];
 
-	NSMutableDictionary *dic = [NSMutableDictionary dictionary];
+    NSMutableDictionary *dic = [NSMutableDictionary dictionary];
 
-	NSRect rect = self.frame;
+    NSRect rect = self.frame;
 
-	[dic setInteger:rect.origin.x forKey:@"x"];
-	[dic setInteger:rect.origin.y forKey:@"y"];
-	[dic setInteger:rect.size.width forKey:@"w"];
-	[dic setInteger:rect.size.height forKey:@"h"];
+    [dic setInteger:rect.origin.x forKey:@"x"];
+    [dic setInteger:rect.origin.y forKey:@"y"];
+    [dic setInteger:rect.size.width forKey:@"w"];
+    [dic setInteger:rect.size.height forKey:@"h"];
 
-	[TPCPreferences saveWindowState:dic name:keyword];
+    [TPCPreferences saveWindowState:dic name:keyword];
 }
 
 - (void)restoreWindowStateUsingKeyword:(NSString *)keyword
 {
-	NSObjectIsEmptyAssert(keyword);
+    NSObjectIsEmptyAssert(keyword);
 
-	keyword = [NSString stringWithFormat:@"Saved Window State —> Internal —> %@", keyword];
+    keyword = [NSString stringWithFormat:@"Saved Window State —> Internal —> %@", keyword];
 
-	NSDictionary *dic = [TPCPreferences loadWindowStateWithName:keyword];
+    NSDictionary *dic = [TPCPreferences loadWindowStateWithName:keyword];
 
-	BOOL invalidateSavedState = NSDissimilarObjects(dic.count, 4);
+    BOOL invalidateSavedState = NSDissimilarObjects(dic.count, 4);
 
-	NSRect visibleRect = [RZMainScreen() frame];
+    NSRect visibleRect = [RZMainScreen() frame];
 
-	NSRect currFrame = self.frame;
-	
-	NSInteger x = [dic integerForKey:@"x"];
-	NSInteger y = [dic integerForKey:@"y"];
+    NSRect currFrame = self.frame;
+    
+    NSInteger x = [dic integerForKey:@"x"];
+    NSInteger y = [dic integerForKey:@"y"];
 
-	NSInteger oldHeight = [dic integerForKey:@"h"];
-	NSInteger heightDff = (oldHeight - currFrame.size.height);
+    NSInteger oldHeight = [dic integerForKey:@"h"];
+    NSInteger heightDff = (oldHeight - currFrame.size.height);
 
-	y += heightDff;
-	
-	if ((x + currFrame.size.width) > visibleRect.size.width) {
-		invalidateSavedState = YES;
-	}
+    y += heightDff;
+    
+    if ((x + currFrame.size.width) > visibleRect.size.width) {
+        invalidateSavedState = YES;
+    }
 
-	if ((y + currFrame.size.height) > visibleRect.size.height) {
-		invalidateSavedState = YES;
-	}
+    if ((y + currFrame.size.height) > visibleRect.size.height) {
+        invalidateSavedState = YES;
+    }
 
-	if (invalidateSavedState) {
-		[self exactlyCenterWindow];
+    if (invalidateSavedState) {
+        [self exactlyCenterWindow];
 
-		return;
-	}
+        return;
+    }
 
-	currFrame.origin.x = x;
-	currFrame.origin.y = y;
+    currFrame.origin.x = x;
+    currFrame.origin.y = y;
 
-	[self setFrame:currFrame display:YES animate:YES];
+    [self setFrame:currFrame display:YES animate:YES];
 }
 
 - (BOOL)isInFullscreenMode
 {
-	return ((self.styleMask & NSFullScreenWindowMask) == NSFullScreenWindowMask);
+    return ((self.styleMask & NSFullScreenWindowMask) == NSFullScreenWindowMask);
 }
 
 @end

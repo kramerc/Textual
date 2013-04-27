@@ -42,9 +42,9 @@
 - (id)init
 {
     if ((self = [super init])) {
-		[NSBundle loadNibNamed:@"TDChanInviteExceptionSheet" owner:self];
+        [NSBundle loadNibNamed:@"TDChanInviteExceptionSheet" owner:self];
 
-		self.exceptionList = [NSMutableArray new];
+        self.exceptionList = [NSMutableArray new];
         self.changeModeList = [NSMutableArray new];
     }
 
@@ -53,9 +53,9 @@
 
 - (void)show
 {
-	IRCChannel *c = self.worldController.selectedChannel;
+    IRCChannel *c = self.worldController.selectedChannel;
 
-	self.headerTitleField.stringValue = [NSString stringWithFormat:self.headerTitleField.stringValue, c.name];
+    self.headerTitleField.stringValue = [NSString stringWithFormat:self.headerTitleField.stringValue, c.name];
 
     [self startSheet];
 }
@@ -85,7 +85,7 @@
 - (void)onUpdate:(id)sender
 {
     if ([self.delegate respondsToSelector:@selector(chanInviteExceptionDialogOnUpdate:)]) {
-		[self.delegate chanInviteExceptionDialogOnUpdate:self];
+        [self.delegate chanInviteExceptionDialogOnUpdate:self];
     }
 }
 
@@ -93,24 +93,24 @@
 {
     NSString *modeString;
 
-	NSMutableString *mdstr = [NSMutableString stringWithString:@"-"];
-	NSMutableString *trail = [NSMutableString string];
+    NSMutableString *mdstr = [NSMutableString stringWithString:@"-"];
+    NSMutableString *trail = [NSMutableString string];
 
-	NSIndexSet *indexes = [self.exceptionTable selectedRowIndexes];
+    NSIndexSet *indexes = [self.exceptionTable selectedRowIndexes];
 
     NSInteger indexTotal = 0;
 
-	for (NSNumber *index in [indexes arrayFromIndexSet]) {
+    for (NSNumber *index in [indexes arrayFromIndexSet]) {
         indexTotal++;
 
-		NSArray *iteml = [self.exceptionList safeObjectAtIndex:index.unsignedIntegerValue];
+        NSArray *iteml = [self.exceptionList safeObjectAtIndex:index.unsignedIntegerValue];
 
-		if (NSObjectIsNotEmpty(iteml)) {
-			[mdstr appendString:@"I"];
-			[trail appendFormat:@" %@", [iteml safeObjectAtIndex:0]];
-		}
+        if (NSObjectIsNotEmpty(iteml)) {
+            [mdstr appendString:@"I"];
+            [trail appendFormat:@" %@", [iteml safeObjectAtIndex:0]];
+        }
 
-		if (indexTotal == TXMaximumNodesPerModeCommand) {
+        if (indexTotal == TXMaximumNodesPerModeCommand) {
             modeString = (id)[mdstr stringByAppendingString:trail];
 
             [self.changeModeList safeAddObject:modeString];
@@ -120,7 +120,7 @@
 
             indexTotal = 0;
         }
-	}
+    }
 
     if (NSObjectIsNotEmpty(mdstr)) {
         modeString = (id)[mdstr stringByAppendingString:trail];
@@ -128,7 +128,7 @@
         [self.changeModeList safeAddObject:modeString];
     }
 
-	[super cancel:nil];
+    [super cancel:nil];
 }
 
 #pragma mark -
@@ -144,11 +144,11 @@
     NSArray *item = [self.exceptionList safeObjectAtIndex:row];
 
     if ([column.identifier isEqualToString:@"mask"]) {
-		return [item safeObjectAtIndex:0];
+        return [item safeObjectAtIndex:0];
     } else if ([column.identifier isEqualToString:@"setby"]) {
-		return [item safeObjectAtIndex:1];
+        return [item safeObjectAtIndex:1];
     } else {
-		return [item safeObjectAtIndex:2];
+        return [item safeObjectAtIndex:2];
     }
 }
 
@@ -157,9 +157,9 @@
 
 - (void)windowWillClose:(NSNotification *)note
 {
-	if ([self.delegate respondsToSelector:@selector(chanInviteExceptionDialogWillClose:)]) {
-		[self.delegate chanInviteExceptionDialogWillClose:self];
-	}
+    if ([self.delegate respondsToSelector:@selector(chanInviteExceptionDialogWillClose:)]) {
+        [self.delegate chanInviteExceptionDialogWillClose:self];
+    }
 }
 
 @end

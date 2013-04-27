@@ -39,18 +39,18 @@
 
 NSRange NSEmptyRange()
 {
-	return NSMakeRange(NSNotFound, 0);
+    return NSMakeRange(NSNotFound, 0);
 }
 
 BOOL NSRangeIsValid(NSRange r)
 {
-	return NSDissimilarObjects(r.location, NSNotFound);
+    return NSDissimilarObjects(r.location, NSNotFound);
 }
 
 BOOL NSRangeIsValidInBounds(NSRange r, NSInteger maxLength)
 {
-	NSAssertReturnR((r.location <= maxLength), NO);
-	NSAssertReturnR((r.length <= maxLength), NO);
-	
-	return (NSRangeIsValid(r) && (r.location + r.length) <= maxLength);
+    NSAssertReturnR((r.location <= maxLength), NO);
+    NSAssertReturnR((r.length <= maxLength), NO);
+    
+    return (NSRangeIsValid(r) && (r.location + r.length) <= maxLength);
 }

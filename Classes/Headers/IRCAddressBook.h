@@ -38,8 +38,8 @@
 #import "TextualApplication.h"
 
 typedef enum IRCAddressBookEntryType : NSInteger {
-	IRCAddressBookIgnoreEntryType,
-	IRCAddressBookUserTrackingEntryType
+    IRCAddressBookIgnoreEntryType,
+    IRCAddressBookUserTrackingEntryType
 } IRCAddressBookEntryType;
 
 @interface IRCAddressBook : NSObject <NSMutableCopying>

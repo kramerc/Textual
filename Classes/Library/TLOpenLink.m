@@ -41,20 +41,20 @@
 
 + (void)open:(NSURL *)url
 {
-	if ([TPCPreferences openBrowserInBackground]) {
-		[RZWorkspace() openURLs:@[url]
-		withAppBundleIdentifier:nil
-						options:NSWorkspaceLaunchWithoutActivation
+    if ([TPCPreferences openBrowserInBackground]) {
+        [RZWorkspace() openURLs:@[url]
+        withAppBundleIdentifier:nil
+                        options:NSWorkspaceLaunchWithoutActivation
  additionalEventParamDescriptor:nil
-			  launchIdentifiers:nil];
-	} else {
-		[RZWorkspace() openURL:url];
-	}
+              launchIdentifiers:nil];
+    } else {
+        [RZWorkspace() openURL:url];
+    }
 }
 
 + (void)openWithString:(NSString *)url
 {
-	[self open:[NSURL URLWithString:url]];
+    [self open:[NSURL URLWithString:url]];
 }
 
 @end

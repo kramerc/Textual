@@ -45,164 +45,164 @@ typedef BOOL (*EqualityMethodType)(id, SEL, id);
 
 - (id)safeObjectAtIndex:(NSInteger)n
 {
-	if (n >= 0 && n < self.count) {
-		return self[n];
-	}
-	
-	return nil;
+    if (n >= 0 && n < self.count) {
+        return self[n];
+    }
+    
+    return nil;
 }
 
 - (BOOL)boolAtIndex:(NSInteger)n
 {
-	id obj = [self safeObjectAtIndex:n];
-	
-	if ([obj respondsToSelector:@selector(boolValue)]) {
-		return [obj boolValue];
-	}
-	
-	return 0;
+    id obj = [self safeObjectAtIndex:n];
+    
+    if ([obj respondsToSelector:@selector(boolValue)]) {
+        return [obj boolValue];
+    }
+    
+    return 0;
 }
 
 - (NSArray *)arrayAtIndex:(NSInteger)n
 {
-	id obj = [self safeObjectAtIndex:n];
-	
-	if ([obj isKindOfClass:[NSArray class]]) {
-		return obj;
-	}
-	
-	return nil;
+    id obj = [self safeObjectAtIndex:n];
+    
+    if ([obj isKindOfClass:[NSArray class]]) {
+        return obj;
+    }
+    
+    return nil;
 }
 
 - (NSString *)stringAtIndex:(NSInteger)n
 {
-	id obj = [self safeObjectAtIndex:n];
-	
-	if ([obj isKindOfClass:[NSString class]]) {
-		return obj;
-	}
-	
-	return nil;
+    id obj = [self safeObjectAtIndex:n];
+    
+    if ([obj isKindOfClass:[NSString class]]) {
+        return obj;
+    }
+    
+    return nil;
 }
 
 - (NSDictionary *)dictionaryAtIndex:(NSInteger)n
 {
-	id obj = [self safeObjectAtIndex:n];
-	
-	if ([obj isKindOfClass:[NSDictionary class]]) {
-		return obj;
-	}
-	
-	return nil;
+    id obj = [self safeObjectAtIndex:n];
+    
+    if ([obj isKindOfClass:[NSDictionary class]]) {
+        return obj;
+    }
+    
+    return nil;
 }
 
 - (NSInteger)integerAtIndex:(NSInteger)n
 {
-	id obj = [self safeObjectAtIndex:n];
-	
-	if ([obj respondsToSelector:@selector(integerValue)]) {
-		return [obj integerValue];
-	}
-	
-	return 0;
+    id obj = [self safeObjectAtIndex:n];
+    
+    if ([obj respondsToSelector:@selector(integerValue)]) {
+        return [obj integerValue];
+    }
+    
+    return 0;
 }
 
 - (long long)longLongAtIndex:(NSInteger)n
 {
-	id obj = [self safeObjectAtIndex:n];
-	
-	if ([obj respondsToSelector:@selector(longLongValue)]) {
-		return [obj longLongValue];
-	}
-	
-	return 0;
+    id obj = [self safeObjectAtIndex:n];
+    
+    if ([obj respondsToSelector:@selector(longLongValue)]) {
+        return [obj longLongValue];
+    }
+    
+    return 0;
 }
 
 - (TXNSDouble)doubleAtIndex:(NSInteger)n
 {
-	id obj = [self safeObjectAtIndex:n];
-	
-	if ([obj respondsToSelector:@selector(doubleValue)]) {
-		return [obj doubleValue];
-	}
-	
-	return 0;
+    id obj = [self safeObjectAtIndex:n];
+    
+    if ([obj respondsToSelector:@selector(doubleValue)]) {
+        return [obj doubleValue];
+    }
+    
+    return 0;
 }
 
 - (void *)pointerAtIndex:(NSInteger)n
 {
-	id obj = [self safeObjectAtIndex:n];
-	
-	if ([obj isKindOfClass:[NSValue class]]) {
-		return [obj pointerValue];
-	}
-	
-	return nil;
+    id obj = [self safeObjectAtIndex:n];
+    
+    if ([obj isKindOfClass:[NSValue class]]) {
+        return [obj pointerValue];
+    }
+    
+    return nil;
 }
 
 - (BOOL)containsObjectIgnoringCase:(id)anObject
 {
-	for (id object in self) {
-		if ([object isKindOfClass:[NSString class]]) {
-			if ([object isEqualIgnoringCase:anObject]) {
-				return YES;
-			}
-		} 
-	}
-	
-	return [self containsObject:anObject];
+    for (id object in self) {
+        if ([object isKindOfClass:[NSString class]]) {
+            if ([object isEqualIgnoringCase:anObject]) {
+                return YES;
+            }
+        } 
+    }
+    
+    return [self containsObject:anObject];
 }
 
 - (NSRange)range
 {
-	return NSMakeRange(0, self.count);
+    return NSMakeRange(0, self.count);
 }
 
 - (NSArray *)arrayByInsertingSortedObject:(id)obj usingComparator:(NSComparator)comparator
 {
-	NSMutableArray *arry = [self mutableCopy];
+    NSMutableArray *arry = [self mutableCopy];
 
-	[arry insertSortedObject:obj usingComparator:comparator];
+    [arry insertSortedObject:obj usingComparator:comparator];
 
-	return [arry copy];
+    return [arry copy];
 }
 
 - (NSArray *)arrayByRemovingObjectAtIndex:(NSUInteger)idx
 {
-	NSMutableArray *arry = [self mutableCopy];
+    NSMutableArray *arry = [self mutableCopy];
 
-	[arry safeRemoveObjectAtIndex:idx];
+    [arry safeRemoveObjectAtIndex:idx];
 
-	return [arry copy];
+    return [arry copy];
 }
 
 - (NSUInteger)indexOfObjectMatchingValue:(id)value withKeyPath:(NSString *)keyPath
 {
-	return [self indexOfObjectMatchingValue:value withKeyPath:keyPath usingSelector:@selector(isEqual:)];
+    return [self indexOfObjectMatchingValue:value withKeyPath:keyPath usingSelector:@selector(isEqual:)];
 }
 
 - (NSUInteger)indexOfObjectMatchingValue:(id)value withKeyPath:(NSString *)keyPath usingSelector:(SEL)comparison
 {
-	__block NSUInteger retval = NSNotFound;
+    __block NSUInteger retval = NSNotFound;
 
-	[self enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-		id objval = [obj valueForKeyPath:keyPath];
-		if ([objval respondsToSelector:comparison] == NO) {
-			return;
-		}
+    [self enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        id objval = [obj valueForKeyPath:keyPath];
+        if ([objval respondsToSelector:comparison] == NO) {
+            return;
+        }
 
-		// Shutup clang, can't you see that I'm testing to make sure that it
-		// actually accepts this selector?
+        // Shutup clang, can't you see that I'm testing to make sure that it
+        // actually accepts this selector?
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-		if ((BOOL)[objval performSelector:comparison withObject:value]) {
+        if ((BOOL)[objval performSelector:comparison withObject:value]) {
 #pragma clang diagnostic pop
-			retval = idx;
-			*stop = YES;
-		}
-	}];
+            retval = idx;
+            *stop = YES;
+        }
+    }];
 
-	return retval;
+    return retval;
 }
 
 @end
@@ -211,107 +211,107 @@ typedef BOOL (*EqualityMethodType)(id, SEL, id);
 
 - (void)safeRemoveObjectAtIndex:(NSInteger)n
 {
-	if (n >= 0 && n < self.count) {
-		[self removeObjectAtIndex:n];
-	}
+    if (n >= 0 && n < self.count) {
+        [self removeObjectAtIndex:n];
+    }
 }
 
 - (void)safeAddObject:(id)anObject
 {
-	if (PointerIsEmpty(anObject) == NO) {
-		[self addObject:anObject];
-	}
-	
+    if (PointerIsEmpty(anObject) == NO) {
+        [self addObject:anObject];
+    }
+    
 }
 - (void)safeAddObjectWithoutDuplication:(id)anObject
 {
-	if (PointerIsEmpty(anObject) == NO && [self containsObject:anObject] == NO) {
-		[self addObject:anObject];
-	}
+    if (PointerIsEmpty(anObject) == NO && [self containsObject:anObject] == NO) {
+        [self addObject:anObject];
+    }
 }
 
 - (void)safeInsertObject:(id)anObject atIndex:(NSUInteger)index
 {
-	if (PointerIsEmpty(anObject) == NO) {
-		[self insertObject:anObject atIndex:index];
-	}
+    if (PointerIsEmpty(anObject) == NO) {
+        [self insertObject:anObject atIndex:index];
+    }
 }
 
 - (void)insertBool:(BOOL)value atIndex:(NSUInteger)index
 {
-	[self safeInsertObject:@(value) atIndex:index];
+    [self safeInsertObject:@(value) atIndex:index];
 }
 
 - (void)insertInteger:(NSInteger)value atIndex:(NSUInteger)index
 {
-	[self safeInsertObject:@(value) atIndex:index];
+    [self safeInsertObject:@(value) atIndex:index];
 }
 
 - (void)insertLongLong:(long long)value atIndex:(NSUInteger)index
 {
-	[self safeInsertObject:@(value) atIndex:index];
+    [self safeInsertObject:@(value) atIndex:index];
 }
 
 - (void)insertDouble:(TXNSDouble)value atIndex:(NSUInteger)index
 {
-	[self safeInsertObject:@(value) atIndex:index];
+    [self safeInsertObject:@(value) atIndex:index];
 }
 
 - (void)insertPointer:(void *)value atIndex:(NSUInteger)index
 {
-	[self safeInsertObject:[NSValue valueWithPointer:value] atIndex:index];
+    [self safeInsertObject:[NSValue valueWithPointer:value] atIndex:index];
 }
 
 - (void)addBool:(BOOL)value
 {
-	[self safeAddObject:@(value)];
+    [self safeAddObject:@(value)];
 }
 
 - (void)addInteger:(NSInteger)value
 {
-	[self safeAddObject:@(value)];
+    [self safeAddObject:@(value)];
 }
 
 - (void)addLongLong:(long long)value
 {
-	[self safeAddObject:@(value)];
+    [self safeAddObject:@(value)];
 }
-	 
+     
 - (void)addDouble:(TXNSDouble)value
 {
-	[self safeAddObject:@(value)];
+    [self safeAddObject:@(value)];
 }
 
 - (void)addPointer:(void *)value
 {
-	[self safeAddObject:[NSValue valueWithPointer:value]];
+    [self safeAddObject:[NSValue valueWithPointer:value]];
 }
 
 - (void)performSelectorOnObjectValueAndReplace:(SEL)performSelector
 {
-	NSMutableArray *oldArray = [self mutableCopy];
+    NSMutableArray *oldArray = [self mutableCopy];
 
-	[self removeAllObjects];
+    [self removeAllObjects];
 
-	for (__strong id object in oldArray) {
-		if ([object respondsToSelector:performSelector]) {
-			object = objc_msgSend(object, performSelector);
-		}
+    for (__strong id object in oldArray) {
+        if ([object respondsToSelector:performSelector]) {
+            object = objc_msgSend(object, performSelector);
+        }
 
-		[self safeAddObject:object];
-	}
+        [self safeAddObject:object];
+    }
 }
 
 - (void)insertSortedObject:(id)obj usingComparator:(NSComparator)comparator
 {
-	PointerIsEmptyAssert(obj);
+    PointerIsEmptyAssert(obj);
 
-	NSUInteger idx = [self indexOfObject:obj
-						   inSortedRange:self.range
-								 options:NSBinarySearchingInsertionIndex
-						 usingComparator:comparator];
+    NSUInteger idx = [self indexOfObject:obj
+                           inSortedRange:self.range
+                                 options:NSBinarySearchingInsertionIndex
+                         usingComparator:comparator];
 
-	[self insertObject:obj atIndex:idx];
+    [self insertObject:obj atIndex:idx];
 }
 
 @end
@@ -320,17 +320,17 @@ typedef BOOL (*EqualityMethodType)(id, SEL, id);
 
 - (NSArray *)arrayFromIndexSet
 {
-	NSMutableArray *ary = [NSMutableArray array];
-	
-	NSUInteger current_index = [self lastIndex];
-	
-	while (NSDissimilarObjects(current_index, NSNotFound)) {
-		[ary addObject:@(current_index)];
-		
-		current_index = [self indexLessThanIndex:current_index];
-	}
-	
-	return ary;
+    NSMutableArray *ary = [NSMutableArray array];
+    
+    NSUInteger current_index = [self lastIndex];
+    
+    while (NSDissimilarObjects(current_index, NSNotFound)) {
+        [ary addObject:@(current_index)];
+        
+        current_index = [self indexLessThanIndex:current_index];
+    }
+    
+    return ary;
 }
 
 @end

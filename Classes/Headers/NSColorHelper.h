@@ -37,7 +37,7 @@
 
 #import "TextualApplication.h"
 
-#define TXCalibratedRGBColor(r, g, b)		([NSColor internalCalibratedRed:r green:g blue:b alpha:1.0])
+#define TXCalibratedRGBColor(r, g, b)       ([NSColor internalCalibratedRed:r green:g blue:b alpha:1.0])
 
 @interface NSColor (TXColorHelper)
 + (id)defineUserInterfaceItem:(id)normalItem invertedItem:(id)invertedItem;

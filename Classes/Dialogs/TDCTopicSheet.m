@@ -41,41 +41,41 @@
 
 - (id)init
 {
-	if ((self = [super init])) {
-		[NSBundle loadNibNamed:@"TDCTopicSheet" owner:self];
-	}
+    if ((self = [super init])) {
+        [NSBundle loadNibNamed:@"TDCTopicSheet" owner:self];
+    }
 
-	return self;
+    return self;
 }
 
 - (void)start:(NSString *)topic
 {
-	IRCChannel *c = [self.worldController findChannelByClientId:self.clientID channelId:self.channelID];
-	
-	[self.headerTitleField setStringValue:[NSString stringWithFormat:self.headerTitleField.stringValue, c.name]];
-	
-	[self.topicValueField setAttributedStringValue:[topic attributedStringWithIRCFormatting:TXDefaultTextFieldFont
-																  honorFormattingPreference:NO]];
+    IRCChannel *c = [self.worldController findChannelByClientId:self.clientID channelId:self.channelID];
+    
+    [self.headerTitleField setStringValue:[NSString stringWithFormat:self.headerTitleField.stringValue, c.name]];
+    
+    [self.topicValueField setAttributedStringValue:[topic attributedStringWithIRCFormatting:TXDefaultTextFieldFont
+                                                                  honorFormattingPreference:NO]];
 
-	[self.masterController.formattingMenu enableSheetField:self.topicValueField];
+    [self.masterController.formattingMenu enableSheetField:self.topicValueField];
 
-	[self startSheet];
+    [self startSheet];
 }
 
 - (void)ok:(id)sender
 {
-	if ([self.delegate respondsToSelector:@selector(topicSheet:onOK:)]) {  
-		NSString *topicv;
+    if ([self.delegate respondsToSelector:@selector(topicSheet:onOK:)]) {  
+        NSString *topicv;
 
-		topicv = [self.topicValueField.attributedStringValue attributedStringToASCIIFormatting];
+        topicv = [self.topicValueField.attributedStringValue attributedStringToASCIIFormatting];
 
-		topicv = [topicv stringByReplacingOccurrencesOfString:NSStringNewlinePlaceholder
-												   withString:NSStringWhitespacePlaceholder];
+        topicv = [topicv stringByReplacingOccurrencesOfString:NSStringNewlinePlaceholder
+                                                   withString:NSStringWhitespacePlaceholder];
 
-		[self.delegate topicSheet:self onOK:topicv];
-	}
-	
-	[super ok:nil];
+        [self.delegate topicSheet:self onOK:topicv];
+    }
+    
+    [super ok:nil];
 }
 
 #pragma mark -
@@ -83,11 +83,11 @@
 
 - (void)windowWillClose:(NSNotification *)note
 {
-	[self.masterController.formattingMenu enableWindowField:self.masterController.inputTextField];
-	
-	if ([self.delegate respondsToSelector:@selector(topicSheetWillClose:)]) {
-		[self.delegate topicSheetWillClose:self];
-	}
+    [self.masterController.formattingMenu enableWindowField:self.masterController.inputTextField];
+    
+    if ([self.delegate respondsToSelector:@selector(topicSheetWillClose:)]) {
+        [self.delegate topicSheetWillClose:self];
+    }
 }
 
 @end

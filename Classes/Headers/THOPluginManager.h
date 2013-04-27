@@ -37,7 +37,7 @@
 
 #import "TextualApplication.h"
 
-#define RZPluginManager()			[THOPluginManager defaultManager]
+#define RZPluginManager()           [THOPluginManager defaultManager]
 
 @interface THOPluginManager : NSObject
 + (THOPluginManager *)defaultManager;

@@ -48,8 +48,8 @@
  the connection information as well as owning client for quicker decisions
  regarding the nature of the socket. */
 
-#define _LF	0xa
-#define _CR	0xd
+#define _LF 0xa
+#define _CR 0xd
 
 @implementation IRCConnection (IRCConnectionSocket)
 
@@ -58,8 +58,8 @@
 
 - (BOOL)useNewSocketEngine
 {
-	return (self.connectionUsesNormalSocks == NO &&
-			self.connectionUsesSystemSocks == NO);
+    return (self.connectionUsesNormalSocks == NO &&
+            self.connectionUsesSystemSocks == NO);
 }
 
 #pragma mark -
@@ -67,27 +67,27 @@
 
 - (void)destroyDispatchQueue
 {
-	if (self.dispatchQueue) {
-		dispatch_release(self.dispatchQueue);
-	}
+    if (self.dispatchQueue) {
+        dispatch_release(self.dispatchQueue);
+    }
 
-	if (self.socketQueue) {
-		dispatch_release(self.socketQueue);
-	}
+    if (self.socketQueue) {
+        dispatch_release(self.socketQueue);
+    }
 
-	self.dispatchQueue = NULL;
-	self.socketQueue = NULL;
+    self.dispatchQueue = NULL;
+    self.socketQueue = NULL;
 }
 
 - (void)createDispatchQueue
 {
-	NSAssertReturn([self useNewSocketEngine]);
+    NSAssertReturn([self useNewSocketEngine]);
 
-	NSString *dqname = [@"socketDispatchQueue." stringByAppendingString:self.client.config.itemUUID];
-	NSString *sqname = [@"socketReadWriteQueue." stringByAppendingString:self.client.config.itemUUID];
+    NSString *dqname = [@"socketDispatchQueue." stringByAppendingString:self.client.config.itemUUID];
+    NSString *sqname = [@"socketReadWriteQueue." stringByAppendingString:self.client.config.itemUUID];
 
-	self.socketQueue = dispatch_queue_create([sqname UTF8String], NULL);
-	self.dispatchQueue = dispatch_queue_create([dqname UTF8String], NULL);
+    self.socketQueue = dispatch_queue_create([sqname UTF8String], NULL);
+    self.dispatchQueue = dispatch_queue_create([dqname UTF8String], NULL);
 }
 
 #pragma mark -
@@ -96,44 +96,44 @@
 - (void)openSocket
 {
     [self closeSocket]; // Reset state. 
-	[self createDispatchQueue];
+    [self createDispatchQueue];
 
-	self.isConnecting = YES;
+    self.isConnecting = YES;
 
-	if ([self useNewSocketEngine]) {
+    if ([self useNewSocketEngine]) {
         self.socketConnection = [GCDAsyncSocket socketWithDelegate:self
-													 delegateQueue:self.dispatchQueue
-													   socketQueue:self.socketQueue];
+                                                     delegateQueue:self.dispatchQueue
+                                                       socketQueue:self.socketQueue];
 
         [self.socketConnection setPreferIPv4OverIPv6:(self.connectionPrefersIPv6 == NO)];
-	} else {
-		self.socketConnection = [AsyncSocket socketWithDelegate:self];
-	}
+    } else {
+        self.socketConnection = [AsyncSocket socketWithDelegate:self];
+    }
 
-	NSError *connError = nil;
+    NSError *connError = nil;
 
-	if ([self.socketConnection connectToHost:self.serverAddress onPort:self.serverPort withTimeout:(-1) error:&connError] == NO) {
-		[self onSocket:self.socketConnection willDisconnectWithError:connError];
+    if ([self.socketConnection connectToHost:self.serverAddress onPort:self.serverPort withTimeout:(-1) error:&connError] == NO) {
+        [self onSocket:self.socketConnection willDisconnectWithError:connError];
 
-		if ([self useNewSocketEngine] == NO) {
-			[self onSocketDidDisconnect:self.socketConnection];
-		}
-	}
+        if ([self useNewSocketEngine] == NO) {
+            [self onSocketDidDisconnect:self.socketConnection];
+        }
+    }
 }
 
 - (void)closeSocket
 {
-	if (PointerIsNotEmpty(self.socketConnection)) {
-		[self.socketConnection setDelegate:nil];
-		[self.socketConnection disconnect];
+    if (PointerIsNotEmpty(self.socketConnection)) {
+        [self.socketConnection setDelegate:nil];
+        [self.socketConnection disconnect];
 
-		self.socketConnection = nil;
-	}
-	
+        self.socketConnection = nil;
+    }
+    
     [self destroyDispatchQueue];
 
-	self.isConnected = NO;
-	self.isConnecting = NO;
+    self.isConnected = NO;
+    self.isConnecting = NO;
 }
 
 #pragma mark -
@@ -141,49 +141,49 @@
 
 - (NSString *)readLine
 {
-	NSObjectIsEmptyAssertReturn(self.socketBuffer, nil);
+    NSObjectIsEmptyAssertReturn(self.socketBuffer, nil);
 
-	NSString *buffer = [self convertFromCommonEncoding:self.socketBuffer];
+    NSString *buffer = [self convertFromCommonEncoding:self.socketBuffer];
 
-	NSObjectIsEmptyAssertReturn(buffer, nil);
-	
-	NSInteger messageSubstringIndex = 0;
-	NSInteger newlineSubstringIndex = 0;
+    NSObjectIsEmptyAssertReturn(buffer, nil);
+    
+    NSInteger messageSubstringIndex = 0;
+    NSInteger newlineSubstringIndex = 0;
 
-	NSRange _LFRange = [buffer rangeOfString:[NSString stringWithFormat:@"%C", _LF]];
-	NSRange _CRRange = [buffer rangeOfString:[NSString stringWithFormat:@"%C", _CR]];
+    NSRange _LFRange = [buffer rangeOfString:[NSString stringWithFormat:@"%C", _LF]];
+    NSRange _CRRange = [buffer rangeOfString:[NSString stringWithFormat:@"%C", _CR]];
 
-	if (_LFRange.location == NSNotFound) {
-		return nil;
-	}
+    if (_LFRange.location == NSNotFound) {
+        return nil;
+    }
 
-	messageSubstringIndex =  _LFRange.location;
-	newlineSubstringIndex = (_LFRange.location + 1);
+    messageSubstringIndex =  _LFRange.location;
+    newlineSubstringIndex = (_LFRange.location + 1);
 
-	if ((_LFRange.location - 1) == _CRRange.location) {
-		messageSubstringIndex -= 1;
-	}
+    if ((_LFRange.location - 1) == _CRRange.location) {
+        messageSubstringIndex -= 1;
+    }
 
-	NSString *readLine = [buffer safeSubstringToIndex:messageSubstringIndex];
-	NSString *newBuffer = [buffer safeSubstringFromIndex:newlineSubstringIndex];
+    NSString *readLine = [buffer safeSubstringToIndex:messageSubstringIndex];
+    NSString *newBuffer = [buffer safeSubstringFromIndex:newlineSubstringIndex];
 
-	if (NSObjectIsEmpty(newBuffer)) {
-		self.socketBuffer = [NSMutableData new];
-	} else {
-		NSData *newBufferD = [self convertToCommonEncoding:newBuffer];
+    if (NSObjectIsEmpty(newBuffer)) {
+        self.socketBuffer = [NSMutableData new];
+    } else {
+        NSData *newBufferD = [self convertToCommonEncoding:newBuffer];
 
-		self.socketBuffer = [newBufferD mutableCopy];
-	}
+        self.socketBuffer = [newBufferD mutableCopy];
+    }
 
-	return readLine;
+    return readLine;
 }
 
 - (void)write:(NSData *)data
 {
-	NSAssertReturn(self.isConnected);
+    NSAssertReturn(self.isConnected);
 
-	[self.socketConnection writeData:data withTimeout:(-1) tag:0];
-	[self.socketConnection readDataWithTimeout:(-1)	tag:0];
+    [self.socketConnection writeData:data withTimeout:(-1) tag:0];
+    [self.socketConnection readDataWithTimeout:(-1) tag:0];
 }
 
 #pragma mark -
@@ -191,105 +191,105 @@
 
 - (BOOL)onSocketWillConnect:(id)sock
 {
-	if (self.connectionUsesSystemSocks) {
-		[self.socketConnection useSystemSocksProxy];
-	} else if (self.connectionUsesNormalSocks) {
-		[self.socketConnection useSocksProxyVersion:self.proxySocksVersion
-											address:self.proxyAddress
-											   port:self.proxyPort
-										   username:self.proxyUsername
-										   password:self.proxyPassword];
-	}
+    if (self.connectionUsesSystemSocks) {
+        [self.socketConnection useSystemSocksProxy];
+    } else if (self.connectionUsesNormalSocks) {
+        [self.socketConnection useSocksProxyVersion:self.proxySocksVersion
+                                            address:self.proxyAddress
+                                               port:self.proxyPort
+                                           username:self.proxyUsername
+                                           password:self.proxyPassword];
+    }
 
-	if (self.connectionUsesSSL) {
-		if ([self useNewSocketEngine]) {
-			[self.socketConnection useSSLWithClient:self.client];
-		} else {
-			[self.socketConnection useSSL];
-		}
-	}
+    if (self.connectionUsesSSL) {
+        if ([self useNewSocketEngine]) {
+            [self.socketConnection useSSLWithClient:self.client];
+        } else {
+            [self.socketConnection useSSL];
+        }
+    }
 
-	return YES;
+    return YES;
 }
 
 - (void)onSocket:(id)sock didConnectToHost:(NSString *)ahost port:(UInt16)aport
 {
-	[self.socketConnection readDataWithTimeout:(-1) tag:0];
+    [self.socketConnection readDataWithTimeout:(-1) tag:0];
 
-	self.isConnecting = NO;
-	self.isConnected = YES;
+    self.isConnecting = NO;
+    self.isConnected = YES;
 
-	if ([self respondsToSelector:@selector(tcpClientDidConnect)]) {
-		[self performSelector:@selector(tcpClientDidConnect)];
-	}
+    if ([self respondsToSelector:@selector(tcpClientDidConnect)]) {
+        [self performSelector:@selector(tcpClientDidConnect)];
+    }
 
 #ifndef DEBUG
-	if (self.client.rawModeEnabled) {
+    if (self.client.rawModeEnabled) {
 #endif
-		
-		LogToConsole(@"Debug Information:");
-		LogToConsole(@"	Connected Host: %@", [sock connectedHost]);
-		LogToConsole(@"	Connected Port: %hu", [sock connectedPort]);
+        
+        LogToConsole(@"Debug Information:");
+        LogToConsole(@" Connected Host: %@", [sock connectedHost]);
+        LogToConsole(@" Connected Port: %hu", [sock connectedPort]);
 
 #ifndef DEBUG
-	}
+    }
 #endif
 }
 
 - (void)onSocketDidDisconnect:(id)sock
 {
-	[self closeSocket];
+    [self closeSocket];
 
-	if ([self respondsToSelector:@selector(tcpClientDidDisconnect)]) {
-		[self performSelector:@selector(tcpClientDidDisconnect)];
-	}
+    if ([self respondsToSelector:@selector(tcpClientDidDisconnect)]) {
+        [self performSelector:@selector(tcpClientDidDisconnect)];
+    }
 }
 
 - (void)onSocket:(id)sender willDisconnectWithError:(NSError *)error
 {
-	if (PointerIsEmpty(error) || [error code] == errSSLClosedGraceful) {
-		[self onSocketDidDisconnect:sender];
-	} else {
-		NSString *errorMessage = nil;
+    if (PointerIsEmpty(error) || [error code] == errSSLClosedGraceful) {
+        [self onSocketDidDisconnect:sender];
+    } else {
+        NSString *errorMessage = nil;
 
-		if ([GCDAsyncSocket badSSLCertificateErrorFound:error]) {
-			self.client.disconnectType = IRCDisconnectBadSSLCertificateMode;
-		} else {
-			if ([error.domain isEqualToString:NSPOSIXErrorDomain]) {
-				errorMessage = [GCDAsyncSocket posixErrorStringFromError:error.code];
-			}
+        if ([GCDAsyncSocket badSSLCertificateErrorFound:error]) {
+            self.client.disconnectType = IRCDisconnectBadSSLCertificateMode;
+        } else {
+            if ([error.domain isEqualToString:NSPOSIXErrorDomain]) {
+                errorMessage = [GCDAsyncSocket posixErrorStringFromError:error.code];
+            }
 
-			if (NSObjectIsEmpty(errorMessage)) {
-				errorMessage = [error localizedDescription];
-			}
+            if (NSObjectIsEmpty(errorMessage)) {
+                errorMessage = [error localizedDescription];
+            }
 
-			if ([self respondsToSelector:@selector(tcpClientDidError:)]) {
-				[self performSelector:@selector(tcpClientDidError:) withObject:errorMessage];
-			}
-		}
+            if ([self respondsToSelector:@selector(tcpClientDidError:)]) {
+                [self performSelector:@selector(tcpClientDidError:) withObject:errorMessage];
+            }
+        }
 
-		if ([self useNewSocketEngine]) {
-			[self onSocketDidDisconnect:sender];
-		}
-	}
+        if ([self useNewSocketEngine]) {
+            [self onSocketDidDisconnect:sender];
+        }
+    }
 }
 
 - (void)onSocket:(id)sock didReadData:(NSData *)data withTag:(long)tag
 {
-	[self.socketBuffer appendData:data];
+    [self.socketBuffer appendData:data];
 
-	if ([self respondsToSelector:@selector(tcpClientDidReceiveData)]) {
-		[self performSelector:@selector(tcpClientDidReceiveData)];
-	}
+    if ([self respondsToSelector:@selector(tcpClientDidReceiveData)]) {
+        [self performSelector:@selector(tcpClientDidReceiveData)];
+    }
 
-	[self.socketConnection readDataWithTimeout:(-1) tag:0];
+    [self.socketConnection readDataWithTimeout:(-1) tag:0];
 }
 
 - (void)onSocket:(id)sock didWriteDataWithTag:(long)tag
 {
-	if ([self respondsToSelector:@selector(tcpClientDidSendData)]) {
-		[self performSelector:@selector(tcpClientDidSendData)];
-	}
+    if ([self respondsToSelector:@selector(tcpClientDidSendData)]) {
+        [self performSelector:@selector(tcpClientDidSendData)];
+    }
 }
 
 #pragma mark -
@@ -297,32 +297,32 @@
 
 - (void)socket:(id)sock didConnectToHost:(NSString *)ahost port:(UInt16)aport
 {
-	dispatch_sync(dispatch_get_main_queue(), ^{
-		[self onSocketWillConnect:sock];
+    dispatch_sync(dispatch_get_main_queue(), ^{
+        [self onSocketWillConnect:sock];
 
-		[self onSocket:sock didConnectToHost:ahost port:aport];
-	});
+        [self onSocket:sock didConnectToHost:ahost port:aport];
+    });
 }
 
 - (void)socketDidDisconnect:(id)sock withError:(NSError *)err
 {
-	dispatch_sync(dispatch_get_main_queue(), ^{
-		[self onSocket:sock willDisconnectWithError:err];
-	});
+    dispatch_sync(dispatch_get_main_queue(), ^{
+        [self onSocket:sock willDisconnectWithError:err];
+    });
 }
 
 - (void)socket:(id)sock didReadData:(NSData *)data withTag:(long)tag
 {
-	dispatch_sync(dispatch_get_main_queue(), ^{
-		[self onSocket:sock didReadData:data withTag:tag];
-	});
+    dispatch_sync(dispatch_get_main_queue(), ^{
+        [self onSocket:sock didReadData:data withTag:tag];
+    });
 }
 
 - (void)socket:(id)sock didWriteDataWithTag:(long)tag
 {
-	dispatch_sync(dispatch_get_main_queue(), ^{
-		[self onSocket:sock didWriteDataWithTag:tag];
-	});
+    dispatch_sync(dispatch_get_main_queue(), ^{
+        [self onSocket:sock didWriteDataWithTag:tag];
+    });
 }
 
 #pragma mark -
@@ -330,14 +330,14 @@
 
 - (void)openSSLCertificateTrustDialog
 {
-	if ([self useNewSocketEngine]) {
-		[self.socketConnection requestSSLTrustFor:[NSApp mainWindow]
-									modalDelegate:nil
-								   didEndSelector:nil
-									  contextInfo:nil
-									defaultButton:TXTLS(@"CloseButton")
-								  alternateButton:nil];
-	}
+    if ([self useNewSocketEngine]) {
+        [self.socketConnection requestSSLTrustFor:[NSApp mainWindow]
+                                    modalDelegate:nil
+                                   didEndSelector:nil
+                                      contextInfo:nil
+                                    defaultButton:TXTLS(@"CloseButton")
+                                  alternateButton:nil];
+    }
 }
 
 @end

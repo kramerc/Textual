@@ -41,11 +41,11 @@
 
 - (BOOL)hasHiddenView
 {
-	NSView *leftSide  = [self subviews][0];
-	NSView *rightSide = [self subviews][1];
-	
-	return ([self isSubviewCollapsed:leftSide] ||
-			[self isSubviewCollapsed:rightSide]);
+    NSView *leftSide  = [self subviews][0];
+    NSView *rightSide = [self subviews][1];
+    
+    return ([self isSubviewCollapsed:leftSide] ||
+            [self isSubviewCollapsed:rightSide]);
 }
 
 @end

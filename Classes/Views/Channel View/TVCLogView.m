@@ -41,66 +41,66 @@
 
 - (void)keyDown:(NSEvent *)e
 {
-	if (self.keyDelegate) {
-		NSUInteger m = [e modifierFlags];
-		
-		BOOL cmd = (m & NSCommandKeyMask);
-		BOOL alt = (m & NSAlternateKeyMask);
-		BOOL ctrl = (m & NSControlKeyMask);
-		
-		if (ctrl == NO && alt == NO && cmd == NO) {
-			if ([self.keyDelegate respondsToSelector:@selector(logViewKeyDown:)]) {
-				[self.keyDelegate logViewKeyDown:e];
-			}
-			
-			return;
-		}
-	}
-	
-	[super keyDown:e];
+    if (self.keyDelegate) {
+        NSUInteger m = [e modifierFlags];
+        
+        BOOL cmd = (m & NSCommandKeyMask);
+        BOOL alt = (m & NSAlternateKeyMask);
+        BOOL ctrl = (m & NSControlKeyMask);
+        
+        if (ctrl == NO && alt == NO && cmd == NO) {
+            if ([self.keyDelegate respondsToSelector:@selector(logViewKeyDown:)]) {
+                [self.keyDelegate logViewKeyDown:e];
+            }
+            
+            return;
+        }
+    }
+    
+    [super keyDown:e];
 }
 
 - (BOOL)maintainsInactiveSelection
 {
-	return YES;
+    return YES;
 }
 
 - (NSString *)contentString
 {
-	DOMDocument *doc = [self.mainFrame DOMDocument];
-	PointerIsEmptyAssertReturn(doc, NSStringEmptyPlaceholder);
-	
-	DOMElement *body = [doc body];
-	PointerIsEmptyAssertReturn(body, NSStringEmptyPlaceholder);
-	
-	DOMHTMLElement *root = (DOMHTMLElement *)[body parentNode];
-	PointerIsEmptyAssertReturn(root, NSStringEmptyPlaceholder);
-	
-	return [root outerHTML];
+    DOMDocument *doc = [self.mainFrame DOMDocument];
+    PointerIsEmptyAssertReturn(doc, NSStringEmptyPlaceholder);
+    
+    DOMElement *body = [doc body];
+    PointerIsEmptyAssertReturn(body, NSStringEmptyPlaceholder);
+    
+    DOMHTMLElement *root = (DOMHTMLElement *)[body parentNode];
+    PointerIsEmptyAssertReturn(root, NSStringEmptyPlaceholder);
+    
+    return [root outerHTML];
 }
 
 - (WebScriptObject *)javaScriptAPI
 {
-	return [[self windowScriptObject] evaluateWebScript:@"Textual"];
+    return [[self windowScriptObject] evaluateWebScript:@"Textual"];
 }
 
 - (void)clearSelection
 {
-	[self setSelectedDOMRange:nil affinity:NSSelectionAffinityDownstream];
+    [self setSelectedDOMRange:nil affinity:NSSelectionAffinityDownstream];
 }
 
 - (BOOL)hasSelection
 {
-	return NSObjectIsNotEmpty(self.selection);
+    return NSObjectIsNotEmpty(self.selection);
 }
 
 - (NSString *)selection
 {
-	DOMRange *range = [self selectedDOMRange];
+    DOMRange *range = [self selectedDOMRange];
 
-	PointerIsEmptyAssertReturn(range, nil);
-	
-	return [range toString];
+    PointerIsEmptyAssertReturn(range, nil);
+    
+    return [range toString];
 }
 
 @end

@@ -58,29 +58,29 @@
 
 - (id)init
 {
-	if ((self = [super init])) {
-		/* Cached blocks never actually hit the queue. They are used primarily for style reloads and such where
-		 hundreds of messages will be rendered at the same time. Instead of inserting each block to process as
-		 an individual queue item, we instead ask for the block that already contains the HTML result and append
-		 that to our cached operations array. The array can then be processed to create a single, large HTML
-		 block to append to WebKit at the same time instead of processing each message one-by-one.
+    if ((self = [super init])) {
+        /* Cached blocks never actually hit the queue. They are used primarily for style reloads and such where
+         hundreds of messages will be rendered at the same time. Instead of inserting each block to process as
+         an individual queue item, we instead ask for the block that already contains the HTML result and append
+         that to our cached operations array. The array can then be processed to create a single, large HTML
+         block to append to WebKit at the same time instead of processing each message one-by-one.
 
-		 Cached operations are stored an array in the format: @[<callbackBlock>, <context>] — their key is a 
-		 unique identifier assigned to each view controller.
-		 
-		 These operations are never executed within this class. They are only cached here. */
-		
-		_cachedOperations = [NSMutableDictionary dictionary];
+         Cached operations are stored an array in the format: @[<callbackBlock>, <context>] — their key is a 
+         unique identifier assigned to each view controller.
+         
+         These operations are never executed within this class. They are only cached here. */
+        
+        _cachedOperations = [NSMutableDictionary dictionary];
 
-		/* Limit our queue to four threads per client. Our queue is actually client specific not view specific,
-		 it is only designed into the view controller because that is where it is used. */
-		//self.maxConcurrentOperationCount = 4;
-		self.maxConcurrentOperationCount = 1; // Temporary.
+        /* Limit our queue to four threads per client. Our queue is actually client specific not view specific,
+         it is only designed into the view controller because that is where it is used. */
+        //self.maxConcurrentOperationCount = 4;
+        self.maxConcurrentOperationCount = 1; // Temporary.
 
-		return self;
-	}
+        return self;
+    }
 
-	return nil;
+    return nil;
 }
 
 #pragma mark -
@@ -88,19 +88,19 @@
 
 - (void)enqueueMessageBlock:(TVCLogControllerOperationBlock)callbackBlock for:(TVCLogController *)sender
 {
-	[self enqueueMessageBlock:callbackBlock for:sender context:nil];
+    [self enqueueMessageBlock:callbackBlock for:sender context:nil];
 }
 
 - (void)enqueueMessageBlock:(TVCLogControllerOperationBlock)callbackBlock for:(TVCLogController *)sender context:(NSDictionary *)context
 {
-	PointerIsEmptyAssert(callbackBlock);
-	PointerIsEmptyAssert(sender);
+    PointerIsEmptyAssert(callbackBlock);
+    PointerIsEmptyAssert(sender);
 
-	TVCLogControllerOperationItem *operation = [TVCLogControllerOperationItem operationWithBlock:^{
-		callbackBlock(context);
-	} forController:sender];
+    TVCLogControllerOperationItem *operation = [TVCLogControllerOperationItem operationWithBlock:^{
+        callbackBlock(context);
+    } forController:sender];
 
-	[self addOperation:operation];
+    [self addOperation:operation];
 }
 
 #pragma mark -
@@ -108,32 +108,32 @@
 
 - (void)cancelOperationsForViewController:(TVCLogController *)controller
 {
-	PointerIsEmptyAssert(controller);
-	
-	/* Controller key. */
-	NSString *controllerKey = [controller operationQueueHash];
+    PointerIsEmptyAssert(controller);
+    
+    /* Controller key. */
+    NSString *controllerKey = [controller operationQueueHash];
 
-	/* Pending operations. */
-	NSArray *pendingOperations = [self operations];
+    /* Pending operations. */
+    NSArray *pendingOperations = [self operations];
 
-	/* Cancel the operations. */
-	for (TVCLogControllerOperationItem *op in pendingOperations) {
-		NSString *ophash = op.controller.operationQueueHash;
+    /* Cancel the operations. */
+    for (TVCLogControllerOperationItem *op in pendingOperations) {
+        NSString *ophash = op.controller.operationQueueHash;
 
-		if ([controllerKey isEqualToString:ophash]) {
-			[op cancel];
-		}
-	}
+        if ([controllerKey isEqualToString:ophash]) {
+            [op cancel];
+        }
+    }
 }
 
 - (void)destroyOperationsForChannel:(IRCChannel *)channel
 {
-	[self cancelOperationsForViewController:channel.viewController];
+    [self cancelOperationsForViewController:channel.viewController];
 }
 
 - (void)destroyOperationsForClient:(IRCClient *)client
 {
-	[self cancelOperationsForViewController:client.viewController];
+    [self cancelOperationsForViewController:client.viewController];
 }
 
 #pragma mark -
@@ -141,61 +141,61 @@
 
 - (void)enqueueMessageCachedBlock:(TVCLogMessageBlock)callbackBlock for:(TVCLogController *)sender context:(NSDictionary *)context
 {
-	PointerIsEmptyAssert(callbackBlock);
-	PointerIsEmptyAssert(sender);
-	PointerIsEmptyAssert(context); // context != nil
+    PointerIsEmptyAssert(callbackBlock);
+    PointerIsEmptyAssert(sender);
+    PointerIsEmptyAssert(context); // context != nil
 
-	/* Controller key. */
-	NSString *controllerKey = [sender operationQueueHash];
+    /* Controller key. */
+    NSString *controllerKey = [sender operationQueueHash];
 
-	/* Get list of pending operations. */
-	NSArray *pendingOperations = [self.cachedOperations arrayForKey:controllerKey];
+    /* Get list of pending operations. */
+    NSArray *pendingOperations = [self.cachedOperations arrayForKey:controllerKey];
 
-	/* Are there any? */
-	if (pendingOperations == nil) {
-		pendingOperations = [NSArray array];
-	}
+    /* Are there any? */
+    if (pendingOperations == nil) {
+        pendingOperations = [NSArray array];
+    }
 
-	/* Prepare array for changes. */
-	NSMutableArray *mutableOperations = [pendingOperations mutableCopy];
+    /* Prepare array for changes. */
+    NSMutableArray *mutableOperations = [pendingOperations mutableCopy];
 
-	/* Add operation to dictionary. */
-	[mutableOperations addObject:@[callbackBlock, context]];
+    /* Add operation to dictionary. */
+    [mutableOperations addObject:@[callbackBlock, context]];
 
-	/* Save array. */
-	NSMutableDictionary *mutops = [self.cachedOperations mutableCopy];
-	
-	[mutops setObject:mutableOperations forKey:controllerKey];
+    /* Save array. */
+    NSMutableDictionary *mutops = [self.cachedOperations mutableCopy];
+    
+    [mutops setObject:mutableOperations forKey:controllerKey];
 
-	self.cachedOperations = nil;
-	self.cachedOperations = mutops;
+    self.cachedOperations = nil;
+    self.cachedOperations = mutops;
 }
 
 - (NSArray *)cachedOperationsFor:(TVCLogController *)controller
 {
-	PointerIsEmptyAssertReturn(controller, nil);
+    PointerIsEmptyAssertReturn(controller, nil);
 
-	/* Controller key. */
-	NSString *controllerKey = [controller operationQueueHash];
+    /* Controller key. */
+    NSString *controllerKey = [controller operationQueueHash];
 
-	/* Return cache. */
-	return [self.cachedOperations arrayForKey:controllerKey];
+    /* Return cache. */
+    return [self.cachedOperations arrayForKey:controllerKey];
 }
 
 - (void)destroyCachedOperationsFor:(TVCLogController *)controller
 {
-	PointerIsEmptyAssert(controller);
-	
-	/* Controller key. */
-	NSString *controllerKey = [controller operationQueueHash];
+    PointerIsEmptyAssert(controller);
+    
+    /* Controller key. */
+    NSString *controllerKey = [controller operationQueueHash];
 
-	/* Destroy cache. */
-	NSMutableDictionary *mutops = [self.cachedOperations mutableCopy];
+    /* Destroy cache. */
+    NSMutableDictionary *mutops = [self.cachedOperations mutableCopy];
 
-	[mutops removeObjectForKey:controllerKey];
+    [mutops removeObjectForKey:controllerKey];
 
-	self.cachedOperations = nil;
-	self.cachedOperations = mutops;
+    self.cachedOperations = nil;
+    self.cachedOperations = mutops;
 }
 
 #pragma mark -
@@ -203,30 +203,30 @@
 
 - (void)updateReadinessState:(TVCLogController *)controller
 {
-	PointerIsEmptyAssert(controller);
+    PointerIsEmptyAssert(controller);
 
-	/* Controller key. */
-	NSString *controllerKey = [controller operationQueueHash];
+    /* Controller key. */
+    NSString *controllerKey = [controller operationQueueHash];
 
-	/* We only need to update the first object in our queue beause 
-	 that object is dependent on WebKit. All other queue items are
-	 dependent on that first object. If it is gone, then it means 
-	 WebKit is ready to process all of them. */
+    /* We only need to update the first object in our queue beause 
+     that object is dependent on WebKit. All other queue items are
+     dependent on that first object. If it is gone, then it means 
+     WebKit is ready to process all of them. */
 
-	/* Pending operations. */
-	NSArray *pendingOperations = self.operations;
+    /* Pending operations. */
+    NSArray *pendingOperations = self.operations;
 
-	/* Cancel the operations. */
-	for (TVCLogControllerOperationItem *op in pendingOperations) {
-		NSString *ophash = op.controller.operationQueueHash;
+    /* Cancel the operations. */
+    for (TVCLogControllerOperationItem *op in pendingOperations) {
+        NSString *ophash = op.controller.operationQueueHash;
 
-		if ([controllerKey isEqualToString:ophash]) {
-			[op willChangeValueForKey:@"isReady"];
-			[op didChangeValueForKey:@"isReady"];
+        if ([controllerKey isEqualToString:ophash]) {
+            [op willChangeValueForKey:@"isReady"];
+            [op didChangeValueForKey:@"isReady"];
 
-			return;
-		}
-	}
+            return;
+        }
+    }
 }
 
 #pragma mark -
@@ -234,24 +234,24 @@
 
 - (NSOperation *)dependencyOfLastQueueItem:(TVCLogController *)controller
 {
-	PointerIsEmptyAssertReturn(controller, nil);
+    PointerIsEmptyAssertReturn(controller, nil);
 
-	/* Controller key. */
-	NSString *controllerKey = [controller operationQueueHash];
+    /* Controller key. */
+    NSString *controllerKey = [controller operationQueueHash];
 
-	/* Pending operations. */
-	NSArray *pendingOperations = self.operations.reverseObjectEnumerator.allObjects;
+    /* Pending operations. */
+    NSArray *pendingOperations = self.operations.reverseObjectEnumerator.allObjects;
 
-	/* Cancel the operations. */
-	for (TVCLogControllerOperationItem *op in pendingOperations) {
-		NSString *ophash = op.controller.operationQueueHash;
+    /* Cancel the operations. */
+    for (TVCLogControllerOperationItem *op in pendingOperations) {
+        NSString *ophash = op.controller.operationQueueHash;
 
-		if ([controllerKey isEqualToString:ophash]) {
-			return op;
-		}
-	}
+        if ([controllerKey isEqualToString:ophash]) {
+            return op;
+        }
+    }
 
-	return nil;
+    return nil;
 }
 
 @end
@@ -263,13 +263,13 @@
 
 + (TVCLogControllerOperationItem *)operationWithBlock:(void(^)(void))block forController:(TVCLogController *)controller;
 {
-	PointerIsEmptyAssertReturn(block, nil);
-	PointerIsEmptyAssertReturn(controller, nil);
+    PointerIsEmptyAssertReturn(block, nil);
+    PointerIsEmptyAssertReturn(controller, nil);
 
     TVCLogControllerOperationItem *retval = [TVCLogControllerOperationItem new];
 
-	retval.controller = controller;
-	retval.executionBlock = block;
+    retval.controller = controller;
+    retval.executionBlock = block;
 
     NSOperation *lastOp = [controller.operationQueue dependencyOfLastQueueItem:controller];
 
@@ -280,21 +280,21 @@
         [retval addDependency:lastOp];
     }
 
-	return retval;
+    return retval;
 }
 
 - (void)main
 {
-	self.executionBlock();
+    self.executionBlock();
 }
 
 - (BOOL)isReady
 {
-	if (self.dependencies.count < 1) {
-		return ([self.controller.view isLoading] == NO && self.controller.isLoaded);
-	} else {
-		return [self.dependencies[0] isFinished];
-	}
+    if (self.dependencies.count < 1) {
+        return ([self.controller.view isLoading] == NO && self.controller.isLoaded);
+    } else {
+        return [self.dependencies[0] isFinished];
+    }
 }
 
 @end

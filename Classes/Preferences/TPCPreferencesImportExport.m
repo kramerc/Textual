@@ -38,11 +38,11 @@
 #import "TextualApplication.h"
 
 /*
-	Everything related to import/export is handled within this class. This class
-	should only be called by awakeFromNib in master controller and the associated
-	menu items in the menu controller.
+    Everything related to import/export is handled within this class. This class
+    should only be called by awakeFromNib in master controller and the associated
+    menu items in the menu controller.
 
-	Sheets are used to lock focus to the task at hand.
+    Sheets are used to lock focus to the task at hand.
  */
 
 @implementation TPCPreferencesImportExport
@@ -50,162 +50,162 @@
 /* -import handles the actual import menu item. */
 + (void)import
 {
-	TLOPopupPrompts *prompt = [TLOPopupPrompts new];
+    TLOPopupPrompts *prompt = [TLOPopupPrompts new];
 
-	[prompt sheetWindowWithQuestion:self.masterController.mainWindow
-							 target:self
-							 action:@selector(importPreflight:)
-							   body:TXTLS(@"PreferencesImportPreflightDialogMessage")
-							  title:TXTLS(@"PreferencesImportPreflightDialogTitle")
-					  defaultButton:TXTLS(@"PreferencesImportPreflightDialogSelectFileButton")
-					alternateButton:TXTLS(@"CancelButton")
-						otherButton:nil
-					 suppressionKey:nil
-					suppressionText:nil];
+    [prompt sheetWindowWithQuestion:self.masterController.mainWindow
+                             target:self
+                             action:@selector(importPreflight:)
+                               body:TXTLS(@"PreferencesImportPreflightDialogMessage")
+                              title:TXTLS(@"PreferencesImportPreflightDialogTitle")
+                      defaultButton:TXTLS(@"PreferencesImportPreflightDialogSelectFileButton")
+                    alternateButton:TXTLS(@"CancelButton")
+                        otherButton:nil
+                     suppressionKey:nil
+                    suppressionText:nil];
 }
 
 /* Master controller internal handles for import. */
 + (void)importPreflight:(TLOPopupPromptReturnType)buttonPressed
 {
-	/* What button? */
-	if (buttonPressed == TLOPopupPromptReturnPrimaryType) {
-		NSOpenPanel *d = [NSOpenPanel openPanel];
+    /* What button? */
+    if (buttonPressed == TLOPopupPromptReturnPrimaryType) {
+        NSOpenPanel *d = [NSOpenPanel openPanel];
 
-		[d setCanChooseFiles:YES];
-		[d setResolvesAliases:YES];
-		[d setCanChooseDirectories:NO];
-		[d setCanCreateDirectories:NO];
-		[d setAllowsMultipleSelection:NO];
+        [d setCanChooseFiles:YES];
+        [d setResolvesAliases:YES];
+        [d setCanChooseDirectories:NO];
+        [d setCanCreateDirectories:NO];
+        [d setAllowsMultipleSelection:NO];
 
-		[d beginWithCompletionHandler:^(NSInteger returnCode) {
-			if (returnCode == NSOKButton) {
-				NSURL *pathURL = [d.URLs safeObjectAtIndex:0];
+        [d beginWithCompletionHandler:^(NSInteger returnCode) {
+            if (returnCode == NSOKButton) {
+                NSURL *pathURL = [d.URLs safeObjectAtIndex:0];
 
-				[self importPostflight:pathURL];
-			}
-		}];
-	}
+                [self importPostflight:pathURL];
+            }
+        }];
+    }
 }
 
 + (void)importPostflight:(NSURL *)pathURL
 {
-	/* The loading screen is a generic way to show something during import. */
-	[self.masterController.mainWindowLoadingScreen popLoadingConfigurationView];
+    /* The loading screen is a generic way to show something during import. */
+    [self.masterController.mainWindowLoadingScreen popLoadingConfigurationView];
 
-	self.worldController.isPopulatingSeeds = YES;
+    self.worldController.isPopulatingSeeds = YES;
 
-	/* Before we do anything at all, we create a backup of the old configuration. */
-	/* We refuse to continue unless that wrote successfully. */
-	/* These are stored in the home directory of our container. */
-	NSString *basePath = [NSString stringWithFormat:@"/importBackup-%@.plist", [NSString stringWithUUID]];
+    /* Before we do anything at all, we create a backup of the old configuration. */
+    /* We refuse to continue unless that wrote successfully. */
+    /* These are stored in the home directory of our container. */
+    NSString *basePath = [NSString stringWithFormat:@"/importBackup-%@.plist", [NSString stringWithUUID]];
 
-	NSString *backupPath = [NSHomeDirectory() stringByAppendingPathComponent:basePath];
+    NSString *backupPath = [NSHomeDirectory() stringByAppendingPathComponent:basePath];
 
-	BOOL backupWrite = [self exportPostflightForURL:[NSURL fileURLWithPath:backupPath] filterJunk:NO];
+    BOOL backupWrite = [self exportPostflightForURL:[NSURL fileURLWithPath:backupPath] filterJunk:NO];
 
-	if (backupWrite == NO) {
-		LogToConsole(@"Import cancelled. Creation of backup file failed.");
+    if (backupWrite == NO) {
+        LogToConsole(@"Import cancelled. Creation of backup file failed.");
 
-		return;
-	}
+        return;
+    }
 
-	/* Disconnect and clear all. */
-	IRCWorld *theWorld = self.worldController;
+    /* Disconnect and clear all. */
+    IRCWorld *theWorld = self.worldController;
 
-	for (IRCClient *u in theWorld.clients) {
-		[u quit];
-	}
+    for (IRCClient *u in theWorld.clients) {
+        [u quit];
+    }
 
-	/* Begin import. */
-	NSData *rawData = [NSData dataWithContentsOfURL:pathURL];
+    /* Begin import. */
+    NSData *rawData = [NSData dataWithContentsOfURL:pathURL];
 
-	NSDictionary *plist = [NSPropertyListSerialization propertyListFromData:rawData
-														   mutabilityOption:NSPropertyListImmutable
-																	 format:NULL
-														   errorDescription:NULL];
+    NSDictionary *plist = [NSPropertyListSerialization propertyListFromData:rawData
+                                                           mutabilityOption:NSPropertyListImmutable
+                                                                     format:NULL
+                                                           errorDescription:NULL];
 
-	if (plist) {
-		/* The only thing that we should actually be processing from the plist is the
-		 world controller which defines all the clients. After that, shove everything
-		 in NSUserDefaults and call it a day. */
+    if (plist) {
+        /* The only thing that we should actually be processing from the plist is the
+         world controller which defines all the clients. After that, shove everything
+         in NSUserDefaults and call it a day. */
 
-		for (NSString *key in plist) {
-			if ([key isEqualToString:@"World Controller"]) {
-				/* How we handle the world controller is very sensitive because of the sheer
-				 amount of data contained within it. Most of all the hard work will be done
-				 by createClient:reload: in IRCWorld. However, there are some internal things
-				 we have to update first. Mostly, our UUIDs. Each client, channel, and address
-				 book entry has a unique identifier associated with it. We have to give each
-				 newly imported item a new UUID before doing anything with it. This step cannot
-				 be skipped. */
+        for (NSString *key in plist) {
+            if ([key isEqualToString:@"World Controller"]) {
+                /* How we handle the world controller is very sensitive because of the sheer
+                 amount of data contained within it. Most of all the hard work will be done
+                 by createClient:reload: in IRCWorld. However, there are some internal things
+                 we have to update first. Mostly, our UUIDs. Each client, channel, and address
+                 book entry has a unique identifier associated with it. We have to give each
+                 newly imported item a new UUID before doing anything with it. This step cannot
+                 be skipped. */
 
-				NSDictionary *config = [plist dictionaryForKey:key];
+                NSDictionary *config = [plist dictionaryForKey:key];
 
-				for (NSDictionary *e in config[@"clients"]) {
-					NSMutableDictionary *mut_e = [e mutableCopy];
+                for (NSDictionary *e in config[@"clients"]) {
+                    NSMutableDictionary *mut_e = [e mutableCopy];
 
-					/* Reset the client UUID. */
-					[mut_e setObject:[NSString stringWithUUID] forKey:@"uniqueIdentifier"];
+                    /* Reset the client UUID. */
+                    [mut_e setObject:[NSString stringWithUUID] forKey:@"uniqueIdentifier"];
 
-					/* Do the channels next. */
-					NSMutableArray *newChannelList = [NSMutableArray array];
-					
-					for (NSDictionary *ce in e[@"channelList"]) {
-						NSMutableDictionary *mut_ce = [ce mutableCopy];
+                    /* Do the channels next. */
+                    NSMutableArray *newChannelList = [NSMutableArray array];
+                    
+                    for (NSDictionary *ce in e[@"channelList"]) {
+                        NSMutableDictionary *mut_ce = [ce mutableCopy];
 
-						/* Reset the channel UUID. */
-						[mut_ce setObject:[NSString stringWithUUID] forKey:@"uniqueIdentifier"];
+                        /* Reset the channel UUID. */
+                        [mut_ce setObject:[NSString stringWithUUID] forKey:@"uniqueIdentifier"];
 
-						/* Set new entry. */
-						[newChannelList addObject:mut_ce];
-					}
+                        /* Set new entry. */
+                        [newChannelList addObject:mut_ce];
+                    }
 
-					[mut_e setObject:newChannelList forKey:@"channelList"];
+                    [mut_e setObject:newChannelList forKey:@"channelList"];
 
-					/* Do the ignore list. */
-					NSMutableArray *newIgnoreList = [NSMutableArray array];
+                    /* Do the ignore list. */
+                    NSMutableArray *newIgnoreList = [NSMutableArray array];
 
-					for (NSDictionary *ce in e[@"ignoreList"]) {
-						NSMutableDictionary *mut_ce = [ce mutableCopy];
+                    for (NSDictionary *ce in e[@"ignoreList"]) {
+                        NSMutableDictionary *mut_ce = [ce mutableCopy];
 
-						/* Reset the ignore UUID. */
-						[mut_ce setObject:[NSString stringWithUUID] forKey:@"uniqueIdentifier"];
+                        /* Reset the ignore UUID. */
+                        [mut_ce setObject:[NSString stringWithUUID] forKey:@"uniqueIdentifier"];
 
-						/* Set new entry. */
-						[newIgnoreList addObject:mut_ce];
-					}
+                        /* Set new entry. */
+                        [newIgnoreList addObject:mut_ce];
+                    }
 
-					[mut_e setObject:newIgnoreList forKey:@"ignoreList"];
+                    [mut_e setObject:newIgnoreList forKey:@"ignoreList"];
 
-					/* Now that we reset everything… it is safe to create the new client. */					
-					[theWorld createClient:mut_e reload:YES];
-				}
-			} else {
-				[RZUserDefaults() setObject:[plist objectForKey:key] forKey:key];
-			}
-		}
-	}
+                    /* Now that we reset everything… it is safe to create the new client. */                    
+                    [theWorld createClient:mut_e reload:YES];
+                }
+            } else {
+                [RZUserDefaults() setObject:[plist objectForKey:key] forKey:key];
+            }
+        }
+    }
 
-	/* Finish up. */
-	[theWorld destroyAllEvidence];
-	
-	[theWorld save];
-	[theWorld reloadTheme];
+    /* Finish up. */
+    [theWorld destroyAllEvidence];
+    
+    [theWorld save];
+    [theWorld reloadTheme];
 
-	[self.masterController loadWindowState:YES];
+    [self.masterController loadWindowState:YES];
 
-	[TPCPreferences cleanUpHighlightKeywords];
+    [TPCPreferences cleanUpHighlightKeywords];
 
-	/* Do not push the loading screen right away. Add a little delay to give everything 
-	 a chance to settle down before presenting the changes to the user. */
-	[self performSelector:@selector(importPostflightCleanup) withObject:nil afterDelay:1.0];
+    /* Do not push the loading screen right away. Add a little delay to give everything 
+     a chance to settle down before presenting the changes to the user. */
+    [self performSelector:@selector(importPostflightCleanup) withObject:nil afterDelay:1.0];
 }
 
 + (void)importPostflightCleanup
 {
-	[self.masterController.mainWindowLoadingScreen hideLoadingConfigurationView];
+    [self.masterController.mainWindowLoadingScreen hideLoadingConfigurationView];
 
-	self.worldController.isPopulatingSeeds = NO;
+    self.worldController.isPopulatingSeeds = NO;
 }
 
 #pragma mark -
@@ -215,92 +215,92 @@
 /* This method is also called internally to backup the old configuration file. */
 + (BOOL)exportPostflightForURL:(NSURL *)pathURL filterJunk:(BOOL)removeJunk
 {
-	/* Save the world. Just like superman! */
-	IRCWorld *theWorld = self.worldController;
+    /* Save the world. Just like superman! */
+    IRCWorld *theWorld = self.worldController;
 
-	[theWorld save];
+    [theWorld save];
 
-	/* Gather everything into one big dictionary. */
-	NSDictionary *settings = [RZUserDefaults() dictionaryRepresentation];
+    /* Gather everything into one big dictionary. */
+    NSDictionary *settings = [RZUserDefaults() dictionaryRepresentation];
 
-	NSMutableDictionary *mutsettings = [settings mutableCopy];
+    NSMutableDictionary *mutsettings = [settings mutableCopy];
 
-	if (removeJunk) {
-		/* Cocoa filter. */
-		/* There are some Apple defined keys we do not want in our property list. 
-		 We remove those here. */
-		for (NSString *key in settings) {
-			if ([key hasPrefix:@"NS"] ||
-				[key hasPrefix:@"Apple"] ||
-				[key hasPrefix:@"WebKit"] ||
-				[key hasPrefix:@"com.apple."])
-			{
-				[mutsettings removeObjectForKey:key];
-			} else if ([key hasPrefix:@"Saved Window State —> Internal —> "]) {
-				/* While we are going through the list, also remove window frames. */
-				
-				[mutsettings removeObjectForKey:key];
-			}
-		}
+    if (removeJunk) {
+        /* Cocoa filter. */
+        /* There are some Apple defined keys we do not want in our property list. 
+         We remove those here. */
+        for (NSString *key in settings) {
+            if ([key hasPrefix:@"NS"] ||
+                [key hasPrefix:@"Apple"] ||
+                [key hasPrefix:@"WebKit"] ||
+                [key hasPrefix:@"com.apple."])
+            {
+                [mutsettings removeObjectForKey:key];
+            } else if ([key hasPrefix:@"Saved Window State —> Internal —> "]) {
+                /* While we are going through the list, also remove window frames. */
+                
+                [mutsettings removeObjectForKey:key];
+            }
+        }
 
-		/* Custom filter. */
-		/* Some settings such as log folder scoped bookmark cannot be exported/imported so we will
-		 drop that from our exported dictionary. Other things that cannot be handled is the main 
-		 window frame. Also, any custom styles. */
-		[mutsettings removeObjectForKey:@"LogTranscriptDestinationSecurityBookmark"];
+        /* Custom filter. */
+        /* Some settings such as log folder scoped bookmark cannot be exported/imported so we will
+         drop that from our exported dictionary. Other things that cannot be handled is the main 
+         window frame. Also, any custom styles. */
+        [mutsettings removeObjectForKey:@"LogTranscriptDestinationSecurityBookmark"];
 
-		/* Is it custom style? */
-		NSString *themeName = [settings objectForKey:@"Theme -> Name"];
+        /* Is it custom style? */
+        NSString *themeName = [settings objectForKey:@"Theme -> Name"];
 
-		if ([themeName hasPrefix:@"resource:"] == NO) { // It is custom.
-			[mutsettings removeObjectForKey:@"Theme -> Name"];
-		}
-	}
+        if ([themeName hasPrefix:@"resource:"] == NO) { // It is custom.
+            [mutsettings removeObjectForKey:@"Theme -> Name"];
+        }
+    }
 
-	/* The export will be saved as binary. Two reasons: 1) Discourages user from
-	 trying to tamper with stuff. 2) Smaller, faster. Mostly #1. */
-	NSString *parseError;
+    /* The export will be saved as binary. Two reasons: 1) Discourages user from
+     trying to tamper with stuff. 2) Smaller, faster. Mostly #1. */
+    NSString *parseError;
 
-	/* Create the new property list. */
-	NSData *plist = [NSPropertyListSerialization dataFromPropertyList:mutsettings
-															   format:NSPropertyListBinaryFormat_v1_0
-													 errorDescription:&parseError];
+    /* Create the new property list. */
+    NSData *plist = [NSPropertyListSerialization dataFromPropertyList:mutsettings
+                                                               format:NSPropertyListBinaryFormat_v1_0
+                                                     errorDescription:&parseError];
 
-	/* Do the actual write. */
-	if (NSObjectIsEmpty(plist) || parseError) {
-		LogToConsole(@"Error Creating Property List: %@", parseError);
-		
-		return NO;
-	} else {
-		BOOL writeResult = [plist writeToURL:pathURL atomically:YES];
+    /* Do the actual write. */
+    if (NSObjectIsEmpty(plist) || parseError) {
+        LogToConsole(@"Error Creating Property List: %@", parseError);
+        
+        return NO;
+    } else {
+        BOOL writeResult = [plist writeToURL:pathURL atomically:YES];
 
-		if (writeResult == NO) {
-			LogToConsole(@"Write failed.");
+        if (writeResult == NO) {
+            LogToConsole(@"Write failed.");
 
-			return NO;
-		}
-	}
+            return NO;
+        }
+    }
 
-	return YES;
+    return YES;
 }
 
 /* Open sheet. */
 + (void)export
 {
-	/* Pop open panel. An open panel is used instead of save panel because we only
-	 want the user selecting a folder, nothing else. */
-	NSSavePanel *d = [NSSavePanel savePanel];
+    /* Pop open panel. An open panel is used instead of save panel because we only
+     want the user selecting a folder, nothing else. */
+    NSSavePanel *d = [NSSavePanel savePanel];
 
-	[d setCanCreateDirectories:YES];
-	[d setNameFieldStringValue:@"TextualPrefrences.plist"];
+    [d setCanCreateDirectories:YES];
+    [d setNameFieldStringValue:@"TextualPrefrences.plist"];
 
-	[d setMessage:TXTLS(@"PreferencesExportSaveLocationDialogMessage")];
+    [d setMessage:TXTLS(@"PreferencesExportSaveLocationDialogMessage")];
 
-	[d beginWithCompletionHandler:^(NSInteger returnCode) {
-		if (returnCode == NSOKButton) {
-			(void)[self exportPostflightForURL:d.URL filterJunk:YES];
-		}
-	}];
+    [d beginWithCompletionHandler:^(NSInteger returnCode) {
+        if (returnCode == NSOKButton) {
+            (void)[self exportPostflightForURL:d.URL filterJunk:YES];
+        }
+    }];
 }
 
 @end

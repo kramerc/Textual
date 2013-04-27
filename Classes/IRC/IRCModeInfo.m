@@ -41,7 +41,7 @@
 
 + (IRCModeInfo *)modeInfo
 {
-	return [IRCModeInfo new];
+    return [IRCModeInfo new];
 }
 
 @end

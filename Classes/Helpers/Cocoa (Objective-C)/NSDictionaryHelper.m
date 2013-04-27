@@ -41,166 +41,166 @@
 
 - (BOOL)boolForKey:(NSString *)key
 {
-	id obj = self[key];
-	
-	if ([obj respondsToSelector:@selector(boolValue)]) {
-		return [obj boolValue];
-	}
-	
-	return NO;
+    id obj = self[key];
+    
+    if ([obj respondsToSelector:@selector(boolValue)]) {
+        return [obj boolValue];
+    }
+    
+    return NO;
 }
 
 - (NSInteger)integerForKey:(NSString *)key
 {
-	id obj = self[key];
-	
-	if ([obj respondsToSelector:@selector(integerValue)]) {
-		return [obj integerValue];
-	}
-	
-	return 0;
+    id obj = self[key];
+    
+    if ([obj respondsToSelector:@selector(integerValue)]) {
+        return [obj integerValue];
+    }
+    
+    return 0;
 }
 
 - (long long)longLongForKey:(NSString *)key
 {
-	id obj = self[key];
-	
-	if ([obj respondsToSelector:@selector(longLongValue)]) {
-		return [obj longLongValue];
-	}
-	
-	return 0;
+    id obj = self[key];
+    
+    if ([obj respondsToSelector:@selector(longLongValue)]) {
+        return [obj longLongValue];
+    }
+    
+    return 0;
 }
 
 - (TXNSDouble)doubleForKey:(NSString *)key
 {
-	id obj = self[key];
-	
-	if ([obj respondsToSelector:@selector(doubleValue)]) {
-		return [obj doubleValue];
-	}
-	
-	return 0;
+    id obj = self[key];
+    
+    if ([obj respondsToSelector:@selector(doubleValue)]) {
+        return [obj doubleValue];
+    }
+    
+    return 0;
 }
 
 - (NSString *)stringForKey:(NSString *)key
 {
-	id obj = self[key];
-	
-	if ([obj isKindOfClass:[NSString class]]) {
-		return obj;
-	}
-	
-	return nil;
+    id obj = self[key];
+    
+    if ([obj isKindOfClass:[NSString class]]) {
+        return obj;
+    }
+    
+    return nil;
 }
 
 - (NSDictionary *)dictionaryForKey:(NSString *)key
 {
-	id obj = self[key];
-	
-	if ([obj isKindOfClass:[NSDictionary class]]) {
-		return obj;
-	}
-	
-	return nil;
+    id obj = self[key];
+    
+    if ([obj isKindOfClass:[NSDictionary class]]) {
+        return obj;
+    }
+    
+    return nil;
 }
 
 - (NSArray *)arrayForKey:(NSString *)key
 {
-	id obj = self[key];
-	
-	if ([obj isKindOfClass:[NSArray class]]) {
-		return obj;
-	}
-	
-	return nil;
+    id obj = self[key];
+    
+    if ([obj isKindOfClass:[NSArray class]]) {
+        return obj;
+    }
+    
+    return nil;
 }
 
 - (void *)pointerForKey:(NSString *)key
 {
-	id obj = self[key];
-	
-	if ([obj isKindOfClass:[NSValue class]]) {
-		return [obj pointerValue];
-	}
-	
-	return nil;
+    id obj = self[key];
+    
+    if ([obj isKindOfClass:[NSValue class]]) {
+        return [obj pointerValue];
+    }
+    
+    return nil;
 }
 
 - (BOOL)containsKey:(NSString *)baseKey
-{	
-	return [self.allKeys containsObject:baseKey];
+{   
+    return [self.allKeys containsObject:baseKey];
 }
-	
+    
 - (BOOL)containsKeyIgnoringCase:(NSString *)baseKey
 {
-	return NSObjectIsNotEmpty([self keyIgnoringCase:baseKey]);
+    return NSObjectIsNotEmpty([self keyIgnoringCase:baseKey]);
 }
 
 - (NSString *)firstKeyForObject:(id)object
 {
-	for (NSString *key in [self allKeys]) {
-		if ([object isEqual:self[key]]) {
-			return key;
-		}
-	}
+    for (NSString *key in [self allKeys]) {
+        if ([object isEqual:self[key]]) {
+            return key;
+        }
+    }
 
-	return nil;
+    return nil;
 }
 
 - (NSString *)keyIgnoringCase:(NSString *)baseKey
 {
-	for (NSString *key in [self allKeys]) {
-		if ([key isEqualIgnoringCase:baseKey]) {
-			return key;
-		} 
-	}
-	
-	return nil;
+    for (NSString *key in [self allKeys]) {
+        if ([key isEqualIgnoringCase:baseKey]) {
+            return key;
+        } 
+    }
+    
+    return nil;
 }
 
 - (id)sortedDictionary
 {
-	return [self sortedDictionary:NO];
+    return [self sortedDictionary:NO];
 }
 
 - (id)sortedReversedDictionary
 {
-	return [self sortedDictionary:YES];
+    return [self sortedDictionary:YES];
 }
 
 - (NSArray *)sortedDictionaryKeys
 {
-	return [self sortedDictionaryKeys:NO];
+    return [self sortedDictionaryKeys:NO];
 }
 
 - (NSArray *)sortedDictionaryReversedKeys
 {
-	return [self sortedDictionaryKeys:YES];
+    return [self sortedDictionaryKeys:YES];
 }
 
 - (NSArray *)sortedDictionaryKeys:(BOOL)reversed
 {
-	NSArray *keys = [self.allKeys sortedArrayUsingSelector:@selector(compare:)];
-	
-	if (reversed) {
-		return keys.reverseObjectEnumerator.allObjects;
-	}
+    NSArray *keys = [self.allKeys sortedArrayUsingSelector:@selector(compare:)];
+    
+    if (reversed) {
+        return keys.reverseObjectEnumerator.allObjects;
+    }
 
-	return keys;
+    return keys;
 }
 
 - (id)sortedDictionary:(BOOL)reversed
 {
-	NSArray *sortedKeys = [self sortedDictionaryKeys:reversed];
+    NSArray *sortedKeys = [self sortedDictionaryKeys:reversed];
 
-	NSMutableDictionary *newDict = [NSMutableDictionary dictionary];
+    NSMutableDictionary *newDict = [NSMutableDictionary dictionary];
 
-	for (NSString *key in sortedKeys) {
-		newDict[key] = self[key];
-	}
+    for (NSString *key in sortedKeys) {
+        newDict[key] = self[key];
+    }
 
-	return newDict;
+    return newDict;
 }
 
 @end
@@ -209,41 +209,41 @@
 
 - (void)safeSetObject:(id)value forKey:(NSString *)key
 {
-	if (PointerIsNotEmpty(value)) {
-		self[key] = value;
-	}
+    if (PointerIsNotEmpty(value)) {
+        self[key] = value;
+    }
 }
 
 - (void)safeSetObjectWithoutOverride:(id)value forKey:(NSString *)key
 {
-	if (PointerIsNotEmpty(value) && [self containsKey:key] == NO) {
-		self[key] = value;
-	}
+    if (PointerIsNotEmpty(value) && [self containsKey:key] == NO) {
+        self[key] = value;
+    }
 }
 
 - (void)setBool:(BOOL)value forKey:(NSString *)key
 {
-	[self safeSetObject:@(value) forKey:key];
+    [self safeSetObject:@(value) forKey:key];
 }
 
 - (void)setInteger:(NSInteger)value forKey:(NSString *)key
 {
-	[self safeSetObject:@(value) forKey:key];
+    [self safeSetObject:@(value) forKey:key];
 }
 
 - (void)setLongLong:(long long)value forKey:(NSString *)key
 {
-	[self safeSetObject:@(value) forKey:key];
+    [self safeSetObject:@(value) forKey:key];
 }
 
 - (void)setDouble:(TXNSDouble)value forKey:(NSString *)key
 {
-	[self safeSetObject:@(value) forKey:key];
+    [self safeSetObject:@(value) forKey:key];
 }
 
 - (void)setPointer:(void *)value forKey:(NSString *)key
 {
-	[self safeSetObject:[NSValue valueWithPointer:value] forKey:key];
+    [self safeSetObject:[NSValue valueWithPointer:value] forKey:key];
 }
 
 @end

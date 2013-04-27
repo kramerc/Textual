@@ -38,10 +38,10 @@
 #import "IRCTreeItem.h" // superclass
 
 typedef enum IRCChannelStatus : NSInteger {
-	IRCChannelParted,
-	IRCChannelJoining,
-	IRCChannelJoined,
-	IRCChannelTerminated,
+    IRCChannelParted,
+    IRCChannelJoining,
+    IRCChannelJoined,
+    IRCChannelTerminated,
 } IRCChannelStatus;
 
 @interface IRCChannel : IRCTreeItem

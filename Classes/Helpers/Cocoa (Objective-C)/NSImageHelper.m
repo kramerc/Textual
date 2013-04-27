@@ -41,7 +41,7 @@
 
 + (NSImage *)newImageWithSize:(NSSize)size
 {
-	return [[NSImage alloc] initWithSize:size];
+    return [[NSImage alloc] initWithSize:size];
 }
 
 @end

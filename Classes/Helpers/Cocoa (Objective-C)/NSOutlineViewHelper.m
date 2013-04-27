@@ -41,59 +41,59 @@
 
 - (NSInteger)countSelectedRows
 {
-	return self.selectedRowIndexes.count;
+    return self.selectedRowIndexes.count;
 }
 
 - (void)selectItemAtIndex:(NSInteger)index
 {
-	[self selectRowIndexes:[NSIndexSet indexSetWithIndex:index] byExtendingSelection:NO];
-	
-	[self scrollRowToVisible:index];
+    [self selectRowIndexes:[NSIndexSet indexSetWithIndex:index] byExtendingSelection:NO];
+    
+    [self scrollRowToVisible:index];
 }
 
 - (BOOL)isGroupItem:(id)item
 {
-	return ([self levelForItem:item] == 0);
+    return ([self levelForItem:item] == 0);
 }
 
 - (NSArray *)groupItems
 {
-	NSMutableArray *groups = [NSMutableArray array];
-	
-	for (NSInteger i = 0; i < [self numberOfRows]; i++) {
-		id curRow = [self itemAtRow:i];
-		
-		if ([self isGroupItem:curRow]) {
-			[groups safeAddObject:curRow];
-		}
-	}
-	
-	return groups;
+    NSMutableArray *groups = [NSMutableArray array];
+    
+    for (NSInteger i = 0; i < [self numberOfRows]; i++) {
+        id curRow = [self itemAtRow:i];
+        
+        if ([self isGroupItem:curRow]) {
+            [groups safeAddObject:curRow];
+        }
+    }
+    
+    return groups;
 }
 
 - (NSArray *)rowsFromParentGroup:(id)child
 {
-	if ([self isGroupItem:child] == NO) {
-		child = [self parentForItem:child];
-	}
-	
-	return [self rowsInGroup:child];
+    if ([self isGroupItem:child] == NO) {
+        child = [self parentForItem:child];
+    }
+    
+    return [self rowsInGroup:child];
 }
 
 - (NSArray *)rowsInGroup:(id)group
 {
-	NSMutableArray *allRows = [NSMutableArray array];
-	
-	for (NSInteger i = 0; i < [self numberOfRows]; i++) {
-		id curent = [self itemAtRow:i];
-		id parent = [self parentForItem:curent];
+    NSMutableArray *allRows = [NSMutableArray array];
+    
+    for (NSInteger i = 0; i < [self numberOfRows]; i++) {
+        id curent = [self itemAtRow:i];
+        id parent = [self parentForItem:curent];
 
-		if ([parent isEqual:group]) {
-			[allRows safeAddObject:curent];
-		}
-	}
-	
-	return allRows;
+        if ([parent isEqual:group]) {
+            [allRows safeAddObject:curent];
+        }
+    }
+    
+    return allRows;
 }
 
 @end

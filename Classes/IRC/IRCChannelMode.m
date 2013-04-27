@@ -45,169 +45,169 @@
 
 - (id)init
 {
-	if ((self = [super init])) {
-		self.allModes = [NSMutableDictionary dictionary];
-	}
+    if ((self = [super init])) {
+        self.allModes = [NSMutableDictionary dictionary];
+    }
 
-	return self;
+    return self;
 }
 
 - (id)initWithChannelMode:(IRCChannelMode *)other
 {
-	if ((self = [super init])) {
-		self.isupport = other.isupport;
-		self.allModes = other.allModes;
+    if ((self = [super init])) {
+        self.isupport = other.isupport;
+        self.allModes = other.allModes;
 
-		return self;
-	}
+        return self;
+    }
 
-	return nil;
+    return nil;
 }
 
 - (void)clear
 {
-	[self.allModes removeAllObjects];
+    [self.allModes removeAllObjects];
 }
 
 - (NSDictionary *)modeInformation
 {
-	return self.allModes;
+    return self.allModes;
 }
 
 - (NSArray *)badModes
 {
-	return @[@"q", @"a", @"o", @"h", @"v", @"b", @"e", @"I"];
+    return @[@"q", @"a", @"o", @"h", @"v", @"b", @"e", @"I"];
 }
 
 - (NSArray *)update:(NSString *)str
 {
-	NSArray *ary = [self.isupport parseMode:str];
+    NSArray *ary = [self.isupport parseMode:str];
 
-	for (IRCModeInfo *h in ary) {
-		if ([self.badModes containsObject:h.modeToken]) {
-			continue;
-		}
-		
-		[self.allModes safeSetObject:h forKey:h.modeToken];
-	}
+    for (IRCModeInfo *h in ary) {
+        if ([self.badModes containsObject:h.modeToken]) {
+            continue;
+        }
+        
+        [self.allModes safeSetObject:h forKey:h.modeToken];
+    }
 
-	return ary;
+    return ary;
 }
 
 - (NSString *)getChangeCommand:(IRCChannelMode *)mode
 {
-	NSMutableString *frstr = [NSMutableString string];
-	NSMutableString *trail = [NSMutableString string];
-	NSMutableString *track = [NSMutableString string];
+    NSMutableString *frstr = [NSMutableString string];
+    NSMutableString *trail = [NSMutableString string];
+    NSMutableString *track = [NSMutableString string];
 
-	NSArray *modes = mode.modeInformation.sortedDictionaryKeys;
+    NSArray *modes = mode.modeInformation.sortedDictionaryKeys;
 
-	/* Build the removals first. */
-	for (NSString *mkey in modes) {
-		IRCModeInfo *h = [mode.allModes objectForKey:mkey];
+    /* Build the removals first. */
+    for (NSString *mkey in modes) {
+        IRCModeInfo *h = [mode.allModes objectForKey:mkey];
 
-		if (h.modeIsSet) {
-			if (NSObjectIsNotEmpty(h.modeParamater)) {
-				[trail appendFormat:@" %@", h.modeParamater];
-			}
+        if (h.modeIsSet) {
+            if (NSObjectIsNotEmpty(h.modeParamater)) {
+                [trail appendFormat:@" %@", h.modeParamater];
+            }
 
-			[track appendString:h.modeToken];
+            [track appendString:h.modeToken];
 
-			if ([h.modeToken isEqualToString:@"k"]) {
-				h.modeParamater = NSStringEmptyPlaceholder;
-			} else {
-				if ([h.modeToken isEqualToString:@"l"]) {
-					h.modeParamater = 0;
-				}
-			}
-		}
-	}
+            if ([h.modeToken isEqualToString:@"k"]) {
+                h.modeParamater = NSStringEmptyPlaceholder;
+            } else {
+                if ([h.modeToken isEqualToString:@"l"]) {
+                    h.modeParamater = 0;
+                }
+            }
+        }
+    }
 
-	if (track) {
-		[frstr appendString:@"+"];
-		[frstr appendString:track];
+    if (track) {
+        [frstr appendString:@"+"];
+        [frstr appendString:track];
 
-		[track setString:NSStringEmptyPlaceholder];
-	}
+        [track setString:NSStringEmptyPlaceholder];
+    }
 
-	/* Build the additions next. */
-	for (NSString *mkey in modes) {
-		IRCModeInfo *h = [mode.allModes objectForKey:mkey];
+    /* Build the additions next. */
+    for (NSString *mkey in modes) {
+        IRCModeInfo *h = [mode.allModes objectForKey:mkey];
 
-		if (h.modeIsSet == NO) {
-			if (NSObjectIsNotEmpty(h.modeParamater)) {
-				[trail appendFormat:@" %@", h.modeParamater];
-			}
+        if (h.modeIsSet == NO) {
+            if (NSObjectIsNotEmpty(h.modeParamater)) {
+                [trail appendFormat:@" %@", h.modeParamater];
+            }
 
-			[track appendString:h.modeToken];
-		}
-	}
-	
-	if (track) {
-		[frstr appendString:@"-"];
-		[frstr appendString:track];
-	}
+            [track appendString:h.modeToken];
+        }
+    }
+    
+    if (track) {
+        [frstr appendString:@"-"];
+        [frstr appendString:track];
+    }
 
-	return [frstr stringByAppendingString:trail];
+    return [frstr stringByAppendingString:trail];
 }
 
 - (BOOL)modeIsDefined:(NSString *)mode
 {
-	return [self.allModes containsKey:mode];
+    return [self.allModes containsKey:mode];
 }
 
 - (IRCModeInfo *)modeInfoFor:(NSString *)mode
 {
-	if ([self modeIsDefined:mode] == NO) {
-		IRCModeInfo *m = [self.isupport createMode:mode];
+    if ([self modeIsDefined:mode] == NO) {
+        IRCModeInfo *m = [self.isupport createMode:mode];
 
-		[self.allModes safeSetObject:m forKey:mode];
-	}
+        [self.allModes safeSetObject:m forKey:mode];
+    }
 
-	return [self.allModes objectForKey:mode];
+    return [self.allModes objectForKey:mode];
 }
 
 - (NSString *)format:(BOOL)maskK
 {
-	NSMutableString *frstr = [NSMutableString string];
-	NSMutableString *trail = [NSMutableString string];
+    NSMutableString *frstr = [NSMutableString string];
+    NSMutableString *trail = [NSMutableString string];
 
-	[frstr appendString:@"+"];
+    [frstr appendString:@"+"];
 
-	NSArray *modes = self.allModes.sortedDictionaryKeys;
+    NSArray *modes = self.allModes.sortedDictionaryKeys;
 
-	for (NSString *mkey in modes) {
-		IRCModeInfo *h = [self.allModes objectForKey:mkey];
+    for (NSString *mkey in modes) {
+        IRCModeInfo *h = [self.allModes objectForKey:mkey];
 
-		if (h.modeIsSet) {
-			if (h.modeParamater && maskK == NO) {
-				if ([h.modeToken isEqualToString:@"k"]) {
-					[trail appendFormat:@" ******"];
-				} else {
-					[trail appendFormat:@" %@", h.modeParamater];
-				}
-			}
+        if (h.modeIsSet) {
+            if (h.modeParamater && maskK == NO) {
+                if ([h.modeToken isEqualToString:@"k"]) {
+                    [trail appendFormat:@" ******"];
+                } else {
+                    [trail appendFormat:@" %@", h.modeParamater];
+                }
+            }
 
-			[frstr appendFormat:@"%@", h.modeToken];
-		}
-	}
+            [frstr appendFormat:@"%@", h.modeToken];
+        }
+    }
 
-	return [frstr stringByAppendingString:trail];
+    return [frstr stringByAppendingString:trail];
 }
 
 - (NSString *)string
 {
-	return [self format:NO];
+    return [self format:NO];
 }
 
 - (NSString *)titleString
 {
-	return [self format:YES];
+    return [self format:YES];
 }
 
 - (id)mutableCopyWithZone:(NSZone *)zone
 {
-	return [[IRCChannelMode allocWithZone:zone] initWithChannelMode:self];
+    return [[IRCChannelMode allocWithZone:zone] initWithChannelMode:self];
 }
 
 @end

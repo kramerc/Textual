@@ -41,12 +41,12 @@
  
 + (NSTimeInterval)secondsSinceUnixTimestamp:(NSTimeInterval)stamp
 {
-	return ([self epochTime] - stamp);
+    return ([self epochTime] - stamp);
 }
 
 + (NSTimeInterval)epochTime
 {
-	return [[NSDate date] timeIntervalSince1970];
+    return [[NSDate date] timeIntervalSince1970];
 }
 
 @end

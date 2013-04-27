@@ -44,7 +44,7 @@
 
 - (NSInteger)countSelectedRows
 {
-	return self.selectedRowIndexes.count;
+    return self.selectedRowIndexes.count;
 }
 
 - (NSArray *)selectedRows
@@ -52,59 +52,59 @@
     NSMutableArray *allRows = [NSMutableArray array];
     
     NSIndexSet *indexes = [self selectedRowIndexes];
-	
-	for (NSNumber *index in [indexes arrayFromIndexSet]) {
-		[allRows safeAddObject:index];
-	}
+    
+    for (NSNumber *index in [indexes arrayFromIndexSet]) {
+        [allRows safeAddObject:index];
+    }
     
     return allRows;
 }
 
 - (void)selectItemAtIndex:(NSInteger)index
 {
-	[self selectRowIndexes:[NSIndexSet indexSetWithIndex:index] byExtendingSelection:NO];
-	
-	[self scrollRowToVisible:index];
+    [self selectRowIndexes:[NSIndexSet indexSetWithIndex:index] byExtendingSelection:NO];
+    
+    [self scrollRowToVisible:index];
 }
 
 - (void)selectRows:(NSArray *)indices
 {
-	[self selectRows:indices extendSelection:NO];
+    [self selectRows:indices extendSelection:NO];
 }
 
 - (void)selectRows:(NSArray *)indices extendSelection:(BOOL)extend
 {
-	NSMutableIndexSet *set = [NSMutableIndexSet indexSet];
-	
-	for (NSNumber *n in indices) {
-		[set addIndex:[n integerValue]];
-	}
-	
-	[self selectRowIndexes:set byExtendingSelection:extend];
+    NSMutableIndexSet *set = [NSMutableIndexSet indexSet];
+    
+    for (NSNumber *n in indices) {
+        [set addIndex:[n integerValue]];
+    }
+    
+    [self selectRowIndexes:set byExtendingSelection:extend];
 }
 
 - (void)rightMouseDown:(NSEvent *)e
 {
-	NSPoint p = [self convertPoint:e.locationInWindow fromView:nil];
-	
-	NSInteger i = [self rowAtPoint:p];
-	
-	if (i >= 0) {
-		if ([self.selectedRowIndexes containsIndex:i] == NO) {
-			[self selectItemAtIndex:i];
-		}
-	}
-	
-	[super rightMouseDown:e];
+    NSPoint p = [self convertPoint:e.locationInWindow fromView:nil];
+    
+    NSInteger i = [self rowAtPoint:p];
+    
+    if (i >= 0) {
+        if ([self.selectedRowIndexes containsIndex:i] == NO) {
+            [self selectItemAtIndex:i];
+        }
+    }
+    
+    [super rightMouseDown:e];
 }
 
 - (void)textDidEndEditing:(NSNotification *)note
 {
-	if ([self.textEditingDelegate respondsToSelector:@selector(textDidEndEditing:)]) {
-		[self.textEditingDelegate textDidEndEditing:note];
-	} else {
-		[super textDidEndEditing:note];
-	}
+    if ([self.textEditingDelegate respondsToSelector:@selector(textDidEndEditing:)]) {
+        [self.textEditingDelegate textDidEndEditing:note];
+    } else {
+        [super textDidEndEditing:note];
+    }
 }
 
 @end

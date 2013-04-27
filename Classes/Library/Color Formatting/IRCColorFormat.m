@@ -37,9 +37,9 @@
 
 #import "TextualApplication.h"
 
-#define	_textTruncationPRIVMSGCommandConstant				14
-#define	_textTruncationACTIONCommandConstant				8
-#define	_textTruncationSpacePositionMaxDifferential			10
+#define _textTruncationPRIVMSGCommandConstant               14
+#define _textTruncationACTIONCommandConstant                8
+#define _textTruncationSpacePositionMaxDifferential         10
 
 @implementation NSAttributedString (IRCTextFormatter)
 
@@ -48,53 +48,53 @@
 
 - (NSString *)attributedStringToASCIIFormatting
 {
-	NSString *realBody = self.string;
-	
-	NSMutableString *result = [NSMutableString string];
-	
-	NSRange effectiveRange;
-	NSRange limitRange = NSMakeRange(0, [self length]);
-	
-	while (limitRange.length > 0) {
-		NSDictionary *dict = [self safeAttributesAtIndex:limitRange.location longestEffectiveRange:&effectiveRange inRange:limitRange];
+    NSString *realBody = self.string;
+    
+    NSMutableString *result = [NSMutableString string];
+    
+    NSRange effectiveRange;
+    NSRange limitRange = NSMakeRange(0, [self length]);
+    
+    while (limitRange.length > 0) {
+        NSDictionary *dict = [self safeAttributesAtIndex:limitRange.location longestEffectiveRange:&effectiveRange inRange:limitRange];
 
-		NSInteger foregroundColor = [TVCLogRenderer mapColorValue:dict[NSForegroundColorAttributeName]];
-		NSInteger backgroundColor = [TVCLogRenderer mapColorValue:dict[NSBackgroundColorAttributeName]];
+        NSInteger foregroundColor = [TVCLogRenderer mapColorValue:dict[NSForegroundColorAttributeName]];
+        NSInteger backgroundColor = [TVCLogRenderer mapColorValue:dict[NSBackgroundColorAttributeName]];
         
         NSNumber *foregroundNumber = @(foregroundColor);
         NSNumber *backgroundNumber = @(backgroundColor);
-		
-		BOOL color = (foregroundColor >= 0 && foregroundColor <= 15);
+        
+        BOOL color = (foregroundColor >= 0 && foregroundColor <= 15);
         
         NSFont *baseFont = dict[NSFontAttributeName];
-		
-		BOOL boldText       = [baseFont fontTraitSet:NSBoldFontMask];
-		BOOL italicText     = [baseFont fontTraitSet:NSItalicFontMask];
-		BOOL underlineText  = ([dict integerForKey:NSUnderlineStyleAttributeName] == 1);
-		
-		if (underlineText)  { [result appendFormat:@"%c", 0x1F]; }
-		if (italicText)     { [result appendFormat:@"%c", 0x16]; }
-		if (boldText)       { [result appendFormat:@"%c", 0x02]; }
-		
-		if (color) {
-			[result appendFormat:@"%c%@", 0x03, [foregroundNumber integerWithLeadingZero]];
-			
-			if (backgroundColor >= 0 && backgroundColor <= 15) {
-				[result appendFormat:@",%@", [backgroundNumber integerWithLeadingZero]];
-			}
-		}
-		
-		[result appendString:[realBody safeSubstringWithRange:effectiveRange]];
-		
-		if (color)          { [result appendFormat:@"%c", 0x03]; }
-		if (boldText)       { [result appendFormat:@"%c", 0x02]; }
-		if (italicText)     { [result appendFormat:@"%c", 0x16]; }
-		if (underlineText)  { [result appendFormat:@"%c", 0x1F]; }
-		
-		limitRange = NSMakeRange(NSMaxRange(effectiveRange), (NSMaxRange(limitRange) - NSMaxRange(effectiveRange)));
-	}		
-	
-	return result;
+        
+        BOOL boldText       = [baseFont fontTraitSet:NSBoldFontMask];
+        BOOL italicText     = [baseFont fontTraitSet:NSItalicFontMask];
+        BOOL underlineText  = ([dict integerForKey:NSUnderlineStyleAttributeName] == 1);
+        
+        if (underlineText)  { [result appendFormat:@"%c", 0x1F]; }
+        if (italicText)     { [result appendFormat:@"%c", 0x16]; }
+        if (boldText)       { [result appendFormat:@"%c", 0x02]; }
+        
+        if (color) {
+            [result appendFormat:@"%c%@", 0x03, [foregroundNumber integerWithLeadingZero]];
+            
+            if (backgroundColor >= 0 && backgroundColor <= 15) {
+                [result appendFormat:@",%@", [backgroundNumber integerWithLeadingZero]];
+            }
+        }
+        
+        [result appendString:[realBody safeSubstringWithRange:effectiveRange]];
+        
+        if (color)          { [result appendFormat:@"%c", 0x03]; }
+        if (boldText)       { [result appendFormat:@"%c", 0x02]; }
+        if (italicText)     { [result appendFormat:@"%c", 0x16]; }
+        if (underlineText)  { [result appendFormat:@"%c", 0x1F]; }
+        
+        limitRange = NSMakeRange(NSMaxRange(effectiveRange), (NSMaxRange(limitRange) - NSMaxRange(effectiveRange)));
+    }       
+    
+    return result;
 }
 
 - (NSString *)attributedStringToASCIIFormatting:(NSMutableAttributedString **)string 
@@ -103,213 +103,213 @@
                                        hostmask:(NSString *)host
 {
     NSMutableAttributedString *base = [*string copy];
-	
-	NSMutableString *result = [NSMutableString string];
+    
+    NSMutableString *result = [NSMutableString string];
     
     NSInteger startCharCount = 0;
-	NSInteger stopCharCount  = 0;
-	
-	/* ///////////////////////////////////////////////////// */
-	/* 
-	 Server level truncation does not count the total number of
-	 characters in the received message alone. It also accounts for
-	 everything that precedes it including the hostmask, channel name,
-	 and any other commands.
-	 
-	 Example: :<nickname>!<username>@<host> PRIVMSG #<channel> :<message>
-	 
-	 The following math takes into account this information. The static
-	 number of fourteen that we add to the math also accounts for the 
-	 PRIVMSG command, :, and additional spaces as part of the data we 
-	 are sending. We add an extra two as a buffer just to be safe.
-	 
-	 This method being called only is used for PRIVMSG so we do not have
-	 to worry about anything else. That is, unless it is an action. In that
-	 case, we simply add in a little more math. An ACTION accounts for eight 
-	 additional characters occupied. This math also adds an additional one
-	 character buffer same as the above mentioned math. 
-	 */
-	/* ///////////////////////////////////////////////////// */
-	
+    NSInteger stopCharCount  = 0;
+    
+    /* ///////////////////////////////////////////////////// */
+    /* 
+     Server level truncation does not count the total number of
+     characters in the received message alone. It also accounts for
+     everything that precedes it including the hostmask, channel name,
+     and any other commands.
+     
+     Example: :<nickname>!<username>@<host> PRIVMSG #<channel> :<message>
+     
+     The following math takes into account this information. The static
+     number of fourteen that we add to the math also accounts for the 
+     PRIVMSG command, :, and additional spaces as part of the data we 
+     are sending. We add an extra two as a buffer just to be safe.
+     
+     This method being called only is used for PRIVMSG so we do not have
+     to worry about anything else. That is, unless it is an action. In that
+     case, we simply add in a little more math. An ACTION accounts for eight 
+     additional characters occupied. This math also adds an additional one
+     character buffer same as the above mentioned math. 
+     */
+    /* ///////////////////////////////////////////////////// */
+    
     NSInteger baseMath = 0;
-	
-	baseMath += (chan.length + host.length);
-	baseMath += _textTruncationPRIVMSGCommandConstant; 
-	
-	if (type == TVCLogLineActionType) {
-		baseMath += _textTruncationACTIONCommandConstant;
-	}
-	
-	NSInteger totalCalculatedLength = 0;
-	NSInteger stringDeletionLength  = 0;
-	
-	NSRange effectiveRange;
-	NSRange limitRange = NSMakeRange(0, base.string.length);
-	
-	while (limitRange.length > 0) {
-		BOOL breakLoopAfterAppend = NO;
-		
-		totalCalculatedLength = 0;
-		
-		/* ///////////////////////////////////////////////////// */
-		/* Gather information about the attributes present and calculate the total
-		 number of invisible characters necessary to support them. This count will 
-		 then be added into our math to determine the length of our string without
-		 any formatting attached. */
-		/* ///////////////////////////////////////////////////// */
-		
-		NSDictionary *dict = [base safeAttributesAtIndex:limitRange.location longestEffectiveRange:&effectiveRange inRange:limitRange];
+    
+    baseMath += (chan.length + host.length);
+    baseMath += _textTruncationPRIVMSGCommandConstant; 
+    
+    if (type == TVCLogLineActionType) {
+        baseMath += _textTruncationACTIONCommandConstant;
+    }
+    
+    NSInteger totalCalculatedLength = 0;
+    NSInteger stringDeletionLength  = 0;
+    
+    NSRange effectiveRange;
+    NSRange limitRange = NSMakeRange(0, base.string.length);
+    
+    while (limitRange.length > 0) {
+        BOOL breakLoopAfterAppend = NO;
+        
+        totalCalculatedLength = 0;
+        
+        /* ///////////////////////////////////////////////////// */
+        /* Gather information about the attributes present and calculate the total
+         number of invisible characters necessary to support them. This count will 
+         then be added into our math to determine the length of our string without
+         any formatting attached. */
+        /* ///////////////////////////////////////////////////// */
+        
+        NSDictionary *dict = [base safeAttributesAtIndex:limitRange.location longestEffectiveRange:&effectiveRange inRange:limitRange];
 
-		NSInteger foregroundColor = [TVCLogRenderer mapColorValue:dict[NSForegroundColorAttributeName]];
-		NSInteger backgroundColor = [TVCLogRenderer mapColorValue:dict[NSBackgroundColorAttributeName]];
+        NSInteger foregroundColor = [TVCLogRenderer mapColorValue:dict[NSForegroundColorAttributeName]];
+        NSInteger backgroundColor = [TVCLogRenderer mapColorValue:dict[NSBackgroundColorAttributeName]];
 
         NSNumber *foregroundNumber = @(foregroundColor);
         NSNumber *backgroundNumber = @(backgroundColor);
         
         NSFont *baseFont = dict[NSFontAttributeName];
-		
-		BOOL foregroundColorD = (foregroundColor >= 0 && foregroundColor <= 15);
+        
+        BOOL foregroundColorD = (foregroundColor >= 0 && foregroundColor <= 15);
         BOOL backgroundColorD = (backgroundColor >= 0 && backgroundColor <= 15);
-		
-		BOOL boldText       = [baseFont fontTraitSet:NSBoldFontMask];
-		BOOL italicText     = [baseFont fontTraitSet:NSItalicFontMask];
-		BOOL underlineText  = ([dict integerForKey:NSUnderlineStyleAttributeName] == 1);
-		
+        
+        BOOL boldText       = [baseFont fontTraitSet:NSBoldFontMask];
+        BOOL italicText     = [baseFont fontTraitSet:NSItalicFontMask];
+        BOOL underlineText  = ([dict integerForKey:NSUnderlineStyleAttributeName] == 1);
+        
         if (italicText)         { startCharCount += 1; stopCharCount += 1; }
         if (underlineText)      { startCharCount += 1; stopCharCount += 1; }
         if (underlineText)      { startCharCount += 1; stopCharCount += 1; }
         if (foregroundColorD)   { startCharCount += 3; stopCharCount += 1; }
         if (backgroundColorD)   { startCharCount += 3; }
-		
-		NSInteger formattingCharacterCount = (startCharCount + stopCharCount);
-		
-		/* ///////////////////////////////////////////////////// */
-		/* Now that we know the length of our message prefix and the total number
-		 of characters required to support formatting we can start building up our
-		 formatted string value containing our ASCII characters. */
-		/* ///////////////////////////////////////////////////// */
-		
-		NSString *cake = NSStringEmptyPlaceholder; // this variable name tells you a lot…
-		
-		NSInteger newLength = 0;
-		
-		/* Calculate our total length of our string minus any formatting. */
-		if (effectiveRange.location == 0) { // Handle the legnth for the beginning of our string.
-			newLength = (baseMath + effectiveRange.length + formattingCharacterCount);
-			
-			if (newLength >= TXMaximumIRCBodyLength) { 
-				breakLoopAfterAppend = YES;
-				
-				newLength = (TXMaximumIRCBodyLength - (baseMath + formattingCharacterCount));
-				
-				totalCalculatedLength = newLength;
-			} 
-		} else { // Length calculations for the middle of our string.
-			// Sally sold seashells down by the seashore.
-			//        |----------------------| <--- section we have to find
-			
-			newLength = (stringDeletionLength		+		// Length of already parsed segments.
-						 effectiveRange.length		+		// Our own length.
-						 formattingCharacterCount	+		// Our formatting characters.
-						 baseMath);							// Lastly, our base length.
-			
-			if (newLength >= TXMaximumIRCBodyLength) {
-				newLength = (TXMaximumIRCBodyLength - (baseMath + formattingCharacterCount + stringDeletionLength));
-				
-				if (newLength <= 0) {
-					/* If our new length would reduce our substringed cake to nothing,
-					 then we simply break the loop because there is nothing more we 
-					 can do at this point. */
-					
-					break;
-				}
-				
-				totalCalculatedLength = newLength;
-				
-				breakLoopAfterAppend = YES;
-			} 
-		}
-		
-		/* If our calculated string length is still nil, then just
-		 assume we did not have to make any calculations to fix it
-		 within the context of our maximum message length limit. 
-		 There is no other way it would be nil as we would have 
-		 broken the loop for any errors that might have happened
-		 prior to reaching this point. */
-		
-		if (totalCalculatedLength == 0) { 
-			totalCalculatedLength = effectiveRange.length;
-		}
-		
-		/* See? "cake" was a poor variable name for us. You would have never
-		 guessed it was going to be assigned to the substringed value. */
-		cake = [base.string safeSubstringWithRange:NSMakeRange(effectiveRange.location, totalCalculatedLength)];
-		
-		//DebugLogToConsole(@"cake: %@\nLength: %i", cake, totalCalculatedLength);
-		
-		/* Truncate at first available space as long as it is within range. */
-		if (breakLoopAfterAppend && cake.length >= _textTruncationSpacePositionMaxDifferential) {
-			NSRange spaceCharSearchBase = NSMakeRange((cake.length - _textTruncationSpacePositionMaxDifferential),
-																	 _textTruncationSpacePositionMaxDifferential);
-			
-			NSRange spaceChar = [cake rangeOfCharacterFromSet:[NSCharacterSet whitespaceCharacterSet]
-													  options:NSBackwardsSearch
-														range:spaceCharSearchBase];
-			
-			//DebugLogToConsole(@"spaceCharacter: %@", NSStringFromRange(spaceChar));
-			
-			if (NSDissimilarObjects(spaceChar.location, NSNotFound)) {
-				totalCalculatedLength = spaceChar.location;
-				
-				cake = [base.string safeSubstringWithRange:NSMakeRange(effectiveRange.location, totalCalculatedLength)];
+        
+        NSInteger formattingCharacterCount = (startCharCount + stopCharCount);
+        
+        /* ///////////////////////////////////////////////////// */
+        /* Now that we know the length of our message prefix and the total number
+         of characters required to support formatting we can start building up our
+         formatted string value containing our ASCII characters. */
+        /* ///////////////////////////////////////////////////// */
+        
+        NSString *cake = NSStringEmptyPlaceholder; // this variable name tells you a lot…
+        
+        NSInteger newLength = 0;
+        
+        /* Calculate our total length of our string minus any formatting. */
+        if (effectiveRange.location == 0) { // Handle the legnth for the beginning of our string.
+            newLength = (baseMath + effectiveRange.length + formattingCharacterCount);
+            
+            if (newLength >= TXMaximumIRCBodyLength) { 
+                breakLoopAfterAppend = YES;
+                
+                newLength = (TXMaximumIRCBodyLength - (baseMath + formattingCharacterCount));
+                
+                totalCalculatedLength = newLength;
+            } 
+        } else { // Length calculations for the middle of our string.
+            // Sally sold seashells down by the seashore.
+            //        |----------------------| <--- section we have to find
+            
+            newLength = (stringDeletionLength       +       // Length of already parsed segments.
+                         effectiveRange.length      +       // Our own length.
+                         formattingCharacterCount   +       // Our formatting characters.
+                         baseMath);                         // Lastly, our base length.
+            
+            if (newLength >= TXMaximumIRCBodyLength) {
+                newLength = (TXMaximumIRCBodyLength - (baseMath + formattingCharacterCount + stringDeletionLength));
+                
+                if (newLength <= 0) {
+                    /* If our new length would reduce our substringed cake to nothing,
+                     then we simply break the loop because there is nothing more we 
+                     can do at this point. */
+                    
+                    break;
+                }
+                
+                totalCalculatedLength = newLength;
+                
+                breakLoopAfterAppend = YES;
+            } 
+        }
+        
+        /* If our calculated string length is still nil, then just
+         assume we did not have to make any calculations to fix it
+         within the context of our maximum message length limit. 
+         There is no other way it would be nil as we would have 
+         broken the loop for any errors that might have happened
+         prior to reaching this point. */
+        
+        if (totalCalculatedLength == 0) { 
+            totalCalculatedLength = effectiveRange.length;
+        }
+        
+        /* See? "cake" was a poor variable name for us. You would have never
+         guessed it was going to be assigned to the substringed value. */
+        cake = [base.string safeSubstringWithRange:NSMakeRange(effectiveRange.location, totalCalculatedLength)];
+        
+        //DebugLogToConsole(@"cake: %@\nLength: %i", cake, totalCalculatedLength);
+        
+        /* Truncate at first available space as long as it is within range. */
+        if (breakLoopAfterAppend && cake.length >= _textTruncationSpacePositionMaxDifferential) {
+            NSRange spaceCharSearchBase = NSMakeRange((cake.length - _textTruncationSpacePositionMaxDifferential),
+                                                                     _textTruncationSpacePositionMaxDifferential);
+            
+            NSRange spaceChar = [cake rangeOfCharacterFromSet:[NSCharacterSet whitespaceCharacterSet]
+                                                      options:NSBackwardsSearch
+                                                        range:spaceCharSearchBase];
+            
+            //DebugLogToConsole(@"spaceCharacter: %@", NSStringFromRange(spaceChar));
+            
+            if (NSDissimilarObjects(spaceChar.location, NSNotFound)) {
+                totalCalculatedLength = spaceChar.location;
+                
+                cake = [base.string safeSubstringWithRange:NSMakeRange(effectiveRange.location, totalCalculatedLength)];
 
-				//DebugLogToConsole(@"newCake: %@\nLength: %i", cake, totalCalculatedLength);
-			}
-		}
-		
-		/* Append the actual formatting. This uses the same technology used
-		 in the above defined -attributedStringToASCIIFormatting method. */
-		if (underlineText)  { [result appendFormat:@"%c", 0x1F]; }
-		if (italicText)     { [result appendFormat:@"%c", 0x16]; }
-		if (boldText)       { [result appendFormat:@"%c", 0x02]; }
-		
-		if (foregroundColorD) {
-			[result appendFormat:@"%c%@", 0x03, [foregroundNumber integerWithLeadingZero]];
-			
-			if (backgroundColorD) {
-				[result appendFormat:@",%@", [backgroundNumber integerWithLeadingZero]];
-			}
-		}
-		
-		[result appendString:cake];
-		
-		if (foregroundColorD)   { [result appendFormat:@"%c", 0x03]; }
-		if (boldText)           { [result appendFormat:@"%c", 0x02]; }
-		if (italicText)         { [result appendFormat:@"%c", 0x16]; }
-		if (underlineText)      { [result appendFormat:@"%c", 0x1F]; }
-		
-		/* Skip to next attributed section if we have not broken out of the loop by now. */
-		stringDeletionLength += totalCalculatedLength;
-		
-		if (breakLoopAfterAppend) {
-			break;
-		}
-		
-		effectiveRange.location += totalCalculatedLength;
-		effectiveRange.length    = (base.string.length - stringDeletionLength);
-		
-		//DebugLogToConsole(@"effectiveRange: %@", NSStringFromRange(effectiveRange));
-		
-		limitRange = effectiveRange;
-	}
-	
-	/* Return our attributed string to caller with our formatted line
-	 so that the next one can be served up. */
-	
+                //DebugLogToConsole(@"newCake: %@\nLength: %i", cake, totalCalculatedLength);
+            }
+        }
+        
+        /* Append the actual formatting. This uses the same technology used
+         in the above defined -attributedStringToASCIIFormatting method. */
+        if (underlineText)  { [result appendFormat:@"%c", 0x1F]; }
+        if (italicText)     { [result appendFormat:@"%c", 0x16]; }
+        if (boldText)       { [result appendFormat:@"%c", 0x02]; }
+        
+        if (foregroundColorD) {
+            [result appendFormat:@"%c%@", 0x03, [foregroundNumber integerWithLeadingZero]];
+            
+            if (backgroundColorD) {
+                [result appendFormat:@",%@", [backgroundNumber integerWithLeadingZero]];
+            }
+        }
+        
+        [result appendString:cake];
+        
+        if (foregroundColorD)   { [result appendFormat:@"%c", 0x03]; }
+        if (boldText)           { [result appendFormat:@"%c", 0x02]; }
+        if (italicText)         { [result appendFormat:@"%c", 0x16]; }
+        if (underlineText)      { [result appendFormat:@"%c", 0x1F]; }
+        
+        /* Skip to next attributed section if we have not broken out of the loop by now. */
+        stringDeletionLength += totalCalculatedLength;
+        
+        if (breakLoopAfterAppend) {
+            break;
+        }
+        
+        effectiveRange.location += totalCalculatedLength;
+        effectiveRange.length    = (base.string.length - stringDeletionLength);
+        
+        //DebugLogToConsole(@"effectiveRange: %@", NSStringFromRange(effectiveRange));
+        
+        limitRange = effectiveRange;
+    }
+    
+    /* Return our attributed string to caller with our formatted line
+     so that the next one can be served up. */
+    
     [*string deleteCharactersInRange:NSMakeRange(0, stringDeletionLength)];
-	
-	//DebugLogToConsole(@"string: %@\nresult: %@\nrange: 0, %i", [*string string], result, stringDeletionLength);
-	
+    
+    //DebugLogToConsole(@"string: %@\nresult: %@\nrange: 0, %i", [*string string], result, stringDeletionLength);
+    
     return result;
 }
 
@@ -325,77 +325,77 @@
 {
     NSAttributedString *valued = self.attributedString;
     
-	NSRange effectiveRange;
-	
-	while (limitRange.length >= 1) {
-		NSDictionary *dict = [valued safeAttributesAtIndex:limitRange.location longestEffectiveRange:&effectiveRange inRange:limitRange];
-		
-		switch (effect) {
-			case IRCTextFormatterBoldEffect: 
-			{
+    NSRange effectiveRange;
+    
+    while (limitRange.length >= 1) {
+        NSDictionary *dict = [valued safeAttributesAtIndex:limitRange.location longestEffectiveRange:&effectiveRange inRange:limitRange];
+        
+        switch (effect) {
+            case IRCTextFormatterBoldEffect: 
+            {
                 NSFont *baseFont = dict[NSFontAttributeName];
-				
+                
                 return [baseFont fontTraitSet:NSBoldFontMask];
-				
-				break;
-			}
-			case IRCTextFormatterItalicEffect: 
-			{
+                
+                break;
+            }
+            case IRCTextFormatterItalicEffect: 
+            {
                 NSFont *baseFont = dict[NSFontAttributeName];
-				
+                
                 return [baseFont fontTraitSet:NSItalicFontMask];
-				
-				break;
-			}
-			case IRCTextFormatterUnderlineEffect:
-			{
-				BOOL result = ([dict integerForKey:NSUnderlineStyleAttributeName] == 1);
-				
-				return result;
-				
-				break;
-			}
-			case IRCTextFormatterForegroundColorEffect:
-			{
-				NSColor *foregroundColor = dict[NSForegroundColorAttributeName];
+                
+                break;
+            }
+            case IRCTextFormatterUnderlineEffect:
+            {
+                BOOL result = ([dict integerForKey:NSUnderlineStyleAttributeName] == 1);
+                
+                return result;
+                
+                break;
+            }
+            case IRCTextFormatterForegroundColorEffect:
+            {
+                NSColor *foregroundColor = dict[NSForegroundColorAttributeName];
 
-				/* We compare the white value of our foreground color to that of
-				 our text field so that we do not say we have a color when it is
-				 only the color of the text field itself. */
-				
+                /* We compare the white value of our foreground color to that of
+                 our text field so that we do not say we have a color when it is
+                 only the color of the text field itself. */
+                
                 if (PointerIsNotEmpty(foregroundColor)) {
-					NSColor *defaultColor = [self defaultTextColor];
-					NSColor *compareColor = [foregroundColor colorUsingColorSpace:[NSColorSpace genericGrayColorSpace]];
-					
-					CGFloat defaultWhite = [defaultColor whiteComponent];
-					CGFloat compareWhite = [compareColor whiteComponent];
-					
-					if (TXDirtyCGFloatMatch(defaultWhite, compareWhite)) {
-						return NO;
-					}
-					
+                    NSColor *defaultColor = [self defaultTextColor];
+                    NSColor *compareColor = [foregroundColor colorUsingColorSpace:[NSColorSpace genericGrayColorSpace]];
+                    
+                    CGFloat defaultWhite = [defaultColor whiteComponent];
+                    CGFloat compareWhite = [compareColor whiteComponent];
+                    
+                    if (TXDirtyCGFloatMatch(defaultWhite, compareWhite)) {
+                        return NO;
+                    }
+                    
                     return YES;
                 }
-				
-				break;
-			}
-			case IRCTextFormatterBackgroundColorEffect:
-			{
-				NSColor *backgroundColor = dict[NSBackgroundColorAttributeName];
-				
-				if (PointerIsNotEmpty(backgroundColor)) {
-					return YES;
-				}
-				
-				break;
-			} 
+                
+                break;
+            }
+            case IRCTextFormatterBackgroundColorEffect:
+            {
+                NSColor *backgroundColor = dict[NSBackgroundColorAttributeName];
+                
+                if (PointerIsNotEmpty(backgroundColor)) {
+                    return YES;
+                }
+                
+                break;
+            } 
             default: { return NO; break; }
-		}
-		
-		limitRange = NSMakeRange(NSMaxRange(effectiveRange), (NSMaxRange(limitRange) - NSMaxRange(effectiveRange)));
-	}
-	
-	return NO;
+        }
+        
+        limitRange = NSMakeRange(NSMaxRange(effectiveRange), (NSMaxRange(limitRange) - NSMaxRange(effectiveRange)));
+    }
+    
+    return NO;
 }
 
 #pragma mark -
@@ -403,16 +403,16 @@
 
 - (void)sanitizeIRCCompatibleAttributedString:(BOOL)clearAttributes
 {
-	if (clearAttributes) {
-		NSDictionary *attributes = @{
-			NSFontAttributeName				: TXDefaultTextFieldFont,
-			NSForegroundColorAttributeName	: [self defaultTextColor]
-		};
+    if (clearAttributes) {
+        NSDictionary *attributes = @{
+            NSFontAttributeName             : TXDefaultTextFieldFont,
+            NSForegroundColorAttributeName  : [self defaultTextColor]
+        };
 
-		[self setTypingAttributes:attributes];
-	} else {
-		[self setFont:TXDefaultTextFieldFont];
-	}
+        [self setTypingAttributes:attributes];
+    } else {
+        [self setFont:TXDefaultTextFieldFont];
+    }
 }
 
 #pragma mark -
@@ -421,15 +421,15 @@
 - (void)setIRCFormatterAttribute:(IRCTextFormatterEffectType)effect 
                            value:(id)value 
                            range:(NSRange)limitRange
-{	
+{   
     NSAttributedString *valued = self.attributedString;
     
-	NSRange effectiveRange;
-	
-	while (limitRange.length >= 1) {
-		NSDictionary *dict = [valued safeAttributesAtIndex:limitRange.location longestEffectiveRange:&effectiveRange inRange:limitRange];
-		
-		NSFont *baseFont = dict[NSFontAttributeName];
+    NSRange effectiveRange;
+    
+    while (limitRange.length >= 1) {
+        NSDictionary *dict = [valued safeAttributesAtIndex:limitRange.location longestEffectiveRange:&effectiveRange inRange:limitRange];
+        
+        NSFont *baseFont = dict[NSFontAttributeName];
         
         NSMutableDictionary *newDict = [NSMutableDictionary dictionaryWithDictionary:dict];
         
@@ -487,89 +487,89 @@
             default: { break; }
         }
 
-		[self addUndoActionForAttributes:dict inRange:effectiveRange];
-		
+        [self addUndoActionForAttributes:dict inRange:effectiveRange];
+        
         [self setAttributes:newDict inRange:effectiveRange];
-		
-		limitRange = NSMakeRange(NSMaxRange(effectiveRange), (NSMaxRange(limitRange) - NSMaxRange(effectiveRange)));
+        
+        limitRange = NSMakeRange(NSMaxRange(effectiveRange), (NSMaxRange(limitRange) - NSMaxRange(effectiveRange)));
     }
 }
 
 - (void)removeIRCFormatterAttribute:(IRCTextFormatterEffectType)effect 
                               range:(NSRange)limitRange 
                               color:(NSColor *)defaultColor
-{	
+{   
     NSAttributedString *valued = self.attributedString;
     
-	NSRange effectiveRange;
-	
-	while (limitRange.length >= 1) {
-		NSDictionary *dict = [valued safeAttributesAtIndex:limitRange.location longestEffectiveRange:&effectiveRange inRange:limitRange];
-		
-		NSFont *baseFont = dict[NSFontAttributeName];
+    NSRange effectiveRange;
+    
+    while (limitRange.length >= 1) {
+        NSDictionary *dict = [valued safeAttributesAtIndex:limitRange.location longestEffectiveRange:&effectiveRange inRange:limitRange];
+        
+        NSFont *baseFont = dict[NSFontAttributeName];
         
         NSMutableDictionary *newDict = [NSMutableDictionary dictionaryWithDictionary:dict];
-		
-		if (baseFont) {
-			switch (effect) {
-				case IRCTextFormatterBoldEffect:
-				{
-					if ([baseFont fontTraitSet:NSBoldFontMask]) {
-						baseFont = [RZFontManager() convertFont:baseFont toNotHaveTrait:NSBoldFontMask];
-					
-						if (baseFont) {
-							newDict[NSFontAttributeName] = baseFont;
+        
+        if (baseFont) {
+            switch (effect) {
+                case IRCTextFormatterBoldEffect:
+                {
+                    if ([baseFont fontTraitSet:NSBoldFontMask]) {
+                        baseFont = [RZFontManager() convertFont:baseFont toNotHaveTrait:NSBoldFontMask];
+                    
+                        if (baseFont) {
+                            newDict[NSFontAttributeName] = baseFont;
                             
                             [self setAttributes:newDict inRange:effectiveRange];
-						}
-					}
-					
-					break;
-				}
-				case IRCTextFormatterItalicEffect:
-				{
-					if ([baseFont fontTraitSet:NSItalicFontMask]) {
-						baseFont = [RZFontManager() convertFont:baseFont toNotHaveTrait:NSItalicFontMask];
-						
-						if (baseFont) {
-							newDict[NSFontAttributeName] = baseFont;
+                        }
+                    }
+                    
+                    break;
+                }
+                case IRCTextFormatterItalicEffect:
+                {
+                    if ([baseFont fontTraitSet:NSItalicFontMask]) {
+                        baseFont = [RZFontManager() convertFont:baseFont toNotHaveTrait:NSItalicFontMask];
+                        
+                        if (baseFont) {
+                            newDict[NSFontAttributeName] = baseFont;
                             
                             [self setAttributes:newDict inRange:effectiveRange];
-						}
-					}
-					
-					break;
-				}
-				case IRCTextFormatterUnderlineEffect:
-				{
+                        }
+                    }
+                    
+                    break;
+                }
+                case IRCTextFormatterUnderlineEffect:
+                {
                     [self removeAttribute:NSUnderlineStyleAttributeName inRange:effectiveRange];
-					
-					break;
-				}
-				case IRCTextFormatterForegroundColorEffect:
-				{
+                    
+                    break;
+                }
+                case IRCTextFormatterForegroundColorEffect:
+                {
                     newDict[NSForegroundColorAttributeName] = defaultColor;
                     
                     [self setAttributes:newDict inRange:effectiveRange];
-					
+                    
                     [self removeAttribute:NSBackgroundColorAttributeName inRange:effectiveRange];
-					
-					break;
-				}
-				case IRCTextFormatterBackgroundColorEffect:
-				{
+                    
+                    break;
+                }
+                case IRCTextFormatterBackgroundColorEffect:
+                {
                     [self removeAttribute:NSBackgroundColorAttributeName inRange:effectiveRange];
-					
-					break;
-				}
-				default: break;
-			}
-		}
+                    
+                    break;
+                }
+                default: break;
+            }
+        }
 
-		[self addUndoActionForAttributes:dict inRange:effectiveRange];
-		
-		limitRange = NSMakeRange(NSMaxRange(effectiveRange), (NSMaxRange(limitRange) - NSMaxRange(effectiveRange)));
-	}
+        [self addUndoActionForAttributes:dict inRange:effectiveRange];
+        
+        limitRange = NSMakeRange(NSMaxRange(effectiveRange), (NSMaxRange(limitRange) - NSMaxRange(effectiveRange)));
+    }
 }
 
 @end

@@ -47,24 +47,24 @@
 
 - (id)init
 {
-	if ((self = [super init])) {
-		self.sendQueue = [NSMutableArray new];
-		
-		self.floodTimer = [TLOTimer new];
-		self.floodTimer.delegate = self;
+    if ((self = [super init])) {
+        self.sendQueue = [NSMutableArray new];
+        
+        self.floodTimer = [TLOTimer new];
+        self.floodTimer.delegate = self;
         self.floodTimer.selector = @selector(timerOnTimer:);
 
-		self.maxMsgCount = 0;
+        self.maxMsgCount = 0;
 
-		self.socketBuffer = [NSMutableData new];
-	}
-	
-	return self;
+        self.socketBuffer = [NSMutableData new];
+    }
+    
+    return self;
 }
 
 - (void)dealloc
 {
-	[self close];
+    [self close];
 }
 
 #pragma mark -
@@ -72,23 +72,23 @@
 
 - (void)open
 {
-	[self close]; // Reset state.
-	
-	[self openSocket];
+    [self close]; // Reset state.
+    
+    [self openSocket];
 }
 
 - (void)close
 {
-	self.isConnected = NO;
-	self.isConnecting = NO;
-	self.isSending = NO;
-	
-	self.maxMsgCount = 0;
+    self.isConnected = NO;
+    self.isConnecting = NO;
+    self.isSending = NO;
+    
+    self.maxMsgCount = 0;
 
-	[self.sendQueue removeAllObjects];
-	
-	[self stopTimer];
-	[self closeSocket];
+    [self.sendQueue removeAllObjects];
+    
+    [self stopTimer];
+    [self closeSocket];
 }
 
 #pragma mark -
@@ -96,12 +96,12 @@
 
 - (NSString *)convertFromCommonEncoding:(NSData *)data
 {
-	return [self.client convertFromCommonEncoding:data];
+    return [self.client convertFromCommonEncoding:data];
 }
 
 - (NSData *)convertToCommonEncoding:(NSString *)data
 {
-	return [self.client convertToCommonEncoding:data];
+    return [self.client convertToCommonEncoding:data];
 }
 
 #pragma mark -
@@ -109,54 +109,54 @@
 
 - (BOOL)readyToSend
 {
-	return (self.isSending == NO && NSObjectIsNotEmpty(self.sendQueue) &&
-			self.maxMsgCount < self.client.config.floodControlMaximumMessages);
+    return (self.isSending == NO && NSObjectIsNotEmpty(self.sendQueue) &&
+            self.maxMsgCount < self.client.config.floodControlMaximumMessages);
 }
 
 - (void)sendLine:(NSString *)line
 {
-	[self.sendQueue safeAddObject:line];
+    [self.sendQueue safeAddObject:line];
 
-	[self tryToSend];
-	[self updateTimer];
+    [self tryToSend];
+    [self updateTimer];
 }
 
 - (BOOL)tryToSend
 {
-	NSAssertReturnR([self readyToSend], NO);
+    NSAssertReturnR([self readyToSend], NO);
 
-	NSString *firstItem = [self.sendQueue[0] stringByAppendingString:@"\r\n"];
-	
-	[self.sendQueue safeRemoveObjectAtIndex:0];
-	
-	NSData *data = [self convertToCommonEncoding:firstItem];
-	
-	if (data) {
-		self.isSending = YES;
+    NSString *firstItem = [self.sendQueue[0] stringByAppendingString:@"\r\n"];
+    
+    [self.sendQueue safeRemoveObjectAtIndex:0];
+    
+    NSData *data = [self convertToCommonEncoding:firstItem];
+    
+    if (data) {
+        self.isSending = YES;
 
-		/* isLoggedIn is set on the client when it receives raw numeric 005 from
-		 the server. We wait until then before we begin counting against flood
-		 control because the initial connect may send a lot of data resulting in
-		 it kicking in prematurely. */
-		if (self.client.isLoggedIn && self.client.config.outgoingFloodControl) {
-			self.maxMsgCount++;
-		}
-		
-		[self write:data];
-		
-		if ([self.client respondsToSelector:@selector(ircConnectionWillSend:)]) {
-			[self.client ircConnectionWillSend:firstItem];
-		}
-	}
-	
-	return YES;
+        /* isLoggedIn is set on the client when it receives raw numeric 005 from
+         the server. We wait until then before we begin counting against flood
+         control because the initial connect may send a lot of data resulting in
+         it kicking in prematurely. */
+        if (self.client.isLoggedIn && self.client.config.outgoingFloodControl) {
+            self.maxMsgCount++;
+        }
+        
+        [self write:data];
+        
+        if ([self.client respondsToSelector:@selector(ircConnectionWillSend:)]) {
+            [self.client ircConnectionWillSend:firstItem];
+        }
+    }
+    
+    return YES;
 }
 
 - (void)clearSendQueue
 {
-	[self.sendQueue removeAllObjects];
+    [self.sendQueue removeAllObjects];
 
-	[self updateTimer];
+    [self updateTimer];
 }
 
 #pragma mark -
@@ -164,44 +164,44 @@
 
 - (void)updateTimer
 {
-	if (NSObjectIsEmpty(self.sendQueue) && self.maxMsgCount < 1) {
-		[self stopTimer];
-	} else {
-		[self startTimer];
-	}
+    if (NSObjectIsEmpty(self.sendQueue) && self.maxMsgCount < 1) {
+        [self stopTimer];
+    } else {
+        [self startTimer];
+    }
 }
 
 - (void)startTimer
 {
-	if (self.floodTimer.timerIsActive == NO) {
-		IRCClientConfig *config = self.client.config;
+    if (self.floodTimer.timerIsActive == NO) {
+        IRCClientConfig *config = self.client.config;
 
-		if (config.outgoingFloodControl) {
-			[self.floodTimer start:config.floodControlDelayTimerInterval];
-		}
-	}
+        if (config.outgoingFloodControl) {
+            [self.floodTimer start:config.floodControlDelayTimerInterval];
+        }
+    }
 }
 
 - (void)stopTimer
 {
-	if (self.floodTimer.timerIsActive) {
-		[self.floodTimer stop];
-	}
+    if (self.floodTimer.timerIsActive) {
+        [self.floodTimer stop];
+    }
 }
 
 - (void)timerOnTimer:(id)sender
 {
-	self.maxMsgCount = 0;
-	
-	if (NSObjectIsNotEmpty(self.sendQueue)) {
-		while (self.sendQueue.count >= 1) {
-			NSAssertReturnLoopBreak([self tryToSend]);
-			
-			[self updateTimer];
-		}
-	} else {
-		[self updateTimer];
-	}
+    self.maxMsgCount = 0;
+    
+    if (NSObjectIsNotEmpty(self.sendQueue)) {
+        while (self.sendQueue.count >= 1) {
+            NSAssertReturnLoopBreak([self tryToSend]);
+            
+            [self updateTimer];
+        }
+    } else {
+        [self updateTimer];
+    }
 }
 
 #pragma mark -
@@ -209,51 +209,51 @@
 
 - (void)tcpClientDidConnect
 {
-	[self clearSendQueue];
-	
-	if ([self.client respondsToSelector:@selector(ircConnectionDidConnect:)]) {
-		[self.client ircConnectionDidConnect:self];
-	}
+    [self clearSendQueue];
+    
+    if ([self.client respondsToSelector:@selector(ircConnectionDidConnect:)]) {
+        [self.client ircConnectionDidConnect:self];
+    }
 }
 
 - (void)tcpClientDidError:(NSString *)error
 {
-	[self clearSendQueue];
-	
-	if ([self.client respondsToSelector:@selector(ircConnectionDidError:)]) {
-		[self.client ircConnectionDidError:error];
-	}
+    [self clearSendQueue];
+    
+    if ([self.client respondsToSelector:@selector(ircConnectionDidError:)]) {
+        [self.client ircConnectionDidError:error];
+    }
 }
 
 - (void)tcpClientDidDisconnect
 {
-	[self clearSendQueue];
-	
-	if ([self.client respondsToSelector:@selector(ircConnectionDidDisconnect:)]) {
-		[self.client ircConnectionDidDisconnect:self];
-	}
+    [self clearSendQueue];
+    
+    if ([self.client respondsToSelector:@selector(ircConnectionDidDisconnect:)]) {
+        [self.client ircConnectionDidDisconnect:self];
+    }
 }
 
 - (void)tcpClientDidReceiveData
 {
-	while (1 == 1) {
-		NSString *data = [self readLine];
-		
-		if (data == nil) {
-			break;
-		}
-		
-		if ([self.client respondsToSelector:@selector(ircConnectionDidReceive:)]) {
-			[self.client ircConnectionDidReceive:data];
-		}
-	}
+    while (1 == 1) {
+        NSString *data = [self readLine];
+        
+        if (data == nil) {
+            break;
+        }
+        
+        if ([self.client respondsToSelector:@selector(ircConnectionDidReceive:)]) {
+            [self.client ircConnectionDidReceive:data];
+        }
+    }
 }
 
 - (void)tcpClientDidSendData
 {
-	self.isSending = NO;
-	
-	[self tryToSend];
+    self.isSending = NO;
+    
+    [self tryToSend];
 }
 
 @end

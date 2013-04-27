@@ -48,26 +48,26 @@
 
 - (void)popWelcomeAddServerView
 {
-	if (self.stackLocked == NO) {
+    if (self.stackLocked == NO) {
 #ifdef TEXTUAL_TRIAL_BINARY
-		[self displayView:self.welcomeAddServerTrialView];
-		
-		[self.welcomePurchaseTextualButton setAction:@selector(openMacAppStoreDownloadPage:)];
-		[self.welcomePurchaseTextualButton setTarget:self.masterController.menuController];
+        [self displayView:self.welcomeAddServerTrialView];
+        
+        [self.welcomePurchaseTextualButton setAction:@selector(openMacAppStoreDownloadPage:)];
+        [self.welcomePurchaseTextualButton setTarget:self.masterController.menuController];
 #else
-		[self displayView:self.welcomeAddServerView];
+        [self displayView:self.welcomeAddServerView];
 #endif
-	}
+    }
 }
 
 - (void)popLoadingConfigurationView
 {
-	if (self.stackLocked == NO) {
-		[self displayView:self.loadingConfigurationView];
+    if (self.stackLocked == NO) {
+        [self displayView:self.loadingConfigurationView];
 
-		[self.loadingConfigurationViewPI startAnimation:nil];
-		[self.loadingConfigurationViewPI setDisplayedWhenStopped:NO];
-	}	
+        [self.loadingConfigurationViewPI startAnimation:nil];
+        [self.loadingConfigurationViewPI setDisplayedWhenStopped:NO];
+    }   
 }
 
 #pragma mark -
@@ -75,50 +75,50 @@
 
 - (void)hideLoadingConfigurationView
 {
-	if (self.stackLocked == NO) {
-		[self.loadingConfigurationViewPI stopAnimation:nil];
-	}
-	
-	[self hideAll:YES];
+    if (self.stackLocked == NO) {
+        [self.loadingConfigurationViewPI stopAnimation:nil];
+    }
+    
+    [self hideAll:YES];
 }
 
 - (void)hideLoadingConfigurationView:(BOOL)animate
 {
-	if (self.stackLocked == NO) {
-		[self.loadingConfigurationViewPI stopAnimation:nil];
-	}
+    if (self.stackLocked == NO) {
+        [self.loadingConfigurationViewPI stopAnimation:nil];
+    }
 
-	[self hideAll:animate];
+    [self hideAll:animate];
 }
 
 #pragma mark -
 
 - (void)hideWelcomeAddServerView
 {
-	[self hideAll:YES];
+    [self hideAll:YES];
 }
 
 - (void)hideWelcomeAddServerView:(BOOL)animate
 {
-	[self hideAll:animate];
+    [self hideAll:animate];
 }
 
 #pragma mark -
 
 - (void)hideAll
 {
-	[self hideAll:YES];
+    [self hideAll:YES];
 }
 
 - (void)hideAll:(BOOL)animate
 {
-	if (self.stackLocked == NO) {
-		for (NSView *alv in [self allViews]) {
-			if (alv.isHidden == NO) {
-				[self hideView:alv animate:animate];
-			}
-		}
-	}
+    if (self.stackLocked == NO) {
+        for (NSView *alv in [self allViews]) {
+            if (alv.isHidden == NO) {
+                [self hideView:alv animate:animate];
+            }
+        }
+    }
 }
 
 #pragma mark -
@@ -126,14 +126,14 @@
 
 - (void)displayView:(NSView *)view
 {
-	[self disableBackgroundControls];
+    [self disableBackgroundControls];
 
-	[view setHidden:NO];
-	[view setAlphaValue:1.0];
-	
-	[self setHidden:NO];
-	[self setAlphaValue:1.0];
-	[self displayIfNeeded];
+    [view setHidden:NO];
+    [view setAlphaValue:1.0];
+    
+    [self setHidden:NO];
+    [self setAlphaValue:1.0];
+    [self displayIfNeeded];
 }
 
 #pragma mark -
@@ -141,32 +141,32 @@
 
 - (void)hideView:(NSView *)view animate:(BOOL)animate
 {
-	/* The primary view and background view must be set to hidden instead of simply setting
-	 it to 0.0 alpha. If only the alpha is changed, then the underlying WebView will not be
-	 able to register mouse movements over elements because the views are invisible and on
-	 top of the WebView itself. */
-	
-	[self enableBackgroundControls];
-	
-	if (animate == NO) {
-		[view setHidden:YES];
-		
-		[self setHidden:YES];
-		[self setAlphaValue:0.0];
-	} else {
-		[RZAnimationCurrentContext() setDuration:0.8];
+    /* The primary view and background view must be set to hidden instead of simply setting
+     it to 0.0 alpha. If only the alpha is changed, then the underlying WebView will not be
+     able to register mouse movements over elements because the views are invisible and on
+     top of the WebView itself. */
+    
+    [self enableBackgroundControls];
+    
+    if (animate == NO) {
+        [view setHidden:YES];
+        
+        [self setHidden:YES];
+        [self setAlphaValue:0.0];
+    } else {
+        [RZAnimationCurrentContext() setDuration:0.8];
 
-		[NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
-			self.stackLocked = animate;
+        [NSAnimationContext runAnimationGroup:^(NSAnimationContext *context) {
+            self.stackLocked = animate;
 
-			[self.animator setAlphaValue:0.0];
-		} completionHandler:^{
-			[view setHidden:YES];
-			[self setHidden:YES];
+            [self.animator setAlphaValue:0.0];
+        } completionHandler:^{
+            [view setHidden:YES];
+            [self setHidden:YES];
 
-			self.stackLocked = NO;
-		}];
-	}
+            self.stackLocked = NO;
+        }];
+    }
 }
 
 #pragma mark -
@@ -174,25 +174,25 @@
 
 - (NSArray *)allViews
 {
-	/* For future expansion. */
+    /* For future expansion. */
 
-	return @[self.loadingConfigurationView, self.welcomeAddServerView, self.welcomeAddServerTrialView];
+    return @[self.loadingConfigurationView, self.welcomeAddServerView, self.welcomeAddServerTrialView];
 }
 
 - (void)disableBackgroundControls
 {
-	[self.masterController.inputTextField setEditable:NO];
-	[self.masterController.inputTextField setSelectable:NO];
+    [self.masterController.inputTextField setEditable:NO];
+    [self.masterController.inputTextField setSelectable:NO];
 
-	[self.backgroundContentView setHidden:YES];
+    [self.backgroundContentView setHidden:YES];
 }
 
 - (void)enableBackgroundControls
 {
-	[self.masterController.inputTextField setEditable:YES];
-	[self.masterController.inputTextField setSelectable:YES];
+    [self.masterController.inputTextField setEditable:YES];
+    [self.masterController.inputTextField setSelectable:YES];
 
-	[self.backgroundContentView setHidden:NO];
+    [self.backgroundContentView setHidden:NO];
 }
 
 #pragma mark -
@@ -200,25 +200,25 @@
 
 - (void)drawRect:(NSRect)dirtyRect
 {
-	NSView *activeView;
+    NSView *activeView;
 
-	for (NSView *alv in [self allViews]) {
-		if (alv.isHidden == NO) {
-			activeView = alv;
-		} 
-	}
+    for (NSView *alv in [self allViews]) {
+        if (alv.isHidden == NO) {
+            activeView = alv;
+        } 
+    }
 
-	if (activeView) {
-		NSRect newtRect = activeView.frame;
+    if (activeView) {
+        NSRect newtRect = activeView.frame;
 
-		newtRect.origin.x  = ((self.window.frame.size.width  / 2) - (newtRect.size.width / 2));
-		newtRect.origin.y  = ((self.window.frame.size.height / 2) - (newtRect.size.height / 2));
-		newtRect.origin.y -= 24;
+        newtRect.origin.x  = ((self.window.frame.size.width  / 2) - (newtRect.size.width / 2));
+        newtRect.origin.y  = ((self.window.frame.size.height / 2) - (newtRect.size.height / 2));
+        newtRect.origin.y -= 24;
 
-		[activeView setFrame:newtRect];
-	}
+        [activeView setFrame:newtRect];
+    }
 
-	[super drawRect:dirtyRect];
+    [super drawRect:dirtyRect];
 }
 
 @end

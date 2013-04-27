@@ -49,13 +49,13 @@
 
 + (THOPluginManager *)defaultManager
 {
-	TXMasterController *master = [THOPluginManager masterController];
+    TXMasterController *master = [THOPluginManager masterController];
 
-	if (master) {
-		return master.pluginManager;
-	}
+    if (master) {
+        return master.pluginManager;
+    }
 
-	return nil;
+    return nil;
 }
 
 #pragma mark -
@@ -63,18 +63,18 @@
 
 - (void)loadPlugins
 {
-	if (NSObjectIsNotEmpty(self.allLoadedBundles)) {
-		return;
-	}
+    if (NSObjectIsNotEmpty(self.allLoadedBundles)) {
+        return;
+    }
 
-	// ---- //
+    // ---- //
 
     NSString *path_1 = [TPCPreferences customExtensionFolderPath];
     NSString *path_2 = [TPCPreferences bundledExtensionFolderPath];;
 
     NSMutableArray *loadedBundles = [NSMutableArray array];
     NSMutableArray *loadedPlugins = [NSMutableArray array];
-	
+    
     NSMutableArray *resourceBundles = [NSMutableArray array];
 
     NSArray *resourceFiles_1 = [RZFileManager() contentsOfDirectoryAtPath:path_1 error:NULL];
@@ -86,7 +86,7 @@
         [resourceBundles safeAddObjectWithoutDuplication:file];
     }
 
-	// ---- //
+    // ---- //
 
     for (NSString *file in resourceBundles) {
         if ([file hasSuffix:@".bundle"]) {
@@ -96,46 +96,46 @@
                 fullPath = [path_2 stringByAppendingPathComponent:file];
             }
 
-			NSBundle *currBundle = [NSBundle bundleWithPath:fullPath];
+            NSBundle *currBundle = [NSBundle bundleWithPath:fullPath];
 
-			if (currBundle) {
-				THOPluginItem *currPlugin = [THOPluginItem new];
+            if (currBundle) {
+                THOPluginItem *currPlugin = [THOPluginItem new];
 
-				[currPlugin loadBundle:currBundle];
+                [currPlugin loadBundle:currBundle];
 
-				[loadedBundles safeAddObject:currBundle];
-				[loadedPlugins safeAddObject:currPlugin];
-			}
-		}
-	}
+                [loadedBundles safeAddObject:currBundle];
+                [loadedPlugins safeAddObject:currPlugin];
+            }
+        }
+    }
 
-	// ---- //
+    // ---- //
 
-	self.allLoadedBundles = loadedBundles;
-	self.allLoadedPlugins = loadedPlugins;
+    self.allLoadedBundles = loadedBundles;
+    self.allLoadedPlugins = loadedPlugins;
 }
 
 - (void)unloadPlugins
 {
-	id prefController = [self.masterController.menuController windowFromWindowList:@"TDCPreferencesController"];
+    id prefController = [self.masterController.menuController windowFromWindowList:@"TDCPreferencesController"];
 
-	if (prefController) {
-		if ([prefController isWindowLoaded]) {
-			[[prefController window] close];
-		}
-	}
+    if (prefController) {
+        if ([prefController isWindowLoaded]) {
+            [[prefController window] close];
+        }
+    }
 
-	// ---- //
+    // ---- //
 
-	self.allLoadedPlugins = nil;
+    self.allLoadedPlugins = nil;
 
-	for (NSBundle *bundle in self.allLoadedBundles) {
-		if ([bundle isLoaded]) {
-			[bundle unload];
-		}
-	}
-	
-	self.allLoadedBundles = nil;
+    for (NSBundle *bundle in self.allLoadedBundles) {
+        if ([bundle isLoaded]) {
+            [bundle unload];
+        }
+    }
+    
+    self.allLoadedBundles = nil;
 }
 
 #pragma mark -
@@ -143,68 +143,68 @@
 
 - (id)supportedAppleScriptCommands
 {
-	return [self supportedAppleScriptCommands:NO];
+    return [self supportedAppleScriptCommands:NO];
 }
 
 - (id)supportedAppleScriptCommands:(BOOL)returnPathInfo
 {
-	NSArray *scriptExtensions = @[@"scpt", @"py", @"pyc", @"rb", @"pl", @"sh", @"php", @"bash"];
+    NSArray *scriptExtensions = @[@"scpt", @"py", @"pyc", @"rb", @"pl", @"sh", @"php", @"bash"];
 
-	NSArray *scriptPaths = @[
+    NSArray *scriptPaths = @[
         NSStringNilValueSubstitute([TPCPreferences systemUnsupervisedScriptFolderPath]),
-		NSStringNilValueSubstitute([TPCPreferences customScriptFolderPath]),
-		NSStringNilValueSubstitute([TPCPreferences bundledScriptFolderPath]),
-	];
+        NSStringNilValueSubstitute([TPCPreferences customScriptFolderPath]),
+        NSStringNilValueSubstitute([TPCPreferences bundledScriptFolderPath]),
+    ];
 
-	id returnData;
+    id returnData;
 
-	if (returnPathInfo) {
-		returnData = [NSMutableDictionary dictionary];
-	} else {
-		returnData = [NSMutableArray array];
-	}
+    if (returnPathInfo) {
+        returnData = [NSMutableDictionary dictionary];
+    } else {
+        returnData = [NSMutableArray array];
+    }
 
-	for (NSString *path in scriptPaths) {
-		if (NSObjectIsNotEmpty(path)) {
-			NSArray *resourceFiles = [RZFileManager() contentsOfDirectoryAtPath:path error:NULL];
+    for (NSString *path in scriptPaths) {
+        if (NSObjectIsNotEmpty(path)) {
+            NSArray *resourceFiles = [RZFileManager() contentsOfDirectoryAtPath:path error:NULL];
 
-			if (NSObjectIsNotEmpty(resourceFiles)) {
-				for (NSString *file in resourceFiles) {
-					NSString *fullpa = [path stringByAppendingPathComponent:file];
-					NSString *script = [file lowercaseString];
+            if (NSObjectIsNotEmpty(resourceFiles)) {
+                for (NSString *file in resourceFiles) {
+                    NSString *fullpa = [path stringByAppendingPathComponent:file];
+                    NSString *script = [file lowercaseString];
 
-					if ([file hasPrefix:@"."] || [file hasSuffix:@".rtf"]) {
-						continue;
-					}
+                    if ([file hasPrefix:@"."] || [file hasSuffix:@".rtf"]) {
+                        continue;
+                    }
 
-					NSString *extens = NSStringEmptyPlaceholder;
+                    NSString *extens = NSStringEmptyPlaceholder;
 
-					if ([script contains:@"."]) {
-						NSArray *nameParts = [script componentsSeparatedByString:@"."];
+                    if ([script contains:@"."]) {
+                        NSArray *nameParts = [script componentsSeparatedByString:@"."];
 
-						script = nameParts[0];
-						extens = nameParts[1];
+                        script = nameParts[0];
+                        extens = nameParts[1];
 
-						if ([scriptExtensions containsObject:extens] == NO) {
-							continue;
-						}
-					}
+                        if ([scriptExtensions containsObject:extens] == NO) {
+                            continue;
+                        }
+                    }
 
-					if (returnPathInfo) {
-						if ([returnData containsKey:script] == NO) {
-							[returnData safeSetObjectWithoutOverride:fullpa forKey:script];
-						}
-					} else {
-						if ([returnData containsObject:script] == NO) {
-							[returnData safeAddObjectWithoutDuplication:script];
-						}
-					}
-				}
-			}
-		}
-	}
-	
-	return returnData;
+                    if (returnPathInfo) {
+                        if ([returnData containsKey:script] == NO) {
+                            [returnData safeSetObjectWithoutOverride:fullpa forKey:script];
+                        }
+                    } else {
+                        if ([returnData containsObject:script] == NO) {
+                            [returnData safeAddObjectWithoutDuplication:script];
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    return returnData;
 }
 
 #pragma mark -
@@ -225,65 +225,65 @@
 /* Everything else. */
 - (NSArray *)outputRulesForCommand:(NSString *)command
 {
-	NSMutableArray *allRules = [NSMutableArray array];
+    NSMutableArray *allRules = [NSMutableArray array];
 
-	for (THOPluginItem *plugin in self.allLoadedPlugins) {
-		NSArray *srules = [plugin.outputSuppressionRules arrayForKey:command];
+    for (THOPluginItem *plugin in self.allLoadedPlugins) {
+        NSArray *srules = [plugin.outputSuppressionRules arrayForKey:command];
 
-		if (NSObjectIsNotEmpty(srules)) {
-			[allRules addObjectsFromArray:srules];
-		}
-	}
+        if (NSObjectIsNotEmpty(srules)) {
+            [allRules addObjectsFromArray:srules];
+        }
+    }
 
-	return allRules;
+    return allRules;
 }
 
 - (NSArray *)supportedUserInputCommands
 {
-	NSMutableArray *allCommands = [NSMutableArray array];
+    NSMutableArray *allCommands = [NSMutableArray array];
 
-	for (THOPluginItem *plugin in self.allLoadedPlugins) {
-		[allCommands addObjectsFromArray:plugin.supportedUserInputCommands];
-	}
+    for (THOPluginItem *plugin in self.allLoadedPlugins) {
+        [allCommands addObjectsFromArray:plugin.supportedUserInputCommands];
+    }
 
-	return allCommands;
+    return allCommands;
 }
 
 - (NSArray *)supportedServerInputCommands
 {
-	NSMutableArray *allCommands = [NSMutableArray array];
+    NSMutableArray *allCommands = [NSMutableArray array];
 
-	for (THOPluginItem *plugin in self.allLoadedPlugins) {
-		[allCommands addObjectsFromArray:plugin.supportedServerInputCommands];
-	}
+    for (THOPluginItem *plugin in self.allLoadedPlugins) {
+        [allCommands addObjectsFromArray:plugin.supportedServerInputCommands];
+    }
 
-	return allCommands;
+    return allCommands;
 }
 
 - (NSArray *)pluginsWithPreferencePanes
 {
-	NSMutableArray *allExtensions = [NSMutableArray array];
+    NSMutableArray *allExtensions = [NSMutableArray array];
 
-	for (THOPluginItem *plugin in self.allLoadedPlugins) {
-		if (plugin.hasPreferencePaneView) {
-			[allExtensions safeAddObject:plugin];
-		}
-	}
+    for (THOPluginItem *plugin in self.allLoadedPlugins) {
+        if (plugin.hasPreferencePaneView) {
+            [allExtensions safeAddObject:plugin];
+        }
+    }
 
-	return allExtensions;
+    return allExtensions;
 }
 
 - (NSArray *)allLoadedExtensions
 {
-	NSMutableArray *allPlugins = [NSMutableArray array];
+    NSMutableArray *allPlugins = [NSMutableArray array];
 
-	for (NSBundle *bundle in self.allLoadedBundles) {
-		NSString *path = bundle.bundlePath;
+    for (NSBundle *bundle in self.allLoadedBundles) {
+        NSString *path = bundle.bundlePath;
 
-		[allPlugins safeAddObjectWithoutDuplication:path.lastPathComponent.stringByDeletingPathExtension];
-	}
+        [allPlugins safeAddObjectWithoutDuplication:path.lastPathComponent.stringByDeletingPathExtension];
+    }
 
-	return allPlugins;
+    return allPlugins;
 }
 
 #pragma mark -
@@ -291,42 +291,42 @@
 
 - (void)sendUserInputDataToBundles:(IRCClient *)client message:(NSString *)message command:(NSString *)command
 {
-	NSString *cmdu = command.uppercaseString;
-	NSString *cmdl = command.lowercaseString;
-	
-	for (THOPluginItem *plugin in self.allLoadedPlugins) {
-		if ([plugin.supportedUserInputCommands containsObject:cmdl]) {
-			[plugin.primaryClass messageSentByUser:client message:message command:cmdu];
-		}
-	}
+    NSString *cmdu = command.uppercaseString;
+    NSString *cmdl = command.lowercaseString;
+    
+    for (THOPluginItem *plugin in self.allLoadedPlugins) {
+        if ([plugin.supportedUserInputCommands containsObject:cmdl]) {
+            [plugin.primaryClass messageSentByUser:client message:message command:cmdu];
+        }
+    }
 }
 
 - (void)sendServerInputDataToBundles:(IRCClient *)client message:(IRCMessage *)message
 {
-	NSString *cmdl = message.command.lowercaseString;
+    NSString *cmdl = message.command.lowercaseString;
 
-	NSDictionary *senderData = @{
-		@"senderHostmask"	: NSStringNilValueSubstitute(message.sender.hostmask),
-		@"senderNickname"	: NSStringNilValueSubstitute(message.sender.nickname),
-		@"senderUsername"	: NSStringNilValueSubstitute(message.sender.username),
-		@"senderDNSMask"	: NSStringNilValueSubstitute(message.sender.address),
-		@"senderIsServer"	: @(message.sender.isServer)
-	};
+    NSDictionary *senderData = @{
+        @"senderHostmask"   : NSStringNilValueSubstitute(message.sender.hostmask),
+        @"senderNickname"   : NSStringNilValueSubstitute(message.sender.nickname),
+        @"senderUsername"   : NSStringNilValueSubstitute(message.sender.username),
+        @"senderDNSMask"    : NSStringNilValueSubstitute(message.sender.address),
+        @"senderIsServer"   : @(message.sender.isServer)
+    };
 
-	NSDictionary *messageData = @{
-		@"messageParamaters"	: message.params,
-		@"messageCommand"		: NSStringNilValueSubstitute(message.command),
-		@"messageSequence"		: NSStringNilValueSubstitute(message.sequence),
-		@"messageServer"		: NSStringNilValueSubstitute([client networkAddress]),
-		@"messageNetwork"		: NSStringNilValueSubstitute([client networkName]),
-		@"messageNumericReply"	: @(message.numericReply)
-	};
-	
-	for (THOPluginItem *plugin in self.allLoadedPlugins) {
-		if ([plugin.supportedServerInputCommands containsObject:cmdl]) {
-			[plugin.primaryClass messageReceivedByServer:client sender:senderData message:messageData];
-		}
-	}
+    NSDictionary *messageData = @{
+        @"messageParamaters"    : message.params,
+        @"messageCommand"       : NSStringNilValueSubstitute(message.command),
+        @"messageSequence"      : NSStringNilValueSubstitute(message.sequence),
+        @"messageServer"        : NSStringNilValueSubstitute([client networkAddress]),
+        @"messageNetwork"       : NSStringNilValueSubstitute([client networkName]),
+        @"messageNumericReply"  : @(message.numericReply)
+    };
+    
+    for (THOPluginItem *plugin in self.allLoadedPlugins) {
+        if ([plugin.supportedServerInputCommands containsObject:cmdl]) {
+            [plugin.primaryClass messageReceivedByServer:client sender:senderData message:messageData];
+        }
+    }
 }
 
 #pragma mark -
@@ -338,13 +338,13 @@
         if ([plugin.primaryClass respondsToSelector:@selector(processInlineMediaContentURL:)]) {
             NSString *input = [plugin.primaryClass processInlineMediaContentURL:resource];
 
-			if (input.length >= 15) {
-				return input;
-			}
+            if (input.length >= 15) {
+                return input;
+            }
         }
     }
 
-	return nil;
+    return nil;
 }
 
 #pragma mark -

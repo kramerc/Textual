@@ -37,75 +37,75 @@
 
 #import "TextualApplication.h"
 
-#define _doubleClickRadius		3
+#define _doubleClickRadius      3
 
 @implementation TVCLogScriptEventSink
 
 - (id)init
 {
-	if ((self = [super init])) {
-		self.x = -10000;
-		self.y = -10000;
-	}
-	
-	return self;
+    if ((self = [super init])) {
+        self.x = -10000;
+        self.y = -10000;
+    }
+    
+    return self;
 }
 
 + (BOOL)isSelectorExcludedFromWebScript:(SEL)sel
 {
-	return NO;
+    return NO;
 }
 
 + (NSString *)webScriptNameForSelector:(SEL)sel
 {
-	NSString *s = NSStringFromSelector(sel);
-	
-	if ([s hasSuffix:@":"]) {
-		return [s safeSubstringToIndex:(s.length - 1)];
-	}
-	
-	return nil;
+    NSString *s = NSStringFromSelector(sel);
+    
+    if ([s hasSuffix:@":"]) {
+        return [s safeSubstringToIndex:(s.length - 1)];
+    }
+    
+    return nil;
 }
 
 + (BOOL)isKeyExcludedFromWebScript:(const char *)name
 {
-	return YES;
+    return YES;
 }
 
 + (NSString *)webScriptNameForKey:(const char *)name
 {
-	return nil;
+    return nil;
 }
 
 - (void)onDblClick:(id)e
 {
-	[self.owner logViewOnDoubleClick:e];
+    [self.owner logViewOnDoubleClick:e];
 }
 
 - (BOOL)shouldStopDoubleClick:(id)e
 {
-	NSInteger dr = _doubleClickRadius;
-	NSInteger cx = [[e valueForKey:@"clientX"] integerValue];
-	NSInteger cy = [[e valueForKey:@"clientY"] integerValue];
-	
-	BOOL res = NO;
-	
-	NSTimeInterval now = [NSDate epochTime];
-	
-	if ((self.x - dr) <= cx && cx <= (self.x + dr) &&
-		(self.y - dr) <= cy && cy <= (self.y + dr))
-	{
-		if (now < (self.lastClickTime + [NSEvent doubleClickInterval])) {
-			res = YES;
-		}
-	}
-	
-	self.lastClickTime = now;
-	
-	self.x = cx;
-	self.y = cy;
-	
-	return res;
+    NSInteger dr = _doubleClickRadius;
+    NSInteger cx = [[e valueForKey:@"clientX"] integerValue];
+    NSInteger cy = [[e valueForKey:@"clientY"] integerValue];
+    
+    BOOL res = NO;
+    
+    NSTimeInterval now = [NSDate epochTime];
+    
+    if ((self.x - dr) <= cx && cx <= (self.x + dr) &&
+        (self.y - dr) <= cy && cy <= (self.y + dr))
+    {
+        if (now < (self.lastClickTime + [NSEvent doubleClickInterval])) {
+            res = YES;
+        }
+    }
+    
+    self.lastClickTime = now;
+    
+    self.x = cx;
+    self.y = cy;
+    
+    return res;
 }
 
 - (void)logToConsole:(NSString *)message
@@ -115,92 +115,92 @@
 
 - (NSString *)toggleInlineImage:(id)object
 {
-	NSObjectIsKindOfClassAssertReturn(object, DOMHTMLAnchorElement, @"true");
+    NSObjectIsKindOfClassAssertReturn(object, DOMHTMLAnchorElement, @"true");
 
-	if (([NSEvent modifierFlags] & NSShiftKeyMask) == NO) {
-		return @"true";
-	}
+    if (([NSEvent modifierFlags] & NSShiftKeyMask) == NO) {
+        return @"true";
+    }
 
-	DOMHTMLAnchorElement *anchor = object;
-	
-	DOMHTMLImageElement *imageElement = nil;
+    DOMHTMLAnchorElement *anchor = object;
+    
+    DOMHTMLImageElement *imageElement = nil;
 
-	DOMElement *span = [anchor parentElement];
+    DOMElement *span = [anchor parentElement];
 
-	DOMNodeList *images = [span getElementsByClassName:@"inlineimage"];
+    DOMNodeList *images = [span getElementsByClassName:@"inlineimage"];
 
-	for (unsigned index = 0; index < images.length; index++) {
-		DOMNode *node = [images item:index];
+    for (unsigned index = 0; index < images.length; index++) {
+        DOMNode *node = [images item:index];
 
-		NSObjectIsKindOfClassAssertContinue(node, DOMHTMLImageElement);
+        NSObjectIsKindOfClassAssertContinue(node, DOMHTMLImageElement);
 
-		DOMHTMLImageElement *image = (DOMHTMLImageElement *)node;
+        DOMHTMLImageElement *image = (DOMHTMLImageElement *)node;
 
-		node = [image parentElement];
+        node = [image parentElement];
 
-		NSObjectIsKindOfClassAssertContinue(node, DOMHTMLAnchorElement);
-		
-		DOMHTMLAnchorElement *a = (DOMHTMLAnchorElement *)node;
-		NSAssertReturnLoopContinue([a.href isEqualIgnoringCase:anchor.href]);
+        NSObjectIsKindOfClassAssertContinue(node, DOMHTMLAnchorElement);
+        
+        DOMHTMLAnchorElement *a = (DOMHTMLAnchorElement *)node;
+        NSAssertReturnLoopContinue([a.href isEqualIgnoringCase:anchor.href]);
 
-		imageElement = image;
-		
-		break;
-	}
+        imageElement = image;
+        
+        break;
+    }
 
-	PointerIsEmptyAssertReturn(imageElement, @"true");
+    PointerIsEmptyAssertReturn(imageElement, @"true");
 
-	NSString *display = imageElement.style.display;
+    NSString *display = imageElement.style.display;
 
-	if ([display isEqualIgnoringCase:@"none"]) {
-		display = NSStringEmptyPlaceholder;
-	} else {
-		display = @"none";
-	}
+    if ([display isEqualIgnoringCase:@"none"]) {
+        display = NSStringEmptyPlaceholder;
+    } else {
+        display = @"none";
+    }
 
-	imageElement.style.display = display;
+    imageElement.style.display = display;
 
-	return @"false";
+    return @"false";
 }
 
 - (NSString *)hideInlineImage:(id)object
 {
-	NSObjectIsKindOfClassAssertReturn(object, DOMHTMLAnchorElement, @"true");
+    NSObjectIsKindOfClassAssertReturn(object, DOMHTMLAnchorElement, @"true");
 
-	if (([NSEvent modifierFlags] & NSShiftKeyMask) == NO) {
-		return @"true";
-	}
+    if (([NSEvent modifierFlags] & NSShiftKeyMask) == NO) {
+        return @"true";
+    }
 
-	DOMHTMLImageElement *imageElement = (DOMHTMLImageElement *)[[object getElementsByTagName:@"img"] item:0];
+    DOMHTMLImageElement *imageElement = (DOMHTMLImageElement *)[[object getElementsByTagName:@"img"] item:0];
 
-	imageElement.style.display = @"none";
+    imageElement.style.display = @"none";
 
-	return @"false";
+    return @"false";
 }
 
 - (void)setURLAddress:(NSString *)s
 {
-	[self.owner.policy setAnchorURL:[s gtm_stringByUnescapingFromHTML]];
+    [self.owner.policy setAnchorURL:[s gtm_stringByUnescapingFromHTML]];
 }
 
 - (void)setNickname:(NSString *)s
 {
-	[self.owner.policy setNickname:[s gtm_stringByUnescapingFromHTML]];
+    [self.owner.policy setNickname:[s gtm_stringByUnescapingFromHTML]];
 }
 
 - (void)setChannelName:(NSString *)s
 {
-	[self.owner.policy setChannelName:[s gtm_stringByUnescapingFromHTML]];
+    [self.owner.policy setChannelName:[s gtm_stringByUnescapingFromHTML]];
 }
 
 - (void)channelNameDoubleClicked
 {
-	[self.owner.policy channelDoubleClicked];
+    [self.owner.policy channelDoubleClicked];
 }
 
 - (void)nicknameDoubleClicked
 {
-	[self.owner.policy nicknameDoubleClicked];
+    [self.owner.policy nicknameDoubleClicked];
 }
 
 - (NSInteger)channelMemberCount
@@ -225,7 +225,7 @@
 
 - (BOOL)sidebarInversionIsEnabled
 {
-	return [TPCPreferences invertSidebarColors];
+    return [TPCPreferences invertSidebarColors];
 }
 
 - (void)print:(NSString *)s

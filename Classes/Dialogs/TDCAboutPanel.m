@@ -41,31 +41,31 @@
 
 - (id)init
 {
-	if ((self = [super init])) {
-		[NSBundle loadNibNamed:@"TDCAboutPanel" owner:self];
-	}
+    if ((self = [super init])) {
+        [NSBundle loadNibNamed:@"TDCAboutPanel" owner:self];
+    }
 
-	return self;
+    return self;
 }
 
 - (void)show
 {
-	NSString *bundleVersion = [TPCPreferences textualInfoPlist][@"CFBundleVersion"];
-	
-	[self.versionInfoField setStringValue:TXTFLS(@"AboutWindowBuildNumber", bundleVersion)];
+    NSString *bundleVersion = [TPCPreferences textualInfoPlist][@"CFBundleVersion"];
+    
+    [self.versionInfoField setStringValue:TXTFLS(@"AboutWindowBuildNumber", bundleVersion)];
 
-	[self.window restoreWindowStateUsingKeyword:NSStringFromClass(self.class)];
-	
-	[self.window makeKeyAndOrderFront:nil];
+    [self.window restoreWindowStateUsingKeyword:NSStringFromClass(self.class)];
+    
+    [self.window makeKeyAndOrderFront:nil];
 }
 
 - (void)windowWillClose:(NSNotification *)note
 {
-	[self.window saveWindowStateUsingKeyword:NSStringFromClass(self.class)];
-	
-	if ([self.delegate respondsToSelector:@selector(aboutPanelWillClose:)]) {
-		[self.delegate aboutPanelWillClose:self];
-	}
+    [self.window saveWindowStateUsingKeyword:NSStringFromClass(self.class)];
+    
+    if ([self.delegate respondsToSelector:@selector(aboutPanelWillClose:)]) {
+        [self.delegate aboutPanelWillClose:self];
+    }
 }
 
 @end

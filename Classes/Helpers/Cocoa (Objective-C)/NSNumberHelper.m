@@ -41,67 +41,67 @@
 
 + (BOOL)compareIRCColor:(UniChar)c against:(NSInteger)firstNumber
 {
-	/* An IRC color is interpreted using a value of 00 to 15. This 
-	 method is used mainly in situations in which each character of 
-	 a string is exaimined one by one. 
-	 
-	 The firstNumber given to this method is either a 0 or 1. If it is
-	 neither, then the number is not valid. Next, the c, or second part
-	 of firstNumber has to be 0 to 5 if firstNumber = 1, or it can be 0
-	 to 9 if firstNumber = 0. 
-	 
-	 The method basically combines firstNumber and c to make sure it is
-	 within 00 and 15. */
-	
-	if (TXStringIsBase10Numeric(c) && firstNumber < 2) {
-		NSInteger ci = (c - '0');
-		
-		if ((firstNumber == 0 && ((ci >= 1 && ci <= 9) || ci == 0)) || 
-			(firstNumber == 1 && ((ci >= 1 && ci <= 5) || ci == 0))) {
-			
-			return YES;
-		}
-	}
-	
-	return NO;
+    /* An IRC color is interpreted using a value of 00 to 15. This 
+     method is used mainly in situations in which each character of 
+     a string is exaimined one by one. 
+     
+     The firstNumber given to this method is either a 0 or 1. If it is
+     neither, then the number is not valid. Next, the c, or second part
+     of firstNumber has to be 0 to 5 if firstNumber = 1, or it can be 0
+     to 9 if firstNumber = 0. 
+     
+     The method basically combines firstNumber and c to make sure it is
+     within 00 and 15. */
+    
+    if (TXStringIsBase10Numeric(c) && firstNumber < 2) {
+        NSInteger ci = (c - '0');
+        
+        if ((firstNumber == 0 && ((ci >= 1 && ci <= 9) || ci == 0)) || 
+            (firstNumber == 1 && ((ci >= 1 && ci <= 5) || ci == 0))) {
+            
+            return YES;
+        }
+    }
+    
+    return NO;
 }
 
 + (BOOL)compareCGFloat:(CGFloat)num1 toFloat:(CGFloat)num2
 {
-	NSString *bleh1 = [NSString stringWithFormat:@"%.2f", num1];
-	NSString *bleh2 = [NSString stringWithFormat:@"%.2f", num2];
-	
-	return [bleh1 isEqualToString:bleh2];
+    NSString *bleh1 = [NSString stringWithFormat:@"%.2f", num1];
+    NSString *bleh2 = [NSString stringWithFormat:@"%.2f", num2];
+    
+    return [bleh1 isEqualToString:bleh2];
 }
 
 - (NSString *)integerWithLeadingZero:(NSInteger)forcedWidth
 {
-	NSInteger trlzp = (forcedWidth - self.stringValue.length);
+    NSInteger trlzp = (forcedWidth - self.stringValue.length);
 
-	if (trlzp <= 0) {
-		return self.stringValue;
-	} else {
-		NSMutableString *ints = [NSMutableString string];
+    if (trlzp <= 0) {
+        return self.stringValue;
+    } else {
+        NSMutableString *ints = [NSMutableString string];
 
-		for (NSInteger i = 0; i < trlzp; i++) {
-			[ints appendString:@"0"];
-		}
+        for (NSInteger i = 0; i < trlzp; i++) {
+            [ints appendString:@"0"];
+        }
 
-		[ints appendString:self.stringValue];
+        [ints appendString:self.stringValue];
 
-		return ints;
-	}
+        return ints;
+    }
 }
 
 - (NSString *)integerWithLeadingZero
 {
-	NSInteger intv = [self integerValue];
+    NSInteger intv = [self integerValue];
 
-	if (intv >= 0 && intv <= 9) {
-		return [@"0" stringByAppendingString:self.stringValue];
-	}
+    if (intv >= 0 && intv <= 9) {
+        return [@"0" stringByAppendingString:self.stringValue];
+    }
 
-	return self.stringValue;
+    return self.stringValue;
 }
 
 @end
