@@ -115,8 +115,11 @@
 "IRCCapCurrentlyEnbaled" = "The following capabilities are currently enabled: %@";
 "IRCChannelEmptyTopic" = "(No Topic)";
 "IRCChannelHasModes" = "Mode is \002%@\002";
+"IRCChannelHasModesWithName" = "\002%1$@:\002 Mode is \002%2$@\002";
 "IRCChannelHasTopic" = "Topic is \002%@\002";
+"IRCChannelHasTopicWithName" = "\002%1$@:\002 Topic is \002%2$@\002";
 "IRCChannelHasTopicAuthor" = "Set by \002%1$@\002 on %2$@";
+"IRCChannelHasTopicAuthorWithName" = "\002%1$@:\002 Set by \002%2$@\002 on %3$@";
 "IRCChannelHasWebsite" = "Website is \002%@\002";
 "IRCChannelPreparingRejoinAttempt" = "Attempting to rejoin channel in three seconds.";
 "IRCChannelTopicChanged" = "\002%1$@\002 changed the topic to \002%2$@\002";

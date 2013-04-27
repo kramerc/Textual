@@ -4486,7 +4486,10 @@
 
 			IRCChannel *c = [self findChannel:channel];
 
-			PointerIsEmptyAssertLoopBreak(c);
+			if (c == nil) {
+                [self print:nil type:TVCLogLineModeType nick:nil text:TXTFLS(@"IRCChannelHasModesWithName", channel, modestr) receivedAt:m.receivedAt];
+                break;
+            }
 
 			if (c.isActive) {
 				[c.modeInfo clear];
@@ -4506,13 +4509,17 @@
 
 			IRCChannel *c = [self findChannel:channel];
 
-			PointerIsEmptyAssertLoopBreak(c);
-
+            if (c == nil) {
+                [self print:nil type:TVCLogLineTopicType nick:nil text:TXTFLS(@"IRCChannelHasTopicWithName", channel, topicva) receivedAt:m.receivedAt];
+                break;
+            }
+            
 			BOOL isEncrypted = [self isMessageEncrypted:topicva channel:c];
 
 			if (isEncrypted) {
 				[self decryptIncomingMessage:&topicva channel:c];
 			}
+
 
 			if (c.isActive) {
 				[c setTopic:topicva];
@@ -4538,10 +4545,8 @@
 
 			IRCChannel *c = [self findChannel:channel];
 
-			PointerIsEmptyAssertLoopBreak(c);
-
-			if (c.isActive) {
-				NSString *text = [NSString stringWithFormat:TXTLS(@"IRCChannelHasTopicAuthor"), topicow, settime];
+			if (c == nil || c.isActive) {
+				NSString *text = [NSString stringWithFormat:TXTLS(@"IRCChannelHasTopicAuthorWithName"), channel, topicow, settime];
 
 				[self print:c type:TVCLogLineTopicType nick:nil text:text receivedAt:m.receivedAt];
 			}
